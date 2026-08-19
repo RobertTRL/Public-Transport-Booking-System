@@ -1,14 +1,8 @@
-import { useState } from 'react'
-import './App.css'
+import "../styles/App.css";
+import ProviderDashboard from "./ProviderDashboard";
 
 function App() {
-
-              
-  return (
- <div>
-      <h1>Welcome to the App</h1>
-    </div>
-  )
+  return <ProviderDashboard />;
 }
 
-export default App
+export default App;
