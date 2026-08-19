@@ -7,7 +7,8 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
 
-  return (
+  return ( 
+    // DELETE FROM HERE
     <>
       <section id="center">
         <div className="hero">
@@ -116,6 +117,7 @@ function App() {
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>
+    // TO HERE
   )
 }
 
