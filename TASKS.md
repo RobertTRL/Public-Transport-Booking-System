@@ -8,4 +8,6 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 
 **b) Booking panel** i.e Passenger side
 
+**c) Shared features**
+
 ## 2. Backend
