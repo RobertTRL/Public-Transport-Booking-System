@@ -4,8 +4,25 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 
 ## 1. Frontend
 
-**a) Dashboard** i.e Servise provider Side
+**a) Dashboard** i.e Service provider Side
 
+- Account creation page
+- Actual dashboard
+- Search bar
+- Logout button
+- Sidebar panel
+- Profile (within sidebar)
+- Footer
+- Header 
+- Main content
+- Buttons to specific items
+- Delete route
+- Create route (map)
+- View routes (map)
+- View bookings
+- View specific route
+- Homepage - display data
+- Routes, no. of customers who've booked, vehicle availability, number of vehicles, map showing all routes with stops 
 **b) Booking panel** i.e Passenger side
 
 **c) Shared features**
@@ -15,7 +32,7 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 ```
 public/
 ├── data/
-│   └── ...          
+│   └── ...             # where data that one wants to expose will be placed
 └── images/                  
 
 src/
@@ -38,5 +55,9 @@ src/
 │   └── ...
 │
 └── main.jsx                # entry point
+
 ```
+- Authentication
+- Continue with Google functionality
+- Login page (passengers, service operators)
 ## 2. Backend
