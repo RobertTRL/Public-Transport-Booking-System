@@ -10,4 +10,33 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 
 **c) Shared features**
 
+- Frontend initialization - Done
+- File Structure Setup i.e
+```
+public/
+├── data/
+│   └── ...          
+└── images/                  
+
+src/
+├── assets/                  
+├── components/               
+│   ├── SearchBar.jsx
+│   └── ...
+├── hooks/
+│   ├── useInView.js
+│   └── ...          
+├── data/
+│   ├── db.json                
+│   └── ...         
+├── styles/                    
+│   ├── App.css
+│   ├── index.css           # where common styles will be placed
+│   └── ...
+├── pages/                    
+│   ├── App.jsx
+│   └── ...
+│
+└── main.jsx                # entry point
+```
 ## 2. Backend
