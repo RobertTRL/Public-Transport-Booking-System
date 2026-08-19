@@ -10,3 +10,7 @@
 - Header 
 - Main content
 - Sidebar panel
+
+**Backend Team - Robert- Lead, Marlene and Vincent**
+
+- Research on Google Maps API and Login with Google functionality 
