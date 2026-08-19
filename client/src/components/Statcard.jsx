@@ -1,5 +1,4 @@
 import React from "react";
-import "../styles/StatCard.css";
 
 const StatCard = ({
   title,
