@@ -212,8 +212,8 @@ export default function HeroGeometric({
                             <NavLink to="/book" className="hero-geometric__cta hero-geometric__cta--primary">
                                 Book a Ride
                             </NavLink>
-                            <NavLink to="/dashboard" className="hero-geometric__cta hero-geometric__cta--secondary">
-                                Go to Dashboard
+                            <NavLink to="/login" className="hero-geometric__cta hero-geometric__cta--secondary">
+                                Login to Dashboard
                             </NavLink>
                         </motion.div>
                         
