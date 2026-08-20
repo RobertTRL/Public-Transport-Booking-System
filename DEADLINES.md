@@ -8,6 +8,8 @@
 - Main content
 - Sidebar panel
 
+**To be completed by 20th August 11:59pm**
+
 Robert - React Routing in main.jsx and Dashboard.jsx - wait for Cabdi
        - Implementing and styling landing page (App.jsx)  
 
