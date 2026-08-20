@@ -7,7 +7,9 @@ import { BrowserRouter, Routes, Route , Link, NavLink, Outlet } from 'react-rout
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
-    {/* Install react-router and react-router-dom packages */}
+    <BrowserRouter>
+      <App />
+      {/* Install react-router and react-router-dom packages */}
+    </BrowserRouter>
   </StrictMode>,
 )
