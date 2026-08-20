@@ -244,19 +244,24 @@
 }
 
 .auth-button {
-  border: 1px solid #111827;
+  border: 1px solid #2563eb;
 
-  background: #111827;
+  background: #2563eb;
   color: #ffffff;
 }
 
 .auth-button:hover {
-  opacity: 0.9;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
 }
 
-/* ================================
-   Divider
-================================ */
+.auth-button:active {
+  transform: translateY(1px);
+}
+
+
 
 .auth-divider {
   display: flex;
@@ -282,9 +287,6 @@
   background: #e5e7eb;
 }
 
-/* ================================
-   Google Button
-================================ */
 
 .google-button {
   display: flex;
@@ -296,21 +298,35 @@
   border: 1px solid #d1d5db;
 
   background: #ffffff;
-  color: #111827;
+  color: #374151;
 }
 
 .google-button:hover {
   background: #f9fafb;
+
+  border-color: #9ca3af;
+
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
 }
+
+.google-button:active {
+  transform: translateY(1px);
+}
+
 
 .google-icon {
-  font-size: 1rem;
-  font-weight: 600;
-}
+  width: 20px;
+  height: 20px;
 
-/* ================================
-   Footer
-================================ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  color: #4285f4;
+}
 
 .auth-footer {
   margin: 1.5rem 0 0;
@@ -334,9 +350,36 @@
   text-decoration: underline;
 }
 
-/* ================================
-   Responsive Design
-================================ */
+.auth-divider {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+  margin: 1.75rem 0;
+
+  color: #9ca3af;
+
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+
+  flex: 1;
+
+  height: 1px;
+
+  background: #e5e7eb;
+}
+
+.auth-divider span {
+  flex-shrink: 0;
+}
+
+
 
 @media (max-width: 480px) {
   .auth-page {
