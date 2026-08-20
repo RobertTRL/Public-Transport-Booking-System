@@ -474,3 +474,115 @@
     grid-template-columns: 1fr;
   }
 }
+/* ================================
+   Account Type Selection
+================================ */
+
+.account-type-options {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+}
+
+.account-type-option {
+  position: relative;
+
+  display: block;
+
+  padding: 16px;
+
+  border: 1px solid #dbe3ee;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-type-option:hover {
+  border-color: #93c5fd;
+
+  background: #f8fbff;
+
+  transform: translateY(-1px);
+}
+
+.account-type-option:has(input:checked) {
+  border-color: #2563eb;
+
+  background: #eff6ff;
+
+  box-shadow:
+    0 0 0 2px rgba(37, 99, 235, 0.08),
+    0 6px 14px rgba(37, 99, 235, 0.08);
+}
+
+.account-type-option input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.account-type-content {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+}
+
+.account-type-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+
+  font-size: 20px;
+}
+
+.account-type-option:has(input:checked) .account-type-icon {
+  background: #dbeafe;
+}
+
+.account-type-content strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #111827;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.account-type-content span {
+  display: block;
+
+  color: #64748b;
+
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+@media (max-width: 600px) {
+  .account-type-options {
+    grid-template-columns: 1fr;
+  }
+}
