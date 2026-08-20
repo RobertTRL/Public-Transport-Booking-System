@@ -1,8 +1,6 @@
-/* ================================
-   Authentication Page
-================================ */
-
 .auth-page {
+  position: relative;
+
   min-height: 100vh;
 
   display: flex;
@@ -11,35 +9,76 @@
 
   padding: 40px 20px;
 
-  background: linear-gradient(
-    135deg,
-    #eff6ff 0%,
-    #f8fafc 50%,
-    #ffffff 100%
-  );
-}
-/* ================================
-   Authentication Card
-================================ */
+  overflow: hidden;
 
-.auth-card {
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(37, 99, 235, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(14, 165, 233, 0.12),
+      transparent 30%
+    ),
+    #f8fafc;
+}
+.auth-page::before {
+  content: '';
+
+  position: absolute;
+
+  width: 600px;
+  height: 600px;
+
+  border: 2px solid rgba(37, 99, 235, 0.08);
+
+  border-radius: 50%;
+
+  top: -300px;
+  right: -200px;
+
+  pointer-events: none;
+}
+
+.auth-page::after {
+  content: '';
+
+  position: absolute;
+
+  width: 450px;
+  height: 450px;
+
+  border: 2px dashed rgba(14, 165, 233, 0.08);
+
+  border-radius: 50%;
+
+  bottom: -250px;
+  left: -150px;
+
+  pointer-events: none;
+}
+
+..auth-card {
+  position: relative;
+  z-index: 1;
+
   width: 100%;
   max-width: 440px;
 
   padding: 2.5rem;
 
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.96);
 
-  border: 1px solid rgba(229, 231, 235, 0.8);
-  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+
+  border-radius: 24px;
 
   box-shadow:
-    0 20px 40px rgba(15, 23, 42, 0.08),
-    0 4px 12px rgba(15, 23, 42, 0.04);
+    0 25px 50px rgba(15, 23, 42, 0.08),
+    0 8px 20px rgba(15, 23, 42, 0.04);
 }
-/* ================================
-   Header
-================================ */
 
 .auth-header {
   text-align: center;
@@ -47,8 +86,8 @@
 }
 
 .auth-logo {
-  width: 58px;
-  height: 58px;
+  width: 62px;
+  height: 62px;
 
   margin: 0 auto 1.25rem;
 
@@ -56,17 +95,23 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 16px;
+  border-radius: 18px;
 
-  background: #2563eb;
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #0284c7
+  );
+
   color: #ffffff;
 
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
 
   letter-spacing: 1px;
 
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+  box-shadow:
+    0 10px 25px rgba(37, 99, 235, 0.25);
 }
 .auth-header h1 {
   margin: 0;
@@ -165,9 +210,7 @@
   text-decoration: underline;
 }
 
-/* ================================
-   Account Type
-================================ */
+
 
 .account-type-options {
   display: grid;
@@ -242,25 +285,47 @@
     box-shadow 0.2s ease,
     transform 0.1s ease;
 }
-
 .auth-button {
-  border: 1px solid #2563eb;
+  width: 100%;
+  height: 50px;
 
-  background: #2563eb;
+  border: none;
+  border-radius: 11px;
+
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #0284c7
+  );
+
   color: #ffffff;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px rgba(37, 99, 235, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
 }
 
 .auth-button:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  transform: translateY(-1px);
 
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+  filter: brightness(1.05);
+
+  box-shadow:
+    0 12px 24px rgba(37, 99, 235, 0.25);
 }
 
 .auth-button:active {
-  transform: translateY(1px);
+  transform: translateY(0);
 }
-
 
 
 .auth-divider {
