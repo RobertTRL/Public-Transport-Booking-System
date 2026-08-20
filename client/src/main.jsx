@@ -9,7 +9,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <App />
-      {/* Install react-router and react-router-dom packages */}
+
     </BrowserRouter>
   </StrictMode>,
 )
