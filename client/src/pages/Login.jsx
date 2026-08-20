@@ -16,6 +16,11 @@ function Login() {
 
   return (
     <main className="auth-page">
+       <div className="transport-route route-one">
+    <span className="route-stop"></span>
+    <span className="route-stop"></span>
+    <span className="route-stop"></span>
+  </div>
       <section className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">PT</div>
