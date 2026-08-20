@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+.hero-geometric {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  background: white;
+  color: black;
+  container-type: size;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.hero-geometric__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-geometric__content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.hero-geometric__inner {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-geometric__headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.hero-geometric__title-wrap {
+  overflow: hidden;
+}
+
+.hero-geometric__title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(3rem, 11vw, 90px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: #131313;
+  margin: 0;
+  padding: 2px;
+  padding-bottom: 20px;
+}
+
+.hero-geometric__title--bold {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  color: black;
+}
+
+.hero-geometric__description-wrap {
+  max-width: 480px;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.hero-geometric__description {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(1rem, 1.35rem, 1.5rem);
+  line-height: 1.625;
+  color: #737373;
+  font-weight: 400;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .hero-geometric__content {
+    padding: 5rem 0;
+  }
+
+  .hero-geometric__headline {
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+}
