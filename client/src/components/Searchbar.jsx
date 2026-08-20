@@ -1,30 +1,42 @@
 import { useState } from "react";
-
-const SearchBar = ({ placeholder = "Search..." }) => {
+import "../styles/user.css";
+function SearchBar({ placeholder = "Search routes, destinations..." }) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!searchTerm.trim()) {
+      return;
+    }
 
     console.log("Searching for:", searchTerm);
   };
 
+  const handleClear = () => {
+    setSearchTerm("");
+  };
+
   return (
-    <form className="search-bar" onSubmit={handleSearch}>
-      <span className="search-icon">⌕</span>
+    <form className="search-bar" onSubmit={handleSubmit}>
+      <span className="search-icon" aria-hidden="true">
+        🔍
+      </span>
 
       <input
-        type="text"
-        placeholder={placeholder}
+        type="search"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder={placeholder}
+        aria-label="Search routes and destinations"
+        onChange={(event) => setSearchTerm(event.target.value)}
       />
 
       {searchTerm && (
         <button
           type="button"
           className="clear-search"
-          onClick={() => setSearchTerm("")}
+          onClick={handleClear}
+          aria-label="Clear search"
         >
           ×
         </button>
@@ -35,6 +47,6 @@ const SearchBar = ({ placeholder = "Search..." }) => {
       </button>
     </form>
   );
-};
+}
 
 export default SearchBar;
