@@ -135,14 +135,15 @@
 
 .form-group input::placeholder {
   color: #9ca3af;
+   font-size: 0.9rem;
 }
-
 .form-group input:focus {
-  border-color: #111827;
+  border-color: #2563eb;
 
-  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.1);
+  background: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
-
 /* ================================
    Password
 ================================ */
