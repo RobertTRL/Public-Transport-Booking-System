@@ -28,7 +28,7 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 **c) Shared features**
 
 - Frontend initialization - Done
-- File Structure Setup i.e
+- File Structure Setup i.e - Done
 ```
 public/
 ├── data/
