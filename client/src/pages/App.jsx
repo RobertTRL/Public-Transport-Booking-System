@@ -17,8 +17,6 @@ function App() {
     />
 
   </div>
-  
-  {/* <p>Go to dashboard or Book a ride</p> */}
   </div>
   )
 }
