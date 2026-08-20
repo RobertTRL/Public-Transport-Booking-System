@@ -1,3 +1,4 @@
+// the title is coming from usestate in app.jsx
 function Header({title}) {
     return(
         <header className="header">

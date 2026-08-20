@@ -4,7 +4,7 @@ import HeroGeometric from '../components/Hero'
 import { NavLink } from 'react-router-dom'
 
 function App() {
-              
+  const [title, setTitle] = useState("")
   return (
   <div>
   <div className='hero-section'>
