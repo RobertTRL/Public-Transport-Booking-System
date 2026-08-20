@@ -164,7 +164,7 @@ export default function HeroGeometric({
                             {title1 && (
                                 <div className="hero-geometric__title-wrap">
                                     <motion.h1
-                                        className="hero-geometric__title"
+                                        className="main-title"
                                         initial={{ y: "100%", opacity: 0 }}
                                         animate={{ y: "0%", opacity: 1 }}
                                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -176,7 +176,7 @@ export default function HeroGeometric({
                             {title2 && (
                                 <div className="hero-geometric__title-wrap" id="title2">
                                     <motion.h1
-                                        className="hero-geometric__title hero-geometric__title--bold"
+                                        className="main-title hero-geometric__title--bold"
                                         initial={{ y: "100%", opacity: 0 }}
                                         animate={{ y: "0%", opacity: 1 }}
                                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
