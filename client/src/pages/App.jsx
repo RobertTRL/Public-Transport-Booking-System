@@ -4,7 +4,8 @@ import HeroGeometric from '../components/Hero'
 import { NavLink } from 'react-router-dom'
 
 function App() {
-  const [title, setTitle] = useState("")
+  // title to be passed to the header component.
+  const [title, setTitle] = useState("HopOn!")
   return (
   <div>
   <div className='hero-section'>
