@@ -201,6 +201,22 @@ export default function HeroGeometric({
                                 </motion.p>
                             </div>
                         )}
+
+                        {/* CTA Buttons */}
+                        <motion.div
+                            className="hero-geometric__actions"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}
+                        >
+                            <NavLink to="/book" className="hero-geometric__cta hero-geometric__cta--primary">
+                                Book a Ride
+                            </NavLink>
+                            <NavLink to="/dashboard" className="hero-geometric__cta hero-geometric__cta--secondary">
+                                Go to Dashboard
+                            </NavLink>
+                        </motion.div>
+                        
                     </div>
                 </div>
             )}
