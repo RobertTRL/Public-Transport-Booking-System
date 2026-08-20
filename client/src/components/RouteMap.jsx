@@ -1,6 +1,3 @@
-import React from "react";
-
-
 const RouteMap = () => {
   return (
     <div className="route-map">
