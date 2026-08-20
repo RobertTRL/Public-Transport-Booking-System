@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { motion } from "framer-motion";
-import "../styles/background.css";
+import "../styles/hero.css";
  
 // --- Shader Code ---
 const vertexShader = `
