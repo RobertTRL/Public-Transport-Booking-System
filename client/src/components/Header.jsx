@@ -1,10 +1,10 @@
 function Header({title}) {
-
-
-    return()
-
-
-
-
+    return(
+        <header className="header">
+            <div className="header-content">
+                <h1>{title}</h1>
+            </div>
+        </header>
+    )
 }
     
