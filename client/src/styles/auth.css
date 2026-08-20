@@ -81,16 +81,15 @@
 }
 
 .auth-header p {
-  margin: 0.5rem 0 0;
+  max-width: 340px;
+
+  margin: 0.75rem auto 0;
 
   color: #6b7280;
 
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
-
-/* ================================
-   Form
-================================ */
 
 .auth-form {
   display: flex;
