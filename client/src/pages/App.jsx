@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import '../styles/App.css'
 import HeroGeometric from '../components/Hero'
+import { NavLink } from 'react-router-dom'
 
 function App() {
               
   return (
+  <div>
   <div className='hero-section'>
     <HeroGeometric
       title2="HopOn!"
@@ -13,6 +15,10 @@ function App() {
       color2="#F0F9FF"
       speed={0.6}
     />
+
+  </div>
+  
+  {/* <p>Go to dashboard or Book a ride</p> */}
   </div>
   )
 }

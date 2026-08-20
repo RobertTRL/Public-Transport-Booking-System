@@ -3,7 +3,8 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import "../styles/hero.css";
- 
+import { NavLink } from "react-router-dom"
+
 // --- Shader Code ---
 const vertexShader = `
 varying vec2 vUv;
