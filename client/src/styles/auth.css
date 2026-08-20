@@ -481,9 +481,7 @@
     grid-template-columns: 1fr;
   }
 }
-/* ================================
-   Account Type Selection
-================================ */
+
 
 .account-type-options {
   display: grid;
@@ -595,10 +593,55 @@
 }
 
 
+.transport-route {
+  position: absolute;
 
+  width: 500px;
+  height: 160px;
 
+  border-top: 3px solid rgba(37, 99, 235, 0.12);
 
+  border-radius: 50%;
 
+  transform: rotate(-25deg);
+
+  pointer-events: none;
+}
+
+.route-one {
+  top: 15%;
+  left: -120px;
+}
+
+.route-stop {
+  position: absolute;
+
+  width: 14px;
+  height: 14px;
+
+  background: #2563eb;
+
+  border: 4px solid #ffffff;
+
+  border-radius: 50%;
+
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.route-stop:nth-child(1) {
+  left: 20%;
+  top: -8px;
+}
+
+.route-stop:nth-child(2) {
+  left: 50%;
+  top: -8px;
+}
+
+.route-stop:nth-child(3) {
+  right: 10%;
+  top: -8px;
+}
 
 
 
