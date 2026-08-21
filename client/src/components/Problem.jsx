@@ -12,7 +12,7 @@ export default function Problem() {
                 </div>
 
                 <div className="problem__image">
-                    {/* TODO: swap in <img src="/path/to.svg" alt="..." /> */}
+                    <img src="/images/Questions.svg" alt="..." />
                 </div>
             </div>
         </section>

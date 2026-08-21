@@ -54,8 +54,6 @@
   min-height: clamp(220px, 30vw, 340px);
   box-sizing: border-box;
   padding: clamp(1rem, 3vw, 2rem);
-  border: 1.5px solid #131313;
-  border-radius: clamp(12px, 2.5vw, 20px);
   overflow: hidden;
 }
 
