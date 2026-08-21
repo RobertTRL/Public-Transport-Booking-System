@@ -10,10 +10,10 @@ import Bookings from "./pages/Bookings.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
-import Homepage from "./pages/Booking/Homepage.jsx"
-import BookingMap from "./pages/Booking/BookingMap.jsx"
-import Activity from "./pages/Booking/Activity.jsx"
-import Profile from "./pages/Booking/Profile.jsx"
+// import Homepage from "./pages/Booking/Homepage.jsx"
+// import BookingMap from "./pages/Booking/BookingMap.jsx"
+// import Activity from "./pages/Booking/Activity.jsx"
+// import Profile from "./pages/Booking/Profile.jsx"
 
 
 createRoot(document.getElementById("root")).render(
@@ -28,10 +28,10 @@ createRoot(document.getElementById("root")).render(
         </Route>
         <Route path="/booking" element={<Bookings />} >
         {/* booking sub routes */}
-          <Route index element={<Homepage />} />
-          <Route path="map" element={<BookingMap />} />
+          {/* <Route index element={<Homepage />} />
+          <Route path="map" element={<BookingMap />} /> 
           <Route path="activity" element={<Activity />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile" element={<Profile />} /> */ }
         </Route>
       </Routes>
     </BrowserRouter>
