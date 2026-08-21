@@ -1,6 +1,7 @@
 import '../styles/App.css'
 import HeroGeometric from '../components/Hero'
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 function App() {
 
@@ -15,7 +16,7 @@ function App() {
       color2="#F0F9FF"
       speed={0.6}
     />
-
+    <Footer />
   </div>
   </div>
   )
