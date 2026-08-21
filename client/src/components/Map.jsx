@@ -6,23 +6,10 @@ import {
   Polyline,
   useMap,
 } from "react-leaflet";
-import { useEffect } from "react";
-import L from "leaflet";
+import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 
 const DEFAULT_CENTER = [-1.286389, 36.817223];
-
-const transportIcon = L.divIcon({
-  className: "transport-marker",
-  html: `
-    <div class="transport-marker-icon">
-      <span>●</span>
-    </div>
-  `,
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
-});
 
 function MapBounds({ locations, routes }) {
   const map = useMap();
@@ -75,6 +62,8 @@ function MapEmptyState({ show }) {
 }
 
 function Map({ locations = [], routes = [] }) {
+  const [selectedRoute, setSelectedRoute] = useState(null);
+
   const hasMapData = locations.length > 0 || routes.length > 0;
 
   return (
@@ -97,35 +86,51 @@ function Map({ locations = [], routes = [] }) {
 
         <MapEmptyState show={!hasMapData} />
 
-        {/* Route lines */}
-        {routes.map((route) => (
-          <Polyline
-            key={route.id}
-            positions={route.positions || []}
-            pathOptions={{
-              color: route.color || "#2563eb",
-              weight: 5,
-              opacity: 0.8,
-            }}
-          >
-            <Popup>
-              <div className="map-popup">
-                <h3>{route.name || "Transport Route"}</h3>
+        {/* Transport routes */}
+        {routes.map((route) => {
+          const isSelected = selectedRoute === route.id;
 
-                {route.description && (
-                  <p>{route.description}</p>
-                )}
-              </div>
-            </Popup>
-          </Polyline>
-        ))}
+          return (
+            <Polyline
+              key={route.id}
+              positions={route.positions || []}
+              pathOptions={{
+                color: route.color || "#2563eb",
+                weight: isSelected ? 8 : 5,
+                opacity: isSelected ? 1 : 0.75,
+              }}
+              eventHandlers={{
+                click: () => {
+                  setSelectedRoute(route.id);
+                },
+              }}
+            >
+              <Popup>
+                <div className="map-popup">
+                  <h3>{route.name || "Transport Route"}</h3>
+
+                  {route.description && (
+                    <p>{route.description}</p>
+                  )}
+
+                  {route.positions?.length > 0 && (
+                    <p>
+                      <strong>
+                        {route.positions.length} points
+                      </strong>
+                    </p>
+                  )}
+                </div>
+              </Popup>
+            </Polyline>
+          );
+        })}
 
         {/* Transport stops */}
         {locations.map((location) => (
           <Marker
             key={location.id}
             position={location.position}
-            icon={transportIcon}
           >
             <Popup>
               <div className="map-popup">
