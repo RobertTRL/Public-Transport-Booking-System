@@ -4,7 +4,21 @@
 }
 
 .booking-main {
-   padding: 70px 16px 20px; /* space for top nav bar */
+  padding: 70px 16px 20px; /* space for top nav bar */
   max-width: 900px;
   margin: 0 auto;
+}
+
+.booking-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
 }
