@@ -1,31 +1,33 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const SearchBar = ({ placeholder = "Search..." }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const trimmedSearchTerm = searchTerm.trim();
+    const trimmedSearchTerm = searchTerm.trim();
 
-  if (!trimmedSearchTerm) {
-    return;
-  }
+    if (!trimmedSearchTerm) {
+      return;
+    }
 
-  console.log("Searching for:", trimmedSearchTerm);
-};
+    console.log("Searching for:", trimmedSearchTerm);
+  };
 
   return (
     <form className="search-bar" onSubmit={handleSearch}>
       <span className="search-icon">⌕</span>
 
       <input
-      type="text"
-      placeholder={placeholder}
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      aria-label="Search routes"
-    />
+        type="text"
+        id="route-search"
+        name="route-search"
+        placeholder={placeholder}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        aria-label="Search routes"
+      />
 
       {searchTerm && (
         <button
@@ -36,13 +38,14 @@ const SearchBar = ({ placeholder = "Search..." }) => {
           ×
         </button>
       )}
-<button
-  type="submit"
-  className="search-button"
-  aria-label="Search routes"
->
-  Search
-</button>
+
+      <button
+        type="submit"
+        className="search-button"
+        aria-label="Search routes"
+      >
+        Search
+      </button>
     </form>
   );
 };
