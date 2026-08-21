@@ -7,9 +7,22 @@ import {
   useMap,
 } from "react-leaflet";
 import { useEffect } from "react";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const DEFAULT_CENTER = [-1.286389, 36.817223];
+
+const transportIcon = L.divIcon({
+  className: "transport-marker",
+  html: `
+    <div class="transport-marker-icon">
+      <span>●</span>
+    </div>
+  `,
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
 
 function MapBounds({ locations, routes }) {
   const map = useMap();
@@ -112,6 +125,7 @@ function Map({ locations = [], routes = [] }) {
           <Marker
             key={location.id}
             position={location.position}
+            icon={transportIcon}
           >
             <Popup>
               <div className="map-popup">
