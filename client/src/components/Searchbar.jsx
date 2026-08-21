@@ -1,10 +1,12 @@
 import { useState } from "react";
+import "../styles/user.css";
 
 const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
     const trimmedSearchTerm = searchTerm.trim();
 
@@ -44,7 +46,7 @@ const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
         >
           ×
         </button>
-      )}
+      </form>
 
       <button
         type="submit"
@@ -55,6 +57,6 @@ const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
       </button>
     </form>
   );
-};
+}
 
 export default SearchBar;
