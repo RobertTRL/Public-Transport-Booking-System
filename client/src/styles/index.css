@@ -443,3 +443,7 @@ input {
   background: #1e293b;
   transform: translateY(-1px);
 }
+
+.search-button:active {
+  transform: scale(0.98);
+}
