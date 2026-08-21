@@ -4,7 +4,7 @@ import HeroBackground from '../components/Background'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Problem from '../components/Problem'
-
+import Solution from '../components/Solution'
 function App() {
   return (
     <div>
@@ -16,6 +16,8 @@ function App() {
           description="View public transport vehicle routes, stops and reserve seats for customers or add stops for routes and manage them for service providers!"
         />
         <Problem />
+        <h2 className='aboutus-title'>About us</h2>
+        <Solution />
       </div>
       <Footer />
     </div>
