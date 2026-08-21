@@ -8,6 +8,12 @@ function BookingNavbar(){
         <span className="icon">🏠</span>
         <span>Home</span>
       </NavLink>
+
+      <NavLink to="/booking/map" className="nav-btn">
+        <span className="icon">🗺️</span>
+        <span>Map</span>
+      </NavLink>
     </nav>
+
     )
 }
