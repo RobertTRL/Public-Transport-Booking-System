@@ -18,6 +18,11 @@ function BookingNavbar(){
         <span className="icon">📋</span>
         <span>Activity</span>
       </NavLink>
+
+       <NavLink to="/booking/profile" className="nav-btn">
+        <span className="icon">👤</span>
+        <span>Profile</span>
+      </NavLink>
     </nav>
 
     )
