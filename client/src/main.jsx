@@ -26,6 +26,7 @@ createRoot(document.getElementById("root")).render(
         <Route index element={<Homepage />} />
         <Route path = "map" element={<BookingMap />} />
         <Route path = "activity" element = {<Activity />} />
+        <Route path = "profile" element = {<Profile/>} />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
