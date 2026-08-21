@@ -209,7 +209,7 @@ export default function HeroGeometric({
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}
                         >
-                            <NavLink to="/book" className="hero-geometric__cta hero-geometric__cta--primary">
+                            <NavLink to="/bookings" className="hero-geometric__cta hero-geometric__cta--primary">
                                 Book a Ride
                             </NavLink>
                             <NavLink to="/login" className="hero-geometric__cta hero-geometric__cta--secondary">
