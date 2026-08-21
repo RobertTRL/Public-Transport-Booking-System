@@ -454,3 +454,17 @@ input {
   border-color: #cbd5e1;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
 }
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .route-cards {
+    grid-template-columns: 1fr;
+  }
+  .search-card {
+    flex-direction: column;
+  }
+  .search-button {
+    width: 100%;
+    align-self: stretch;
+  }
+}
