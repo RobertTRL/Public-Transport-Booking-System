@@ -438,3 +438,8 @@ input {
   cursor: pointer;
   transition: background 0.2s ease, transform 0.1s ease;
 }
+
+.search-button:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
