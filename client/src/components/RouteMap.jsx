@@ -18,27 +18,27 @@ const RouteMap = () => {
         <div className="route-line route-three"></div>
 
         {/* Stops */}
-        <div className="map-stop stop-1">
+        <div className="map-stop stop-1" aria-label="Nairobi stop">
           <span></span>
           <p>Nairobi</p>
         </div>
 
-        <div className="map-stop stop-2">
+        <div className="map-stop stop-2" aria-label="Roysambu stop">
           <span></span>
           <p>Roysambu</p>
         </div>
 
-        <div className="map-stop stop-3">
+        <div className="map-stop stop-3" aria-label="Ruiru stop">
           <span></span>
           <p>Ruiru</p>
         </div>
 
-        <div className="map-stop stop-4">
+        <div className="map-stop stop-4" aria-label="Thika stop">
           <span></span>
           <p>Thika</p>
         </div>
 
-        <div className="map-stop stop-5">
+        <div className="map-stop stop-5" aria-label="Kiambu stop">
           <span></span>
           <p>Kiambu</p>
         </div>
