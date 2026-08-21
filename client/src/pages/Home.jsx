@@ -65,6 +65,12 @@ const transportRoutes = [
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("")
+  const navigate = useNavigate()
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault()
+    navigate("/booking/map")
+  }
   return (
     <div className="home-page">
       <Navbar />
