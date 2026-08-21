@@ -25,9 +25,7 @@ function Sidebar() {
     const { left } = sidebarRef.current.getBoundingClientRect();
     const nextWidth = e.clientX - left;
 
-    setWidth(
-      Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, nextWidth))
-    );
+    setWidth(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, nextWidth)));
   }, []);
 
   const startResizing = useCallback((e) => {
