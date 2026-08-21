@@ -1,5 +1,3 @@
-import "./DashboardSummary.css";
-
 function DashboardSummary() {
   return (
     <>
