@@ -11,6 +11,8 @@ function ProfilePage() {
     accountType: 'Passenger',
   })
 
+  const [savedProfile, setSavedProfile] = useState(profile)
+
   const handleChange = (event) => {
     const { name, value } = event.target
 
@@ -20,12 +22,14 @@ function ProfilePage() {
     }))
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    setIsEditing(false)
+ const handleSubmit = (event) => {
+  event.preventDefault()
 
-    console.log('Profile updated:', profile)
-  }
+  setSavedProfile(profile)
+  setIsEditing(false)
+
+  console.log('Profile updated:', profile)
+}
 
   return (
     <main className="profile-page">
@@ -123,7 +127,10 @@ function ProfilePage() {
                   <button
                     type="button"
                     className="profile-button secondary"
-                    onClick={() => setIsEditing(false)}
+                    onClick={() => {
+                     setProfile(savedProfile)
+                          setIsEditing(false)
+                       }}
                   >
                     Cancel
                   </button>
