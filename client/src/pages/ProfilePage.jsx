@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/user.css'
 
 function ProfilePage() {
+  const navigate = useNavigate()
+
   const [isEditing, setIsEditing] = useState(false)
 
   const [profile, setProfile] = useState({
@@ -22,14 +25,23 @@ function ProfilePage() {
     }))
   }
 
- const handleSubmit = (event) => {
-  event.preventDefault()
+  const handleSubmit = (event) => {
+    event.preventDefault()
 
-  setSavedProfile(profile)
-  setIsEditing(false)
+    setSavedProfile(profile)
+    setIsEditing(false)
 
-  console.log('Profile updated:', profile)
-}
+    console.log('Profile updated:', profile)
+  }
+
+  const handleCancel = () => {
+    setProfile(savedProfile)
+    setIsEditing(false)
+  }
+
+  const handleLogout = () => {
+    navigate('/login')
+  }
 
   return (
     <main className="profile-page">
@@ -103,9 +115,10 @@ function ProfilePage() {
             </div>
 
             <div className="profile-form-group">
-              <label>Account type</label>
+              <label htmlFor="accountType">Account type</label>
 
               <input
+                id="accountType"
                 type="text"
                 value={profile.accountType}
                 disabled
@@ -127,10 +140,7 @@ function ProfilePage() {
                   <button
                     type="button"
                     className="profile-button secondary"
-                    onClick={() => {
-                     setProfile(savedProfile)
-                          setIsEditing(false)
-                       }}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </button>
@@ -160,11 +170,19 @@ function ProfilePage() {
 
           <div className="settings-actions">
 
-            <button className="profile-button secondary">
+            <button
+              type="button"
+              className="profile-button secondary"
+              onClick={() => console.log('Change password clicked')}
+            >
               Change Password
             </button>
 
-            <button className="profile-button danger">
+            <button
+              type="button"
+              className="profile-button danger"
+              onClick={handleLogout}
+            >
               Log out
             </button>
 
