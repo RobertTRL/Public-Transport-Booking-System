@@ -447,3 +447,10 @@ input {
 .search-button:active {
   transform: scale(0.98);
 }
+
+/* for the route cards */
+.route-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
