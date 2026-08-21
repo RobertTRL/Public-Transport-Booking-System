@@ -13,6 +13,7 @@ import DashboardSummary from "./components/Summary.jsx";
 import Homepage from "./pages/Booking/Homepage.jsx"
 import BookingMap from "./pages/Booking/BookingMap.jsx"
 import Activity from "./pages/Booking/Activity.jsx"
+import Profile from "./pages/Booking/Profile.jsx"
 
 
 createRoot(document.getElementById("root")).render(
