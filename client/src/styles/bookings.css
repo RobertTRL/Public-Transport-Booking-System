@@ -2,3 +2,9 @@
   min-height: 100vh;
   background: #f8fafc;
 }
+
+.booking-main {
+  padding: 70px 16px 20px; 
+  max-width: 900px;
+  margin: 0 auto;
+}
