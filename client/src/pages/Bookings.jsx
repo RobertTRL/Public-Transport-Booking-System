@@ -5,6 +5,9 @@ function Bookings() {
   
   const todaysBookings = 24
     const weeklyBookings = 142
+const averageBookingsPerDay = (
+  weeklyBookings / 7
+).toFixed(1)
   return (
     <div className="dashboard">
       <Sidebar />
@@ -34,7 +37,7 @@ function Bookings() {
 
             <div className="dashboard-card">
               <h3>Average Per Day</h3>
-              <p>0</p>
+              <p>{averageBookingsPerDay}</p>
             </div>
 
             <div className="dashboard-card">
