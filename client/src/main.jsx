@@ -10,6 +10,8 @@ import Bookings from "./pages/Bookings.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
+import Stops from "./pages/Stops.jsx";
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -22,6 +24,7 @@ createRoot(document.getElementById("root")).render(
           <Route index element={<DashboardSummary/>}/>
         </Route>
         <Route path="/bookings" element={<Bookings />} />
+        <Route path="/stops" element={<Stops />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
