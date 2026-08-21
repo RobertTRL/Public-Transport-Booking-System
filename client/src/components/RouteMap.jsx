@@ -8,7 +8,6 @@ const RouteMap = () => {
 
       {/* Map background */}
       <div className="map-background">
-
         {/* Route 1 */}
         <div className="route-line route-one"></div>
 
@@ -43,11 +42,11 @@ const RouteMap = () => {
           <span></span>
           <p>Kiambu</p>
         </div>
-
       </div>
 
       {/* Map legend */}
       <div className="map-legend">
+        <h3>Route Legend</h3>
 
         <div className="legend-item">
           <span className="legend-dot blue"></span>
@@ -63,9 +62,7 @@ const RouteMap = () => {
           <span className="legend-dot orange"></span>
           <p>Route 3</p>
         </div>
-
       </div>
-
     </div>
   );
 };
