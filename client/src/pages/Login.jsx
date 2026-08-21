@@ -42,7 +42,7 @@ function Login() {
               type="email"
               placeholder="you@example.com"
               autoComplete="email"
-              required
+              // required
             />
           </div>
 
@@ -61,7 +61,7 @@ function Login() {
               type="password"
               placeholder="Enter your password"
               autoComplete="current-password"
-              required
+              // required
             />
           </div>
 
