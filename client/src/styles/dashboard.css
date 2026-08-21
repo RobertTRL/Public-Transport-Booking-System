@@ -126,7 +126,7 @@
   align-items: center;
   gap: 0.4rem;
   margin-top: 1rem;
-  padding: 0.3rem 0.6rem;
+  padding: 0.35rem 0.7rem;
   border-radius: 999px;
   background: #eff6ff;
   color: #2563eb;
@@ -141,7 +141,35 @@
   border-radius: 50%;
   background: #2563eb;
 }
+.stop-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem 0;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
 
+.stop-details > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stop-detail-label {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stop-detail-value {
+  color: #334155;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
 .stop-actions {
   display: flex;
   gap: 0.75rem;
