@@ -1,32 +1,16 @@
-import SidebarButton from "./SidebarButton";
+import { NavLink } from "react-router-dom";
 
-function Sidebar() {
+function SidebarButton({ label, to }) {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-profile">
-        <div className="profile-placeholder">
-          P
-        </div>
-
-        <div>
-          <h3>Provider</h3>
-          <p>Service Provider</p>
-        </div>
-      </div>
-
-      <nav className="sidebar-navigation">
-        <SidebarButton label="Dashboard" />
-        <SidebarButton label="Routes" />
-        <SidebarButton label="Bookings" />
-        <SidebarButton label="Vehicles" />
-        <SidebarButton label="Profile" />
-      </nav>
-
-      <div className="sidebar-footer">
-        <SidebarButton label="Logout" />
-      </div>
-    </aside>
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `sidebar-button ${isActive ? "active" : ""}`
+      }
+    >
+      {label}
+    </NavLink>
   );
 }
 
-export default Sidebar;
+export default SidebarButton;

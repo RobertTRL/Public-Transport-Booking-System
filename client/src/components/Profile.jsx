@@ -1,11 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/user.css";
+
 function Profile() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleProfile = () => {
+    setIsOpen(false);
+    navigate("/profile");
+  };
+
+  const handleBookings = () => {
+    setIsOpen(false);
+    navigate("/bookings");
+  };
+
+  const handleSettings = () => {
+    setIsOpen(false);
+    console.log("Settings clicked");
+  };
 
   const handleLogout = () => {
-    console.log("Logout clicked");
     setIsOpen(false);
+    navigate("/login");
   };
 
   return (
@@ -44,15 +62,27 @@ function Profile() {
 
           <div className="profile-menu-divider" />
 
-          <button type="button" className="profile-menu-item">
+          <button
+            type="button"
+            className="profile-menu-item"
+            onClick={handleProfile}
+          >
             My Profile
           </button>
 
-          <button type="button" className="profile-menu-item">
+          <button
+            type="button"
+            className="profile-menu-item"
+            onClick={handleBookings}
+          >
             My Bookings
           </button>
 
-          <button type="button" className="profile-menu-item">
+          <button
+            type="button"
+            className="profile-menu-item"
+            onClick={handleSettings}
+          >
             Settings
           </button>
 

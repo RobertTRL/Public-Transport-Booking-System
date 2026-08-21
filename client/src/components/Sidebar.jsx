@@ -49,8 +49,8 @@ function Sidebar() {
         <div className="profile-placeholder">P</div>
 
         <div>
-          <h3>Provider</h3>
-          <p>Service Provider</p>
+          <h3>Passenger</h3>
+          <p>Passenger Account</p>
         </div>
       </div>
 
