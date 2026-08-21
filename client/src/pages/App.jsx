@@ -1,11 +1,8 @@
-import { useState } from 'react'
 import '../styles/App.css'
 import HeroGeometric from '../components/Hero'
-import { NavLink } from 'react-router-dom'
 
 function App() {
-  // title to be passed to the header component.
-  const [title, setTitle] = useState("HopOn!")
+
   return (
   <div>
   <div className='hero-section'>

@@ -105,7 +105,7 @@ const GradientPlane = ({ color1, color2, speed = 1 }) => {
             uColor1: { value: new THREE.Color(color1) },
             uColor2: { value: new THREE.Color(color2) },
         }),
-        [] // create once, update via ref
+        [color1, color2]
     );
 
     useFrame(({ clock, size }) => {

@@ -73,30 +73,46 @@ function AccountCreation() {
             />
           </div>
 
-          <div className="form-group">
-            <label>Account type</label>
+<div className="form-group">
+  <label>Choose your account type</label>
 
-            <div className="account-type-options">
-              <label className="account-type-option">
-                <input
-                  type="radio"
-                  name="accountType"
-                  value="passenger"
-                  required
-                />
-                <span>Passenger</span>
-              </label>
+  <div className="account-type-options">
+    <label className="account-type-option">
+      <input
+        type="radio"
+        name="accountType"
+        value="passenger"
+        required
+      />
 
-              <label className="account-type-option">
-                <input
-                  type="radio"
-                  name="accountType"
-                  value="service-operator"
-                />
-                <span>Service Operator</span>
-              </label>
-            </div>
-          </div>
+      <div className="account-type-content">
+        <div className="account-type-icon">🚌</div>
+
+        <div>
+          <strong>Passenger</strong>
+          <span>Book seats and discover routes</span>
+        </div>
+      </div>
+    </label>
+
+    <label className="account-type-option">
+      <input
+        type="radio"
+        name="accountType"
+        value="service-operator"
+      />
+
+      <div className="account-type-content">
+        <div className="account-type-icon">🚍</div>
+
+        <div>
+          <strong>Service Operator</strong>
+          <span>Manage routes and transport services</span>
+        </div>
+      </div>
+    </label>
+  </div>
+</div>
 
           <button type="submit" className="auth-button">
             Create account
