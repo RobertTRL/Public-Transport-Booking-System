@@ -31,6 +31,7 @@ const transportLocations = [
     description: "Passenger pickup point serving Kasarani.",
   },
 ];
+
 const transportRoutes = [
   {
     id: 1,
