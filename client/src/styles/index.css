@@ -266,3 +266,65 @@ input {
   font-size: 12px;
   color: #71717a;
 }
+.map-legend {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  min-width: 190px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.15);
+}
+
+.map-legend-toggle {
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #172033;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.map-legend-toggle:hover {
+  background: #e2e8f0;
+}
+
+.map-legend-content {
+  margin-top: 10px;
+}
+
+.map-legend-content > strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.map-legend-line {
+  width: 24px;
+  height: 4px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .map-legend {
+    right: 10px;
+    bottom: 10px;
+    min-width: 160px;
+  }
+}

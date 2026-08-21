@@ -50,8 +50,7 @@ function MapEmptyState({ show }) {
       <span>Routes and stops will appear here.</span>
     `;
 
-    const container = map.getContainer();
-    container.appendChild(control);
+    map.getContainer().appendChild(control);
 
     return () => {
       control.remove();
@@ -61,10 +60,52 @@ function MapEmptyState({ show }) {
   return null;
 }
 
+function MapLegend({ routes }) {
+  const [visible, setVisible] = useState(true);
+
+  if (routes.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={`map-legend ${visible ? "" : "collapsed"}`}>
+      <button
+        type="button"
+        className="map-legend-toggle"
+        onClick={() => setVisible((current) => !current)}
+      >
+        {visible ? "Hide routes" : "Show routes"}
+      </button>
+
+      {visible && (
+        <div className="map-legend-content">
+          <strong>Routes</strong>
+
+          {routes.map((route) => (
+            <div className="map-legend-item" key={route.id}>
+              <span
+                className="map-legend-line"
+                style={{
+                  backgroundColor: route.color || "#2563eb",
+                }}
+              />
+
+              <span>
+                {route.name || "Transport Route"}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Map({ locations = [], routes = [] }) {
   const [selectedRoute, setSelectedRoute] = useState(null);
 
-  const hasMapData = locations.length > 0 || routes.length > 0;
+  const hasMapData =
+    locations.length > 0 || routes.length > 0;
 
   return (
     <div className="transport-map">
@@ -86,7 +127,6 @@ function Map({ locations = [], routes = [] }) {
 
         <MapEmptyState show={!hasMapData} />
 
-        {/* Transport routes */}
         {routes.map((route) => {
           const isSelected = selectedRoute === route.id;
 
@@ -107,18 +147,12 @@ function Map({ locations = [], routes = [] }) {
             >
               <Popup>
                 <div className="map-popup">
-                  <h3>{route.name || "Transport Route"}</h3>
+                  <h3>
+                    {route.name || "Transport Route"}
+                  </h3>
 
                   {route.description && (
                     <p>{route.description}</p>
-                  )}
-
-                  {route.positions?.length > 0 && (
-                    <p>
-                      <strong>
-                        {route.positions.length} points
-                      </strong>
-                    </p>
                   )}
                 </div>
               </Popup>
@@ -126,7 +160,6 @@ function Map({ locations = [], routes = [] }) {
           );
         })}
 
-        {/* Transport stops */}
         {locations.map((location) => (
           <Marker
             key={location.id}
@@ -134,7 +167,9 @@ function Map({ locations = [], routes = [] }) {
           >
             <Popup>
               <div className="map-popup">
-                <h3>{location.name || "Transport Stop"}</h3>
+                <h3>
+                  {location.name || "Transport Stop"}
+                </h3>
 
                 <strong>
                   {location.type || "Transport Stop"}
@@ -144,7 +179,8 @@ function Map({ locations = [], routes = [] }) {
                   <p>{location.description}</p>
                 ) : (
                   <p>
-                    Public transport pickup and drop-off point.
+                    Public transport pickup and drop-off
+                    point.
                   </p>
                 )}
               </div>
@@ -152,6 +188,8 @@ function Map({ locations = [], routes = [] }) {
           </Marker>
         ))}
       </MapContainer>
+
+      <MapLegend routes={routes} />
     </div>
   );
 }
