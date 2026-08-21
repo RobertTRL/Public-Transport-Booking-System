@@ -50,3 +50,10 @@
     border-bottom: none;
   }
 }
+
+@media (max-width: 349px) {
+  .booking-main {
+    padding-top: 16px;
+    padding-bottom: 70px; /* Space for bottom navbar */
+  }
+}
