@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const SearchBar = ({ placeholder = "Search..." }) => {
+const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (e) => {
