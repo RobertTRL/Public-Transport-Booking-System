@@ -24,6 +24,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/bookings" element={<Bookings />} />
         {/* booking sub routes */}
         <Route index element={<Homepage />} />
+        <Route path = "map" element={<BookingMap />}
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
