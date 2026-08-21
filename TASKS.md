@@ -25,6 +25,21 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
  
 **b) Booking panel** i.e Passenger side
 
+- Navbar - Not done
+- Home page - Not done -> Banner, View map, Book a ride, search bar - 
+               from search bar renders on search bar click.
+               One enters values. Routes to map showing location on map,
+               with options
+
+- Map - Not done -> search bar with from and to inputs, on fills, shows location points on map.
+        shows available buses going through that route, allows one to pick
+        Once one picks that bus, displays relevant information, after 5 minutes tells 
+        someone bus arrives.
+
+- Activity - Not done -> Shows all bookings made by user
+- Profile - Not done -> shows relevant user details
+ 
+    
 **c) Shared features**
 
 - Frontend initialization - Done
