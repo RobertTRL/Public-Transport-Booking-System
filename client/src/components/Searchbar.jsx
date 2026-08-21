@@ -4,10 +4,16 @@ const SearchBar = ({ placeholder = "Search..." }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    console.log("Searching for:", searchTerm);
-  };
+  const trimmedSearchTerm = searchTerm.trim();
+
+  if (!trimmedSearchTerm) {
+    return;
+  }
+
+  console.log("Searching for:", trimmedSearchTerm);
+};
 
   return (
     <form className="search-bar" onSubmit={handleSearch}>
