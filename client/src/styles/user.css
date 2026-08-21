@@ -1,0 +1,306 @@
+/* =========================
+   Search Bar
+   ========================= */
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 620px;
+  height: 44px;
+  padding: 0 6px 0 14px;
+  gap: 8px;
+
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #64748b;
+  font-size: 16px;
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.search-bar input::placeholder {
+  color: #94a3b8;
+}
+
+.search-bar input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #64748b;
+
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.clear-search:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.search-button {
+  height: 34px;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #0f172a;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.search-button:hover {
+  background: #1e293b;
+}
+
+.search-button:active {
+  transform: scale(0.98);
+}
+
+
+/* =========================
+   Profile
+   ========================= */
+
+.profile {
+  position: relative;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 6px 8px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #0f172a;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.profile-trigger:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: #0f172a;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  line-height: 1.2;
+}
+
+.profile-info strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-info small {
+  margin-top: 2px;
+
+  color: #64748b;
+  font-size: 11px;
+}
+
+.profile-chevron {
+  margin-left: 4px;
+
+  color: #64748b;
+  font-size: 9px;
+}
+
+
+/* =========================
+   Profile Dropdown
+   ========================= */
+
+.profile-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 100;
+
+  width: 240px;
+
+  padding: 8px;
+
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 25px rgba(15, 23, 42, 0.08),
+    0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+.profile-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px;
+}
+
+.profile-menu-header div {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-menu-header strong {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.profile-menu-header small {
+  margin-top: 3px;
+
+  color: #64748b;
+  font-size: 11px;
+}
+
+.profile-avatar-large {
+  width: 38px;
+  height: 38px;
+}
+
+.profile-menu-divider {
+  height: 1px;
+  margin: 6px 0;
+
+  background: #e2e8f0;
+}
+
+.profile-menu-item {
+  width: 100%;
+
+  padding: 9px 10px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: transparent;
+
+  color: #334155;
+
+  font-size: 13px;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.profile-menu-item:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.profile-menu-item.logout {
+  color: #dc2626;
+}
+
+.profile-menu-item.logout:hover {
+  background: #fef2f2;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 640px) {
+  .profile-info {
+    display: none;
+  }
+
+  .profile-trigger {
+    padding: 4px;
+  }
+
+  .profile-menu {
+    width: 220px;
+  }
+
+  .search-bar {
+    height: 42px;
+  }
+
+  .search-button {
+    padding: 0 12px;
+  }
+}
