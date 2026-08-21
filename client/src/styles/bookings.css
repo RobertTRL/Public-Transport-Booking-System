@@ -4,7 +4,7 @@
 }
 
 .booking-main {
-  padding: 70px 16px 20px; 
+   padding: 70px 16px 20px; /* space for top nav bar */
   max-width: 900px;
   margin: 0 auto;
 }
