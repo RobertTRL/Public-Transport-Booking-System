@@ -41,3 +41,12 @@
   color: #2563eb;
   font-weight: 600;
 }
+
+@media (max-width: 349px) {
+  .booking-navbar {
+    top: auto;
+    bottom: 0;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: none;
+  }
+}
