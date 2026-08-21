@@ -38,7 +38,8 @@ function Stops() {
           </div>
 
           <button className="add-stop-button">
-            + Add Stop
+            <span className="add-stop-icon">+</span>
+            Add Stop
           </button>
         </div>
 
@@ -46,35 +47,53 @@ function Stops() {
           <div className="stops-grid">
             {stops.map((stop) => (
               <div className="stop-card" key={stop.name}>
+                <div className="stop-card-header">
+                  <div className="stop-icon">
+                    <span>⌖</span>
+                  </div>
+
+                  <span className="stop-status">
+                    {stop.status}
+                  </span>
+                </div>
+
                 <h2>{stop.name}</h2>
 
                 <p>{stop.description}</p>
 
                 <div className="stop-details">
-                  <div>
-                    <span className="stop-detail-label">
-                      Location
+                  <div className="stop-detail">
+                    <span className="stop-detail-icon">
+                      📍
                     </span>
 
-                    <span className="stop-detail-value">
-                      {stop.location}
-                    </span>
+                    <div>
+                      <span className="stop-detail-label">
+                        Location
+                      </span>
+
+                      <span className="stop-detail-value">
+                        {stop.location}
+                      </span>
+                    </div>
                   </div>
 
-                  <div>
-                    <span className="stop-detail-label">
-                      Routes
+                  <div className="stop-detail">
+                    <span className="stop-detail-icon">
+                      🚌
                     </span>
 
-                    <span className="stop-detail-value">
-                      {stop.routes} routes
-                    </span>
+                    <div>
+                      <span className="stop-detail-label">
+                        Routes
+                      </span>
+
+                      <span className="stop-detail-value">
+                        {stop.routes} routes
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                <span className="stop-status">
-                  {stop.status}
-                </span>
 
                 <div className="stop-actions">
                   <button className="edit-stop-button">

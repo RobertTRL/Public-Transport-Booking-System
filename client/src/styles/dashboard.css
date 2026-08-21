@@ -1,6 +1,73 @@
 /* Booking statistics */
 /* Stops */
+/* Stop card header */
 
+.stop-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.stop-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 1.4rem;
+}
+
+.stop-icon span {
+  transform: translateY(-1px);
+}
+
+/* Stop details */
+
+.stop-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.stop-detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 0.85rem;
+}
+
+.stop-detail-label {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stop-detail-value {
+  display: block;
+  color: #334155;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Add stop icon */
+
+.add-stop-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
 .stops-section {
   margin-top: 2rem;
   padding: 1.5rem;
@@ -23,17 +90,33 @@
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(8px);
 }
-
-.stop-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+.stop-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+.stop-card:hover {
+  transform: translateY(-4px);
+  border-color: #bfdbfe;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1);
+}
 .stop-card h2 {
   margin: 0 0 0.5rem;
   color: #111827;
   font-size: 1.1rem;
   font-weight: 600;
+   display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .stop-card p {
@@ -164,7 +247,23 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+.stop-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
 
+.stop-detail > svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: #2563eb;
+}
+
+.stop-detail > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 .stop-detail-value {
   color: #334155;
   font-size: 0.85rem;
@@ -230,9 +329,35 @@
     flex-direction: column;
   }
 
-  .add-stop-button {
-    width: 100%;
-  }
+.add-stop-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 9px;
+  padding: 0.7rem 1.1rem;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.add-stop-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(37, 99, 235, 0.25);
+}
+
+.add-stop-button:active {
+  transform: translateY(0);
+}
 }
 .bookings-statistics {
   margin-top: 2rem;
@@ -345,11 +470,17 @@
 }
 .dashboard {
   min-height: 100vh;
+
   background:
     radial-gradient(
-      circle at 90% 10%,
-      rgba(59, 130, 246, 0.10),
+      circle at 85% 10%,
+      rgba(59, 130, 246, 0.12),
       transparent 30%
+    ),
+    radial-gradient(
+      circle at 15% 90%,
+      rgba(14, 165, 233, 0.08),
+      transparent 28%
     ),
     linear-gradient(
       135deg,
