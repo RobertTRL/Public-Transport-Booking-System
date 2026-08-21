@@ -27,3 +27,5 @@ function BookingNavbar(){
 
     )
 }
+
+export default BookingNavBar
