@@ -43,6 +43,9 @@ function Bookings() {
     // </div>
     <div className="booking-layout">
       <BookingNavbar />
+      <main className="booking-main">
+        <Outlet />
+      </main>
       
     </div>
   );
