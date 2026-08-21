@@ -1,9 +1,10 @@
-import React from "react";
-
-
 const RouteMap = () => {
   return (
     <div className="route-map">
+      <div className="route-map-header">
+        <h2>Transport Route Map</h2>
+        <p>View available routes and their stops</p>
+      </div>
 
       {/* Map background */}
       <div className="map-background">
