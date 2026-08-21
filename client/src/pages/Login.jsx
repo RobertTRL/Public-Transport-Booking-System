@@ -9,6 +9,8 @@ function Login() {
 
     // Authentication will be connected to the backend later.
     console.log('Login form submitted')
+    navigateToDashboard("/dashboard")
+    console.log('Moved to dashboard')
   }
 
   const handleGoogleLogin = () => {
