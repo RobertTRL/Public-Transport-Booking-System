@@ -1,5 +1,24 @@
 import Sidebar from "../components/Sidebar";
 import "../styles/dashboard.css";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import { Bar } from "react-chartjs-2";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function Bookings() {
   
@@ -17,6 +36,29 @@ const weeklyBookingData = [
   { day: 'Saturday', bookings: 16 },
   { day: 'Sunday', bookings: 10 },
 ]
+const chartData = {
+  labels: weeklyBookingData.map((item) => item.day),
+
+  datasets: [
+    {
+      label: 'Bookings',
+      data: weeklyBookingData.map((item) => item.bookings),
+    },
+  ],
+}
+const chartOptions = {
+  responsive: true,
+
+  plugins: {
+    legend: {
+      display: false,
+    },
+
+    title: {
+      display: false,
+    },
+  },
+}
 const busiestDay = weeklyBookingData.reduce(
   (highest, current) =>
     current.bookings > highest.bookings
@@ -65,12 +107,15 @@ const busiestDay = weeklyBookingData.reduce(
         </section>
 
         <section className="bookings-chart">
-          <h2>Bookings Across the Past Week</h2>
+  <h2>Bookings Across the Past Week</h2>
 
-          <div className="chart-container">
-            <p>Booking chart will appear here.</p>
-          </div>
-        </section>
+  <div className="chart-container">
+    <Bar
+      data={chartData}
+      options={chartOptions}
+    />
+  </div>
+</section>
 
       </main>
     </div>
