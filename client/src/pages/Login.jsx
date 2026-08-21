@@ -2,6 +2,8 @@ import { Link , useNavigate } from 'react-router-dom'
 import '../styles/auth.css'
 
 function Login() {
+  const navigateToDashboard = useNavigate()
+  
   const handleSubmit = (event) => {
     event.preventDefault()
 
