@@ -16,7 +16,7 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 - Header - Done
 - Main content - Done
 - Buttons to specific items - Not done
-
+- Dashboard header - Not done
 - Overview - Not done
 - Vehicles with info, schedule and route - Not done
 - Routes with stops - view routes, buses going through specific routes - Not done
