@@ -5,12 +5,23 @@
 .aboutus-title {
   position: relative;
   z-index: 10;
-  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, 'URW Palladio L', serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
   font-size: clamp(2.25rem, 5vw, 3.75rem);
   line-height: 1.15;
   color: #131313;
   text-align: center;
-  margin: 0 0 clamp(1.5rem, 4vw, 2.5rem) 0;
+  padding: clamp(2rem, 5vw, 3.5rem) 1.5rem clamp(0.5rem, 0.6vw, 1rem);
+  margin: 0;
+}
+
+.aboutus-title::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 3px;
+  background: #131313;
+  margin: clamp(1rem, 2.5vw, 1.5rem) auto 0;
+  border-radius: 2px;
 }
