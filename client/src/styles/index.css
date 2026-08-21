@@ -421,3 +421,9 @@ input {
 .search-card {
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
+
+.search-field input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
