@@ -10,7 +10,7 @@ function Footer() {
                 <div className="footer-top">
                     <div className="footer-brand">
                         <h2>HopOn!</h2>
-                        <p>Real-time public transport routes, stops, and seat reservations — for riders and service providers alike.</p>
+                        <p>Real-time public transport routes, stops, and seat reservations - for riders and service providers alike.</p>
                     </div>
 
                     <div className="footer-links">
