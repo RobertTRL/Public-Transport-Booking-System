@@ -76,27 +76,28 @@ function Map({ locations = [], routes = [] }) {
           </Polyline>
         ))}
 
-        {/* Transport stops */}
-        {locations.map((location) => (
-          <Marker
-            key={location.id}
-            position={location.position}
-          >
-            <Popup>
-              <div className="map-popup">
-                <h3>{location.name}</h3>
+       {locations.map((location) => (
+  <Marker
+    key={location.id}
+    position={location.position}
+  >
+    <Popup>
+      <div className="map-popup">
+        <h3>{location.name || "Transport Stop"}</h3>
 
-                {location.type && (
-                  <strong>{location.type}</strong>
-                )}
+        <strong>
+          {location.type || "Transport Stop"}
+        </strong>
 
-                {location.description && (
-                  <p>{location.description}</p>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {location.description ? (
+          <p>{location.description}</p>
+        ) : (
+          <p>Public transport pickup and drop-off point.</p>
+        )}
+      </div>
+    </Popup>
+  </Marker>
+))}
       </MapContainer>
     </div>
   );
