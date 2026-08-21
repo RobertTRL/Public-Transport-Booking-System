@@ -1,4 +1,4 @@
-import SidebarButton from "./SidebarButton";
+// import SidebarButton from "./SidebarButton";
 
 function Sidebar() {
   return (
@@ -15,15 +15,15 @@ function Sidebar() {
       </div>
 
       <nav className="sidebar-navigation">
-        <SidebarButton label="Dashboard" />
+        {/* <SidebarButton label="Dashboard" />
         <SidebarButton label="Routes" />
         <SidebarButton label="Bookings" />
         <SidebarButton label="Vehicles" />
-        <SidebarButton label="Profile" />
+        <SidebarButton label="Profile" /> */}
       </nav>
 
       <div className="sidebar-footer">
-        <SidebarButton label="Logout" />
+        {/* <SidebarButton label="Logout" /> */}
       </div>
     </aside>
   );
