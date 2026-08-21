@@ -1,5 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import "../styles/dashboard.css";
+import BookingNavbar from "../components/BookingNavbar"
 
 function Bookings() {
   return (
