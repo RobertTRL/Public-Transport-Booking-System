@@ -1,3 +1,97 @@
+/* Booking statistics */
+
+.bookings-statistics {
+  margin-top: 2rem;
+}
+
+.bookings-statistics h2 {
+  margin-bottom: 1rem;
+  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.booking-statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.booking-statistics-grid .dashboard-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.booking-statistics-grid .dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.booking-statistics-grid .dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #2563eb;
+}
+
+.booking-statistics-grid .dashboard-card h3 {
+  margin: 0 0 0.75rem;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.booking-statistics-grid .dashboard-card p {
+  margin: 0;
+  color: #111827;
+  font-size: 2rem;
+  font-weight: 700;
+}
+@media (max-width: 1000px) {
+  .booking-statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .booking-statistics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Weekly bookings chart */
+
+.bookings-chart {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.bookings-chart h2 {
+  margin: 0 0 1.5rem;
+  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+}
 .dashboard {
   --sb-border: #e4e4e7;
   --sb-card: #ffffff;
