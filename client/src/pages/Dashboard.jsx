@@ -1,4 +1,5 @@
 import Sidebar from "../components/Sidebar";
+import "./Dashboard.css";
 
 function Dashboard() {
   return (
