@@ -1,6 +1,6 @@
 import '../styles/problem.css'
 
-export default function Problem() {
+export default function Solution() {
     return (
         <section className="problem">
             <div className="problem__inner">
