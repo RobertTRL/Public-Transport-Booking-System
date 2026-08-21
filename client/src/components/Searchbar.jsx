@@ -20,11 +20,12 @@ const SearchBar = ({ placeholder = "Search..." }) => {
       <span className="search-icon">⌕</span>
 
       <input
-        type="text"
-        placeholder={placeholder}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      type="text"
+      placeholder={placeholder}
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      aria-label="Search routes"
+    />
 
       {searchTerm && (
         <button
