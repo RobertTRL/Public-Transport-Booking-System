@@ -22,6 +22,8 @@ createRoot(document.getElementById("root")).render(
           <Route index element={<DashboardSummary/>}/>
         </Route>
         <Route path="/bookings" element={<Bookings />} />
+        {/* booking sub routes */}
+        <Route index element={<Homepage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
