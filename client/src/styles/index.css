@@ -416,3 +416,8 @@ input {
     right: 10px;
   }
 }
+
+/* Home page polish */
+.search-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
