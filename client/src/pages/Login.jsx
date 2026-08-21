@@ -1,12 +1,16 @@
-import { Link } from 'react-router-dom'
+import { Link , useNavigate } from 'react-router-dom'
 import '../styles/auth.css'
 
 function Login() {
+  const navigateToDashboard = useNavigate()
+  
   const handleSubmit = (event) => {
     event.preventDefault()
 
     // Authentication will be connected to the backend later.
     console.log('Login form submitted')
+    navigateToDashboard("/dashboard")
+    console.log('Moved to dashboard')
   }
 
   const handleGoogleLogin = () => {
@@ -38,7 +42,7 @@ function Login() {
               type="email"
               placeholder="you@example.com"
               autoComplete="email"
-              required
+              // required
             />
           </div>
 
@@ -57,7 +61,7 @@ function Login() {
               type="password"
               placeholder="Enter your password"
               autoComplete="current-password"
-              required
+              // required
             />
           </div>
 
