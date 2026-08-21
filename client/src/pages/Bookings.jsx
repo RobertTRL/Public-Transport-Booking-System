@@ -9,35 +9,47 @@ function Bookings() {
       <main className="dashboard-main">
         <div className="dashboard-header">
           <div>
-            <h1>My Bookings</h1>
-            <p>View and manage your transport bookings.</p>
+            <h1>Bookings</h1>
+            <p>View booking statistics and activity.</p>
           </div>
         </div>
 
-        <section className="dashboard-content">
-          <div className="dashboard-card">
-            <h2>Upcoming Bookings</h2>
-            <p>0</p>
-          </div>
+        <section className="bookings-statistics">
+          <h2>Total Users Per Week</h2>
 
-          <div className="dashboard-card">
-            <h2>Completed Bookings</h2>
-            <p>0</p>
-          </div>
+          <div className="booking-statistics-grid">
 
-          <div className="dashboard-card">
-            <h2>Cancelled Bookings</h2>
-            <p>0</p>
+            <div className="dashboard-card">
+              <h3>Today's Bookings</h3>
+              <p>0</p>
+            </div>
+
+            <div className="dashboard-card">
+              <h3>Total This Week</h3>
+              <p>0</p>
+            </div>
+
+            <div className="dashboard-card">
+              <h3>Average Per Day</h3>
+              <p>0</p>
+            </div>
+
+            <div className="dashboard-card">
+              <h3>Busiest Day</h3>
+              <p>None</p>
+            </div>
+
           </div>
         </section>
 
-        <section className="dashboard-map">
-          <h2>Booking History</h2>
+        <section className="bookings-chart">
+          <h2>Bookings Across the Past Week</h2>
 
-          <div className="map-placeholder">
-            <p>No bookings available yet.</p>
+          <div className="chart-container">
+            <p>Booking chart will appear here.</p>
           </div>
         </section>
+
       </main>
     </div>
   );
