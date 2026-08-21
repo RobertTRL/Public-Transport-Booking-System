@@ -1,72 +1,31 @@
 import React from "react";
 
-
-const RouteMap = () => {
+const RouteSummary = () => {
   return (
-    <div className="route-map">
-
-      {/* Map background */}
-      <div className="map-background">
-
-        {/* Route 1 */}
-        <div className="route-line route-one"></div>
-
-        {/* Route 2 */}
-        <div className="route-line route-two"></div>
-
-        {/* Route 3 */}
-        <div className="route-line route-three"></div>
-
-        {/* Stops */}
-        <div className="map-stop stop-1">
-          <span></span>
-          <p>Nairobi</p>
-        </div>
-
-        <div className="map-stop stop-2">
-          <span></span>
-          <p>Roysambu</p>
-        </div>
-
-        <div className="map-stop stop-3">
-          <span></span>
-          <p>Ruiru</p>
-        </div>
-
-        <div className="map-stop stop-4">
-          <span></span>
-          <p>Thika</p>
-        </div>
-
-        <div className="map-stop stop-5">
-          <span></span>
-          <p>Kiambu</p>
-        </div>
-
+    <div className="route-summary">
+      <div className="route-summary-header">
+        <h2>Route Summary</h2>
+        <p>Overview of available transport routes</p>
       </div>
 
-      {/* Map legend */}
-      <div className="map-legend">
-
-        <div className="legend-item">
-          <span className="legend-dot blue"></span>
-          <p>Route 1</p>
+      <div className="route-summary-list">
+        <div className="route-summary-item">
+          <h3>Route 1</h3>
+          <p>Nairobi → Roysambu → Ruiru</p>
         </div>
 
-        <div className="legend-item">
-          <span className="legend-dot green"></span>
-          <p>Route 2</p>
+        <div className="route-summary-item">
+          <h3>Route 2</h3>
+          <p>Nairobi → Kiambu → Thika</p>
         </div>
 
-        <div className="legend-item">
-          <span className="legend-dot orange"></span>
-          <p>Route 3</p>
+        <div className="route-summary-item">
+          <h3>Route 3</h3>
+          <p>Roysambu → Kiambu → Thika</p>
         </div>
-
       </div>
-
     </div>
   );
 };
 
-export default RouteMap;
+export default RouteSummary;
