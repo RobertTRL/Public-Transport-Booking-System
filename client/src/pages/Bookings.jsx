@@ -8,6 +8,21 @@ function Bookings() {
 const averageBookingsPerDay = (
   weeklyBookings / 7
 ).toFixed(1)
+const weeklyBookingData = [
+  { day: 'Monday', bookings: 18 },
+  { day: 'Tuesday', bookings: 22 },
+  { day: 'Wednesday', bookings: 30 },
+  { day: 'Thursday', bookings: 19 },
+  { day: 'Friday', bookings: 27 },
+  { day: 'Saturday', bookings: 16 },
+  { day: 'Sunday', bookings: 10 },
+]
+const busiestDay = weeklyBookingData.reduce(
+  (highest, current) =>
+    current.bookings > highest.bookings
+      ? current
+      : highest
+)
   return (
     <div className="dashboard">
       <Sidebar />
@@ -42,7 +57,8 @@ const averageBookingsPerDay = (
 
             <div className="dashboard-card">
               <h3>Busiest Day</h3>
-              <p>None</p>
+                <p>{busiestDay.day}</p>
+
             </div>
 
           </div>
