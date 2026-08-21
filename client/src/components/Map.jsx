@@ -34,7 +34,36 @@ function MapBounds({ locations, routes }) {
   return null;
 }
 
+function MapEmptyState({ show }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!show) {
+      return undefined;
+    }
+
+    const control = document.createElement("div");
+
+    control.className = "map-empty-state";
+    control.innerHTML = `
+      <strong>No transport data available</strong>
+      <span>Routes and stops will appear here.</span>
+    `;
+
+    const container = map.getContainer();
+    container.appendChild(control);
+
+    return () => {
+      control.remove();
+    };
+  }, [map, show]);
+
+  return null;
+}
+
 function Map({ locations = [], routes = [] }) {
+  const hasMapData = locations.length > 0 || routes.length > 0;
+
   return (
     <div className="transport-map">
       <MapContainer
@@ -53,20 +82,22 @@ function Map({ locations = [], routes = [] }) {
           routes={routes}
         />
 
+        <MapEmptyState show={!hasMapData} />
+
         {/* Route lines */}
         {routes.map((route) => (
           <Polyline
-             key={route.id}
-              positions={route.positions}
-              pathOptions={{
-               color: route.color || "#2563eb",
-             weight: 5,
+            key={route.id}
+            positions={route.positions || []}
+            pathOptions={{
+              color: route.color || "#2563eb",
+              weight: 5,
               opacity: 0.8,
-               }}
-            >
+            }}
+          >
             <Popup>
               <div className="map-popup">
-                <h3>{route.name}</h3>
+                <h3>{route.name || "Transport Route"}</h3>
 
                 {route.description && (
                   <p>{route.description}</p>
@@ -76,28 +107,31 @@ function Map({ locations = [], routes = [] }) {
           </Polyline>
         ))}
 
-       {locations.map((location) => (
-  <Marker
-    key={location.id}
-    position={location.position}
-  >
-    <Popup>
-      <div className="map-popup">
-        <h3>{location.name || "Transport Stop"}</h3>
+        {/* Transport stops */}
+        {locations.map((location) => (
+          <Marker
+            key={location.id}
+            position={location.position}
+          >
+            <Popup>
+              <div className="map-popup">
+                <h3>{location.name || "Transport Stop"}</h3>
 
-        <strong>
-          {location.type || "Transport Stop"}
-        </strong>
+                <strong>
+                  {location.type || "Transport Stop"}
+                </strong>
 
-        {location.description ? (
-          <p>{location.description}</p>
-        ) : (
-          <p>Public transport pickup and drop-off point.</p>
-        )}
-      </div>
-    </Popup>
-  </Marker>
-))}
+                {location.description ? (
+                  <p>{location.description}</p>
+                ) : (
+                  <p>
+                    Public transport pickup and drop-off point.
+                  </p>
+                )}
+              </div>
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </div>
   );
