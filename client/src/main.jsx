@@ -26,13 +26,13 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<DashboardSummary/>}/>
         </Route>
-        <Route path="/booking" element={<Bookings />} />
+        <Route path="/booking" element={<Bookings />} >
         {/* booking sub routes */}
-        <Route index element={<Homepage />} />
-        <Route path = "map" element={<BookingMap />} />
-        <Route path = "activity" element = {<Activity />} />
-        <Route path = "profile" element = {<Profile/>} />
-        <Route path="/profile" element={<ProfilePage />} />
+          <Route index element={<Homepage />} />
+          <Route path="map" element={<BookingMap />} />
+          <Route path="activity" element={<Activity />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>
