@@ -3,47 +3,21 @@ import {
   TileLayer,
   Marker,
   Popup,
+  Polyline,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const NAIROBI_CENTER = [-1.286389, 36.817223];
+const DEFAULT_CENTER = [-1.286389, 36.817223];
 
-const transportLocations = [
-  {
-    id: 1,
-    name: "Nairobi CBD",
-    position: [-1.286389, 36.817223],
-    type: "Main Terminal",
-    description: "Central Nairobi pickup and drop-off point.",
-  },
-  {
-    id: 2,
-    name: "Westlands",
-    position: [-1.2676, 36.8108],
-    type: "Transport Stop",
-    description: "Popular passenger pickup point serving Westlands.",
-  },
-  {
-    id: 3,
-    name: "Ngong Road",
-    position: [-1.3008, 36.7876],
-    type: "Transport Stop",
-    description: "Passenger pickup point serving Ngong Road.",
-  },
-  {
-    id: 4,
-    name: "Kasarani",
-    position: [-1.2219, 36.8976],
-    type: "Transport Stop",
-    description: "Passenger pickup point serving Kasarani.",
-  },
-];
+function Map({ locations = [], routes = [] }) {
+  const center = locations.length > 0
+    ? locations[0].position
+    : DEFAULT_CENTER;
 
-function Map() {
   return (
     <div className="transport-map">
       <MapContainer
-        center={NAIROBI_CENTER}
+        center={center}
         zoom={12}
         scrollWheelZoom={false}
         className="map-container"
@@ -53,7 +27,25 @@ function Map() {
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
 
-        {transportLocations.map((location) => (
+        {/* Route lines */}
+        {routes.map((route) => (
+          <Polyline
+            key={route.id}
+            positions={route.positions}
+          >
+            <Popup>
+              <div className="map-popup">
+                <h3>{route.name}</h3>
+                {route.description && (
+                  <p>{route.description}</p>
+                )}
+              </div>
+            </Popup>
+          </Polyline>
+        ))}
+
+        {/* Transport stops */}
+        {locations.map((location) => (
           <Marker
             key={location.id}
             position={location.position}
@@ -61,8 +53,14 @@ function Map() {
             <Popup>
               <div className="map-popup">
                 <h3>{location.name}</h3>
-                <strong>{location.type}</strong>
-                <p>{location.description}</p>
+
+                {location.type && (
+                  <strong>{location.type}</strong>
+                )}
+
+                {location.description && (
+                  <p>{location.description}</p>
+                )}
               </div>
             </Popup>
           </Marker>
