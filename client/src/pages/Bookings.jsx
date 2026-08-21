@@ -2,6 +2,8 @@ import Sidebar from "../components/Sidebar";
 import "../styles/dashboard.css";
 
 function Bookings() {
+  
+  const todaysBookings = 24
   return (
     <div className="dashboard">
       <Sidebar />
@@ -21,7 +23,7 @@ function Bookings() {
 
             <div className="dashboard-card">
               <h3>Today's Bookings</h3>
-              <p>0</p>
+              <p>{todaysBookings}</p>
             </div>
 
             <div className="dashboard-card">
