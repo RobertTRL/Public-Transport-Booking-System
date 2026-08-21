@@ -11,6 +11,8 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
 import Homepage from "./pages/Booking/Homepage.jsx"
+import BookingMap from "./pages/Booking/BookingMap.jsx"
+
 
 
 createRoot(document.getElementById("root")).render(
