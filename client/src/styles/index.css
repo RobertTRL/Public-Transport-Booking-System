@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .main-title {
@@ -32,6 +32,10 @@ button,
 input {
   font: inherit;
 }
+
+/* =========================
+   NAVBAR
+   ========================= */
 
 .navbar {
   display: flex;
@@ -80,6 +84,10 @@ input {
   color: white;
 }
 
+/* =========================
+   HERO
+   ========================= */
+
 .hero {
   padding: 90px 6%;
   background: #eef4ff;
@@ -113,6 +121,10 @@ input {
   line-height: 1.6;
 }
 
+/* =========================
+   SEARCH
+   ========================= */
+
 .search-card {
   display: flex;
   gap: 12px;
@@ -144,6 +156,10 @@ input {
 .search-button {
   align-self: end;
 }
+
+/* =========================
+   ROUTES
+   ========================= */
 
 .routes-section,
 .map-section {
@@ -181,6 +197,10 @@ input {
   margin-bottom: 8px;
 }
 
+/* =========================
+   MAP PLACEHOLDER
+   ========================= */
+
 .map-placeholder {
   display: flex;
   align-items: center;
@@ -194,6 +214,175 @@ input {
 .map-placeholder p {
   color: #475569;
 }
+
+/* =========================
+   TRANSPORT MAP
+   ========================= */
+
+.transport-map {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================
+   MAP POPUPS
+   ========================= */
+
+.map-popup h3 {
+  margin: 0 0 6px;
+}
+
+.map-popup strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.map-popup p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* =========================
+   MAP EMPTY STATE
+   ========================= */
+
+.map-empty-state {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+  text-align: center;
+  pointer-events: none;
+}
+
+.map-empty-state strong {
+  font-size: 14px;
+}
+
+.map-empty-state span {
+  font-size: 12px;
+  color: #71717a;
+}
+
+/* =========================
+   MAP LEGEND
+   ========================= */
+
+.map-legend {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  min-width: 190px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.15);
+}
+
+.map-legend-toggle {
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #172033;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.map-legend-toggle:hover {
+  background: #e2e8f0;
+}
+
+.map-legend-content {
+  margin-top: 10px;
+}
+
+.map-legend-content > strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+/* Clickable route legend items */
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 7px;
+  padding: 7px 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  color: #475569;
+}
+
+.map-legend-item:hover {
+  opacity: 0.75;
+}
+
+.map-legend-item.selected {
+  font-weight: 700;
+  color: #172033;
+}
+
+.map-legend-line {
+  width: 24px;
+  height: 4px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   RESET MAP BUTTON
+   ========================= */
+
+.map-reset-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 9px 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: white;
+  color: #172033;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+}
+
+.map-reset-button:hover {
+  background: #f8fafc;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+   ========================= */
 
 @media (max-width: 768px) {
   .navbar-links {
@@ -215,28 +404,67 @@ input {
   .route-cards {
     grid-template-columns: 1fr;
   }
-}
-.transport-map {
-  width: 100%;
-  height: 450px;
-  border-radius: 16px;
-  overflow: hidden;
+
+  .map-legend {
+    right: 10px;
+    bottom: 10px;
+    min-width: 160px;
+  }
+
+  .map-reset-button {
+    top: 10px;
+    right: 10px;
+  }
 }
 
-.map-container {
-  width: 100%;
-  height: 100%;
-}
-.map-popup h3 {
-  margin: 0 0 6px;
+/* Home page polish */
+.search-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.map-popup strong {
-  display: block;
-  margin-bottom: 6px;
+.search-field input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-.map-popup p {
-  margin: 0;
-  line-height: 1.4;
+.search-button {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.search-button:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
+
+.search-button:active {
+  transform: scale(0.98);
+}
+
+/* for the route cards */
+.route-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .route-cards {
+    grid-template-columns: 1fr;
+  }
+  .search-card {
+    flex-direction: column;
+  }
+  .search-button {
+    width: 100%;
+    align-self: stretch;
+  }
 }

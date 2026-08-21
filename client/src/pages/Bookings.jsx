@@ -118,6 +118,7 @@ const busiestDay = weeklyBookingData.reduce(
 </section>
 
       </main>
+      
     </div>
   );
 }
