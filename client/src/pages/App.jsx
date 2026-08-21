@@ -1,11 +1,13 @@
 import '../styles/App.css'
 import HeroGeometric from '../components/Hero'
+import Header from '../components/Header'
 
 function App() {
 
   return (
   <div>
   <div className='hero-section'>
+    <Header/>
     <HeroGeometric
       title2="HopOn!"
       description="View public transport vehicle routes, stops and reserve seats for customers or add stops for routes and manage them for service providers!"
