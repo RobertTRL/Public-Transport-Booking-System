@@ -25,16 +25,16 @@ const SearchBar = ({ placeholder = "Search..." }) => {
         ⌕
       </span>
 
-      <input
-        type="text"
-        id="route-search"
-        name="route-search"
-        placeholder={placeholder}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        aria-label="Search routes"
-      />
-
+        <input
+         type="text"
+         id="route-search"
+         name="route-search"
+         placeholder={placeholder}
+         value={searchTerm}
+         onChange={(e) => setSearchTerm(e.target.value)}
+         aria-label="Search routes"
+         autoComplete="off"
+         />
       {searchTerm && (
         <button
           type="button"
