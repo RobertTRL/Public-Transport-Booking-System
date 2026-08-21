@@ -36,10 +36,13 @@ const SearchBar = ({ placeholder = "Search..." }) => {
           ×
         </button>
       )}
-
-      <button type="submit" className="search-button">
-        Search
-      </button>
+<button
+  type="submit"
+  className="search-button"
+  aria-label="Search routes"
+>
+  Search
+</button>
     </form>
   );
 };
