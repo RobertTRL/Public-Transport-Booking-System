@@ -1,6 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import "../styles/dashboard.css";
 import BookingNavbar from "../components/BookingNavbar"
+import {Outlet} from "react-router-dom"
 
 function Bookings() {
   return (
