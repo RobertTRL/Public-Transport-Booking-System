@@ -1,10 +1,9 @@
-// the title is coming from usestate in app.jsx
-function Header({title}) {
+function Header() {
     return(
         <header className="header">
             <div className="header-content">
                 <h1>Hop on!</h1>
-                <h2>{title}</h2>
+
             </div>
         </header>
     )
