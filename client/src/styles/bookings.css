@@ -36,3 +36,8 @@
 .nav-btn .icon {
   font-size: 18px;
 }
+
+.nav-btn.active {
+  color: #2563eb;
+  font-weight: 600;
+}
