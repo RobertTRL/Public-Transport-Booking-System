@@ -31,13 +31,14 @@ const SearchBar = ({ placeholder = "Search..." }) => {
 
       {searchTerm && (
         <button
-          type="button"
-          className="clear-search"
-          onClick={() => setSearchTerm("")}
-        >
-          ×
-        </button>
-      )}
+       type="button"
+       className="clear-search"
+       onClick={() => setSearchTerm("")}
+       aria-label="Clear search"
+       >
+        ×
+       </button>
+        )}
 
       <button
         type="submit"
