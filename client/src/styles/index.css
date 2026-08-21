@@ -328,3 +328,22 @@ input {
     min-width: 160px;
   }
 }
+.map-reset-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 9px 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: white;
+  color: #172033;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+}
+
+.map-reset-button:hover {
+  background: #f8fafc;
+}

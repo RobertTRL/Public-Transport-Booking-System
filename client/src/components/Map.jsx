@@ -60,6 +60,37 @@ function MapEmptyState({ show }) {
   return null;
 }
 
+function ResetMapButton({ locations, routes }) {
+  const map = useMap();
+
+  const resetView = () => {
+    const points = [
+      ...locations.map((location) => location.position),
+      ...routes.flatMap((route) => route.positions || []),
+    ];
+
+    if (points.length === 0) {
+      map.setView(DEFAULT_CENTER, 12);
+      return;
+    }
+
+    map.fitBounds(points, {
+      padding: [40, 40],
+      maxZoom: 14,
+    });
+  };
+
+  return (
+    <button
+      type="button"
+      className="map-reset-button"
+      onClick={resetView}
+    >
+      Reset view
+    </button>
+  );
+}
+
 function MapLegend({ routes }) {
   const [visible, setVisible] = useState(true);
 
@@ -82,11 +113,15 @@ function MapLegend({ routes }) {
           <strong>Routes</strong>
 
           {routes.map((route) => (
-            <div className="map-legend-item" key={route.id}>
+            <div
+              className="map-legend-item"
+              key={route.id}
+            >
               <span
                 className="map-legend-line"
                 style={{
-                  backgroundColor: route.color || "#2563eb",
+                  backgroundColor:
+                    route.color || "#2563eb",
                 }}
               />
 
@@ -125,10 +160,17 @@ function Map({ locations = [], routes = [] }) {
           routes={routes}
         />
 
+        <ResetMapButton
+          locations={locations}
+          routes={routes}
+        />
+
         <MapEmptyState show={!hasMapData} />
 
+        {/* Route lines */}
         {routes.map((route) => {
-          const isSelected = selectedRoute === route.id;
+          const isSelected =
+            selectedRoute === route.id;
 
           return (
             <Polyline
@@ -160,6 +202,7 @@ function Map({ locations = [], routes = [] }) {
           );
         })}
 
+        {/* Transport stops */}
         {locations.map((location) => (
           <Marker
             key={location.id}
@@ -179,8 +222,8 @@ function Map({ locations = [], routes = [] }) {
                   <p>{location.description}</p>
                 ) : (
                   <p>
-                    Public transport pickup and drop-off
-                    point.
+                    Public transport pickup and
+                    drop-off point.
                   </p>
                 )}
               </div>
