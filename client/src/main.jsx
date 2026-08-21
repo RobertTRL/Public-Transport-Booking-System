@@ -1,23 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './styles/index.css'
-import App from './pages/App.jsx'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Login from './pages/Login.jsx'
-import AccountCreation from './pages/AccountCreation.jsx'
-import Dashboard from './pages/Dashboard.jsx'
-// import UserComponentsTest from './pages/UserComponentsTest.jsx'
-// shadcn UI library, 
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./styles/index.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-createRoot(document.getElementById('root')).render(
+import App from "./pages/App.jsx";
+import Login from "./pages/Login.jsx";
+import AccountCreation from "./pages/AccountCreation.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Home from "./pages/Home.jsx";
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-     <Routes>
-        <Route path="/" element={<App />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/app" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<AccountCreation />} />
-        
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
-)
+  </StrictMode>
+);
