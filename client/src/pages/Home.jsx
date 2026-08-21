@@ -31,6 +31,35 @@ const transportLocations = [
     description: "Passenger pickup point serving Kasarani.",
   },
 ];
+const transportRoutes = [
+  {
+    id: 1,
+    name: "CBD → Westlands",
+    positions: [
+      [-1.286389, 36.817223],
+      [-1.2676, 36.8108],
+    ],
+    description: "Route connecting Nairobi CBD and Westlands.",
+  },
+  {
+    id: 2,
+    name: "CBD → Ngong Road",
+    positions: [
+      [-1.286389, 36.817223],
+      [-1.3008, 36.7876],
+    ],
+    description: "Route connecting Nairobi CBD and Ngong Road.",
+  },
+  {
+    id: 3,
+    name: "CBD → Kasarani",
+    positions: [
+      [-1.286389, 36.817223],
+      [-1.2219, 36.8976],
+    ],
+    description: "Route connecting Nairobi CBD and Kasarani.",
+  },
+];
 
 function Home() {
   return (
