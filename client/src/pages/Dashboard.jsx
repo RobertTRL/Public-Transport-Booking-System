@@ -5,6 +5,7 @@ import "../styles/dashboard.css";
 function Dashboard() {
   return (
     <div className="dashboard">
+      {/* To do: Add dashboard header, spans across screens, stays on top */}
       <Sidebar />
 
       <main className="dashboard-main">
