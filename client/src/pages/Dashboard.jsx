@@ -1,5 +1,7 @@
 import Sidebar from "../components/Sidebar";
+import Profile from "../components/Profile";
 import "../styles/dashboard.css";
+
 function Dashboard() {
   return (
     <div className="dashboard">
@@ -7,8 +9,12 @@ function Dashboard() {
 
       <main className="dashboard-main">
         <div className="dashboard-header">
-          <h1>Dashboard</h1>
-          <p>Welcome back!</p>
+          <div>
+            <h1>Dashboard</h1>
+            <p>Welcome back!</p>
+          </div>
+
+          <Profile />
         </div>
 
         <section className="dashboard-content">
