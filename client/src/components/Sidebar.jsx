@@ -45,15 +45,9 @@ function Sidebar() {
 
   return (
     <aside className="sidebar" ref={sidebarRef} style={{ width }}>
-      <div className="sidebar-profile">
-        <div className="profile-placeholder">P</div>
-
-        <div>
-          <h3>Passenger</h3>
-          <p>Passenger Account</p>
-        </div>
-      </div>
-
+      
+      {/* To be implemented: Search bar within Sidebar section */}
+      
       <nav className="sidebar-navigation">
         <span className="sidebar-nav-label">Menu</span>
         {/* <SidebarButton label="Dashboard" />
