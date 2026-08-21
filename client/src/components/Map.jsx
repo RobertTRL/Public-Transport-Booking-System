@@ -144,6 +144,22 @@ function MapLegend({ routes, selectedRoute, onSelectRoute }) {
   );
 }
 
+function MapSummary({ locations, routes }) {
+  return (
+    <div className="map-summary">
+      <div className="map-summary-item">
+        <strong>{routes.length}</strong>
+        <span>Routes</span>
+      </div>
+
+      <div className="map-summary-item">
+        <strong>{locations.length}</strong>
+        <span>Stops</span>
+      </div>
+    </div>
+  );
+}
+
 function Map({ locations = [], routes = [] }) {
   const [selectedRoute, setSelectedRoute] = useState(null);
 
@@ -240,7 +256,16 @@ function Map({ locations = [], routes = [] }) {
         ))}
       </MapContainer>
 
-      <MapLegend routes={routes} />
+      <MapSummary
+        locations={locations}
+        routes={routes}
+      />
+
+      <MapLegend
+        routes={routes}
+        selectedRoute={selectedRoute}
+        onSelectRoute={setSelectedRoute}
+      />
     </div>
   );
 }
