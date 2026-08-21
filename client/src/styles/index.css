@@ -416,3 +416,55 @@ input {
     right: 10px;
   }
 }
+
+/* Home page polish */
+.search-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.search-field input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.search-button {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.search-button:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
+
+.search-button:active {
+  transform: scale(0.98);
+}
+
+/* for the route cards */
+.route-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .route-cards {
+    grid-template-columns: 1fr;
+  }
+  .search-card {
+    flex-direction: column;
+  }
+  .search-button {
+    width: 100%;
+    align-self: stretch;
+  }
+}

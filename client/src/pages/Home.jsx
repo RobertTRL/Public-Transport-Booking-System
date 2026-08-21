@@ -1,5 +1,7 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Map from "../components/Map";
+import { useNavigate } from "react-router-dom";
 
 const transportLocations = [
   {
@@ -63,6 +65,14 @@ const transportRoutes = [
 ];
 
 function Home() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const navigate = useNavigate()
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    // navigate("/booking/map");
+    console.log("Searching for:", searchTerm);
+  };
   return (
     <div className="home-page">
       <Navbar />
@@ -83,29 +93,22 @@ function Home() {
               trip from one place.
             </p>
 
-            <div className="search-card">
+            <form className="search-card" onSubmit={handleSearchSubmit}>
               <div className="search-field">
-                <label htmlFor="origin">From</label>
+                <label htmlFor="search">Destination / Route</label>
                 <input
-                  id="origin"
-                  type="text"
-                  placeholder="Enter your starting point"
-                />
-              </div>
-
-              <div className="search-field">
-                <label htmlFor="destination">To</label>
-                <input
-                  id="destination"
+                  id="search"
                   type="text"
                   placeholder="Where are you going?"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
                 />
               </div>
 
-              <button className="search-button">
+              <button type="submit" className="search-button">
                 Search Routes
               </button>
-            </div>
+            </form>
           </div>
         </section>
 
