@@ -16,7 +16,11 @@ const SearchBar = ({ placeholder = "Search..." }) => {
   };
 
   return (
-    <form className="search-bar" onSubmit={handleSearch}>
+    <form
+  className="search-bar"
+  onSubmit={handleSearch}
+  aria-label="Route search"
+>
       <span className="search-icon" aria-hidden="true">
         ⌕
       </span>
