@@ -1,4 +1,3 @@
-import React from "react";
 import SidebarButton from "./SidebarButton";
 
 function Sidebar() {
@@ -10,21 +9,20 @@ function Sidebar() {
         </div>
 
         <div>
-          <h3>Provider</h3>
-          <p>Service Provider</p>
+          <h3>Passenger</h3>
+          <p>Passenger Account</p>
         </div>
       </div>
 
       <nav className="sidebar-navigation">
-        <SidebarButton label="Dashboard" />
-        <SidebarButton label="Routes" />
-        <SidebarButton label="Bookings" />
-        <SidebarButton label="Vehicles" />
-        <SidebarButton label="Profile" />
+        <SidebarButton label="Dashboard" to="/dashboard" />
+        <SidebarButton label="Routes" to="/routes" />
+        <SidebarButton label="Bookings" to="/bookings" />
+        <SidebarButton label="Profile" to="/profile" />
       </nav>
 
       <div className="sidebar-footer">
-        <SidebarButton label="Logout" />
+        <SidebarButton label="Logout" to="/login" />
       </div>
     </aside>
   );
