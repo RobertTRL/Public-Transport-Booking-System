@@ -6,23 +6,23 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 
 **a) Dashboard** i.e Service provider Side
 
-- Account creation page
-- Actual dashboard
-- Search bar
-- Logout button
-- Sidebar panel
-- Profile (within sidebar)
-- Footer
-- Header 
-- Main content
-- Buttons to specific items
-- Delete route
-- Create route (map)
-- View routes (map)
-- View bookings
-- View specific route
-- Homepage - display data
-- Routes, no. of customers who've booked, vehicle availability, number of vehicles, map showing all routes with stops 
+- Account creation page - Done
+- Actual dashboard - Done
+- Search bar - Done, not checked
+- Logout button - Not done
+- Sidebar panel - Done
+- Profile (within sidebar) - not done within expectation
+- Footer - Done
+- Header - Done
+- Main content - Done
+- Buttons to specific items - Not done
+
+- Overview - Not done
+- Vehicles with info, schedule and route - Not done
+- Routes with stops - view routes, buses going through specific routes - Not done
+- Add/edit/remove stop(s) - Not done
+- Bookings info - who booked, stop, when, vehicle booked etc - Not done
+ 
 **b) Booking panel** i.e Passenger side
 
 **c) Shared features**
@@ -57,7 +57,7 @@ src/
 └── main.jsx                # entry point
 
 ```
-- Authentication
-- Continue with Google functionality
-- Login page (passengers, service operators)
+- Authentication - Backend
+- Continue with Google functionality - Backend
+- Login page (passengers, service operators) - Not done well
 ## 2. Backend
