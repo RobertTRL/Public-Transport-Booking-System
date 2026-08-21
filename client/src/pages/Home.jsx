@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Map from "../components/Map";
 
 function Home() {
   return (
@@ -80,15 +81,14 @@ function Home() {
             <p className="section-label">MAP</p>
             <h2>Explore routes on the map</h2>
             <p>
-              Soon you'll be able to view routes and stops across Nairobi
-              directly on the map.
+              View routes and stops across Nairobi directly on the map.
             </p>
           </div>
 
-          <div className="map-placeholder">
-            <p>Map coming soon</p>
-          </div>
-        </section>
+            <div className="map-wrapper">
+              <Map />
+            </div>
+           </section>
       </main>
     </div>
   );
