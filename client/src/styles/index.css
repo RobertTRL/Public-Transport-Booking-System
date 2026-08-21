@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .main-title {
@@ -32,6 +32,10 @@ button,
 input {
   font: inherit;
 }
+
+/* =========================
+   NAVBAR
+   ========================= */
 
 .navbar {
   display: flex;
@@ -80,6 +84,10 @@ input {
   color: white;
 }
 
+/* =========================
+   HERO
+   ========================= */
+
 .hero {
   padding: 90px 6%;
   background: #eef4ff;
@@ -113,6 +121,10 @@ input {
   line-height: 1.6;
 }
 
+/* =========================
+   SEARCH
+   ========================= */
+
 .search-card {
   display: flex;
   gap: 12px;
@@ -144,6 +156,10 @@ input {
 .search-button {
   align-self: end;
 }
+
+/* =========================
+   ROUTES
+   ========================= */
 
 .routes-section,
 .map-section {
@@ -181,6 +197,10 @@ input {
   margin-bottom: 8px;
 }
 
+/* =========================
+   MAP PLACEHOLDER
+   ========================= */
+
 .map-placeholder {
   display: flex;
   align-items: center;
@@ -195,28 +215,12 @@ input {
   color: #475569;
 }
 
-@media (max-width: 768px) {
-  .navbar-links {
-    display: none;
-  }
+/* =========================
+   TRANSPORT MAP
+   ========================= */
 
-  .hero h1 {
-    font-size: 38px;
-  }
-
-  .search-card {
-    flex-direction: column;
-  }
-
-  .search-button {
-    align-self: stretch;
-  }
-
-  .route-cards {
-    grid-template-columns: 1fr;
-  }
-}
 .transport-map {
+  position: relative;
   width: 100%;
   height: 450px;
   border-radius: 16px;
@@ -227,6 +231,11 @@ input {
   width: 100%;
   height: 100%;
 }
+
+/* =========================
+   MAP POPUPS
+   ========================= */
+
 .map-popup h3 {
   margin: 0 0 6px;
 }
@@ -240,6 +249,11 @@ input {
   margin: 0;
   line-height: 1.4;
 }
+
+/* =========================
+   MAP EMPTY STATE
+   ========================= */
+
 .map-empty-state {
   position: absolute;
   top: 20px;
@@ -266,6 +280,11 @@ input {
   font-size: 12px;
   color: #71717a;
 }
+
+/* =========================
+   MAP LEGEND
+   ========================= */
+
 .map-legend {
   position: absolute;
   right: 16px;
@@ -305,13 +324,29 @@ input {
   font-size: 13px;
 }
 
+/* Clickable route legend items */
 .map-legend-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
   margin-top: 7px;
+  padding: 7px 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
   font-size: 12px;
   color: #475569;
+}
+
+.map-legend-item:hover {
+  opacity: 0.75;
+}
+
+.map-legend-item.selected {
+  font-weight: 700;
+  color: #172033;
 }
 
 .map-legend-line {
@@ -321,13 +356,10 @@ input {
   flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-  .map-legend {
-    right: 10px;
-    bottom: 10px;
-    min-width: 160px;
-  }
-}
+/* =========================
+   RESET MAP BUTTON
+   ========================= */
+
 .map-reset-button {
   position: absolute;
   top: 16px;
@@ -346,4 +378,41 @@ input {
 
 .map-reset-button:hover {
   background: #f8fafc;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+   ========================= */
+
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .search-card {
+    flex-direction: column;
+  }
+
+  .search-button {
+    align-self: stretch;
+  }
+
+  .route-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .map-legend {
+    right: 10px;
+    bottom: 10px;
+    min-width: 160px;
+  }
+
+  .map-reset-button {
+    top: 10px;
+    right: 10px;
+  }
 }

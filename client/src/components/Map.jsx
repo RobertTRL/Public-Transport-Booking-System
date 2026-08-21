@@ -91,7 +91,7 @@ function ResetMapButton({ locations, routes }) {
   );
 }
 
-function MapLegend({ routes }) {
+function MapLegend({ routes, selectedRoute, onSelectRoute }) {
   const [visible, setVisible] = useState(true);
 
   if (routes.length === 0) {
@@ -112,24 +112,32 @@ function MapLegend({ routes }) {
         <div className="map-legend-content">
           <strong>Routes</strong>
 
-          {routes.map((route) => (
-            <div
-              className="map-legend-item"
-              key={route.id}
-            >
-              <span
-                className="map-legend-line"
-                style={{
-                  backgroundColor:
-                    route.color || "#2563eb",
-                }}
-              />
+          {routes.map((route) => {
+            const isSelected = selectedRoute === route.id;
 
-              <span>
-                {route.name || "Transport Route"}
-              </span>
-            </div>
-          ))}
+            return (
+              <button
+                type="button"
+                className={`map-legend-item ${
+                  isSelected ? "selected" : ""
+                }`}
+                key={route.id}
+                onClick={() => onSelectRoute(route.id)}
+              >
+                <span
+                  className="map-legend-line"
+                  style={{
+                    backgroundColor:
+                      route.color || "#2563eb",
+                  }}
+                />
+
+                <span>
+                  {route.name || "Transport Route"}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
