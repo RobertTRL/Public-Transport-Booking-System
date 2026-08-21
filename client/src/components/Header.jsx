@@ -1,14 +1,17 @@
-// the title is coming from usestate in app.jsx
-function Header({title}) {
+import { NavLink } from "react-router-dom"
+import "../styles/header.css"
+
+function Header() {
     return(
         <header className="header">
             <div className="header-content">
                 <h1>Hop on!</h1>
-                <h2>{title}</h2>
+                <NavLink to="/book" className="header-cta">
+                    Book a Ride
+                </NavLink>
             </div>
         </header>
     )
 }
 
 export default Header
-    
