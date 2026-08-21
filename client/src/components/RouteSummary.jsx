@@ -1,5 +1,3 @@
-import React from "react";
-
 const RouteSummary = () => {
   return (
     <div className="route-summary">
