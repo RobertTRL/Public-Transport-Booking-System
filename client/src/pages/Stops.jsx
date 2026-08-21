@@ -25,6 +25,10 @@ function Stops() {
               <h2>Kigali City Centre</h2>
               <p>Central bus station</p>
 
+  <span className="stop-status">
+    Active
+  </span>
+
               <div className="stop-actions">
                 <button className="edit-stop-button">
                   Edit
@@ -40,6 +44,10 @@ function Stops() {
               <h2>Nyabugogo</h2>
               <p>Nyabugogo bus terminal</p>
 
+  <span className="stop-status">
+    Active
+  </span>
+
               <div className="stop-actions">
                 <button className="edit-stop-button">
                   Edit
@@ -54,6 +62,10 @@ function Stops() {
             <div className="stop-card">
               <h2>Kimironko</h2>
               <p>Kimironko market stop</p>
+
+  <span className="stop-status">
+    Active
+  </span>
 
               <div className="stop-actions">
                 <button className="edit-stop-button">

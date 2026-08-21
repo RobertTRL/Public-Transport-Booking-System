@@ -3,23 +3,25 @@
 
 .stops-section {
   margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
 }
-
 .stops-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
-.stop-card {
+.stops-section {
+  margin-top: 2rem;
   padding: 1.5rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
 }
 
 .stop-card:hover {
@@ -118,6 +120,26 @@
   margin: 0;
   color: #6b7280;
   font-size: 0.9rem;
+}
+.stop-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stop-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
 }
 
 .stop-actions {
@@ -293,12 +315,28 @@
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     sans-serif;
 }
-
+.dashboard {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(59, 130, 246, 0.10),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #f8fafc 0%,
+      #eef6ff 50%,
+      #f8fafc 100%
+    );
+}
 .dashboard-main {
   flex: 1;
   min-width: 0;
   overflow-y: auto;
   padding: 2rem 2.5rem;
+    position: relative;
+
 }
 
 .dashboard-header {
