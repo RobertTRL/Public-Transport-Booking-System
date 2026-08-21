@@ -4,6 +4,7 @@ import "../styles/dashboard.css";
 function Bookings() {
   
   const todaysBookings = 24
+    const weeklyBookings = 142
   return (
     <div className="dashboard">
       <Sidebar />
@@ -28,7 +29,7 @@ function Bookings() {
 
             <div className="dashboard-card">
               <h3>Total This Week</h3>
-              <p>0</p>
+              <p>{weeklyBookings}</p>
             </div>
 
             <div className="dashboard-card">
