@@ -1,11 +1,12 @@
 .problem {
   position: relative;
+  z-index: 10;                              /* same layer as hero-geometric__content (10), above hero-geometric__bg (0) */
   width: 100%;
+  margin-top: clamp(-8rem, -12vw, -4rem);   /* pulls Problem up to overlap Hero's background */
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: white;
-  color: black;
+  background: transparent;                  /* let Hero's bg show through around the card */
   font-family: 'Plus Jakarta Sans', sans-serif;
   padding: clamp(3rem, 8vw, 6rem) 0;
 }
@@ -19,6 +20,11 @@
   display: flex;
   flex-direction: column;
   gap: clamp(1.5rem, 4vw, 3rem);
+  background: rgba(255, 255, 255, 0.65);     /* same translucency as .header */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(19, 19, 19, 0.08);  /* same subtle border as .header */
+  border-radius: clamp(16px, 3vw, 28px);
 }
 
 .problem__text {
@@ -33,7 +39,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   font-size: clamp(1.75rem, 4vw, 2.5rem);
-  color: black;
+  color: #131313;
   margin: 0 0 clamp(1rem, 3vw, 1.5rem) 0;
 }
 
