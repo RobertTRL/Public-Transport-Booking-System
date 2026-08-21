@@ -17,7 +17,9 @@ const SearchBar = ({ placeholder = "Search..." }) => {
 
   return (
     <form className="search-bar" onSubmit={handleSearch}>
-      <span className="search-icon">⌕</span>
+      <span className="search-icon" aria-hidden="true">
+        ⌕
+      </span>
 
       <input
         type="text"
@@ -31,14 +33,14 @@ const SearchBar = ({ placeholder = "Search..." }) => {
 
       {searchTerm && (
         <button
-       type="button"
-       className="clear-search"
-       onClick={() => setSearchTerm("")}
-       aria-label="Clear search"
-       >
-        ×
-       </button>
-        )}
+          type="button"
+          className="clear-search"
+          onClick={() => setSearchTerm("")}
+          aria-label="Clear search"
+        >
+          ×
+        </button>
+      )}
 
       <button
         type="submit"
