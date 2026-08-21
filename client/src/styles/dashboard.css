@@ -1,7 +1,186 @@
-/* Booking statistics */
-/* Stops */
-/* Stop card header */
+/* ========================================
+   BOOKINGS
+======================================== */
 
+.booking-overview {
+  margin-top: 2rem;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+}
+
+.booking-overview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #2563eb;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.booking-overview-header h2,
+.booking-chart-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.booking-overview-header p,
+.booking-chart-header p {
+  margin: 0.4rem 0 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.weekly-total {
+  min-width: 130px;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+}
+
+.weekly-total span {
+  display: block;
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.weekly-total strong {
+  display: inline-block;
+  margin: 0.2rem 0;
+  color: #1d4ed8;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.weekly-total small {
+  color: #64748b;
+  font-size: 0.7rem;
+}
+
+.booking-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.booking-stat-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.booking-stat-card:hover {
+  transform: translateY(-3px);
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+}
+
+.booking-stat-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #eff6ff;
+  border-radius: 12px;
+  font-size: 1.15rem;
+}
+
+.booking-stat-card span {
+  display: block;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.booking-stat-card strong {
+  display: block;
+  margin: 0.25rem 0;
+  color: #0f172a;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.booking-stat-card small {
+  color: #94a3b8;
+  font-size: 0.7rem;
+}
+.booking-chart-section {
+  margin-top: 1.5rem;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05);
+}
+
+.booking-chart-header {
+  margin-bottom: 1.5rem;
+}
+
+.chart-placeholder {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #dbeafe;
+  border-radius: 14px;
+  background: #f8fbff;
+}
+
+.chart-placeholder p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+@media (max-width: 1100px) {
+  .booking-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .booking-overview-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .weekly-total {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .booking-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-overview,
+  .booking-chart-section {
+    padding: 1.25rem;
+  }
+}
 .stop-card-header {
   display: flex;
   align-items: center;
