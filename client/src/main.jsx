@@ -10,6 +10,8 @@ import Bookings from "./pages/Bookings.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
+import Homepage from "./pages/Booking/Homepage.jsx"
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
