@@ -41,6 +41,10 @@ function Bookings() {
     //     </section>
     //   </main>
     // </div>
+    <div className="booking-layout">
+      <BookingNavbar />
+      
+    </div>
   );
 }
 
