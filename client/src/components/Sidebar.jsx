@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 // import SidebarButton from "./SidebarButton";
-import "./Sidebar.css";
+import "../styles/sidebar.css";
 
 const DEFAULT_WIDTH = 280;
 const MIN_WIDTH = 200;
