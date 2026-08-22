@@ -7,6 +7,9 @@ import Login from "./pages/Login.jsx";
 import AccountCreation from "./pages/AccountCreation.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
+import RoutesPage from "./pages/Routes.jsx";
+import Stops from "./pages/Stops.jsx";
+import Vehicles from "./pages/Vehicles.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
@@ -24,7 +27,11 @@ createRoot(document.getElementById("root")).render(
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<AccountCreation />} />
         <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<DashboardSummary/>}/>
+        <Route index element={<DashboardSummary />} />
+        <Route path="vehicles" element={<Vehicles />} />
+        <Route path="routes" element={<RoutesPage />} />
+        <Route path="bookings" element={<Bookings />} />
+        <Route path="stops" element={<Stops />} />
         </Route>
         <Route path="/booking" element={<Bookings />} >
         {/* booking sub routes */}

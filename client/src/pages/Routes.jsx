@@ -1,13 +1,18 @@
-import { useNavigate } from "react-router-dom";
-
 function Routes() {
-  const navigate = useNavigate();
-
   return (
-    <div>
-      <h1>Routes</h1>
-      <p>Select a route to view its vehicles.</p>
-    </div>
+    <>
+      <div className="dashboard-header">
+        <h1>Routes</h1>
+        <p>Select a route to view its vehicles.</p>
+      </div>
+
+      <section className="dashboard-content">
+        <div className="dashboard-card">
+          <h2>Total Routes</h2>
+          <p>0</p>
+        </div>
+      </section>
+    </>
   );
 }
 

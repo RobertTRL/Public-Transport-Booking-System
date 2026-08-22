@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Map from "../components/Map";
-import { useNavigate } from "react-router-dom";
 
 const transportLocations = [
   {
@@ -66,11 +65,9 @@ const transportRoutes = [
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("")
-  const navigate = useNavigate()
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    // navigate("/booking/map");
     console.log("Searching for:", searchTerm);
   };
   return (

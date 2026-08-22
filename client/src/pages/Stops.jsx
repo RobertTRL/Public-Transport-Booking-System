@@ -1,4 +1,3 @@
-import Sidebar from "../components/Sidebar";
 import "../styles/dashboard.css";
 
 function Stops() {
@@ -27,89 +26,71 @@ function Stops() {
   ];
 
   return (
-    <div className="dashboard">
-      <Sidebar />
-
-      <main className="dashboard-main">
-        <div className="dashboard-header">
-          <div>
-            <h1>Stops</h1>
-            <p>View and manage public transport stops.</p>
-          </div>
-
-          <button className="add-stop-button">
-            <span className="add-stop-icon">+</span>
-            Add Stop
-          </button>
+    <>
+      <div className="dashboard-header">
+        <div>
+          <h1>Stops</h1>
+          <p>View and manage public transport stops.</p>
         </div>
 
-        <section className="stops-section">
-          <div className="stops-grid">
-            {stops.map((stop) => (
-              <div className="stop-card" key={stop.name}>
-                <div className="stop-card-header">
-                  <div className="stop-icon">
-                    <span>⌖</span>
-                  </div>
+        <button className="add-stop-button">
+          <span className="add-stop-icon">+</span>
+          Add Stop
+        </button>
+      </div>
 
-                  <span className="stop-status">
-                    {stop.status}
-                  </span>
+      <section className="stops-section">
+        <div className="stops-grid">
+          {stops.map((stop) => (
+            <div className="stop-card" key={stop.name}>
+              <div className="stop-card-header">
+                <div className="stop-icon">
+                  <span>⌖</span>
                 </div>
 
-                <h2>{stop.name}</h2>
+                <span className="stop-status">{stop.status}</span>
+              </div>
 
-                <p>{stop.description}</p>
+              <h2>{stop.name}</h2>
 
-                <div className="stop-details">
-                  <div className="stop-detail">
-                    <span className="stop-detail-icon">
-                      📍
+              <p>{stop.description}</p>
+
+              <div className="stop-details">
+                <div className="stop-detail">
+                  <span className="stop-detail-icon">📍</span>
+
+                  <div>
+                    <span className="stop-detail-label">Location</span>
+
+                    <span className="stop-detail-value">
+                      {stop.location}
                     </span>
-
-                    <div>
-                      <span className="stop-detail-label">
-                        Location
-                      </span>
-
-                      <span className="stop-detail-value">
-                        {stop.location}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="stop-detail">
-                    <span className="stop-detail-icon">
-                      🚌
-                    </span>
-
-                    <div>
-                      <span className="stop-detail-label">
-                        Routes
-                      </span>
-
-                      <span className="stop-detail-value">
-                        {stop.routes} routes
-                      </span>
-                    </div>
                   </div>
                 </div>
 
-                <div className="stop-actions">
-                  <button className="edit-stop-button">
-                    Edit
-                  </button>
+                <div className="stop-detail">
+                  <span className="stop-detail-icon">🚌</span>
 
-                  <button className="remove-stop-button">
-                    Remove
-                  </button>
+                  <div>
+                    <span className="stop-detail-label">Routes</span>
+
+                    <span className="stop-detail-value">
+                      {stop.routes} routes
+                    </span>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
+
+              <div className="stop-actions">
+                <button className="edit-stop-button">Edit</button>
+
+                <button className="remove-stop-button">Remove</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }
 

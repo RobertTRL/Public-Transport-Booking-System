@@ -69,6 +69,77 @@
   border-top: 1px solid var(--sb-border, #e4e4e7);
 }
 
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: #52525b;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sidebar-button:hover {
+  background: #f4f4f5;
+  color: #18181b;
+  transform: translateX(2px);
+}
+
+.sidebar-button.active {
+  background: #18181b;
+  color: #ffffff;
+}
+
+.sidebar-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-button-text {
+  white-space: nowrap;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #52525b;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.logout-button:hover {
+  background: #f4f4f5;
+  color: #18181b;
+  transform: translateX(2px);
+}
+
 /* Resize handle sits exactly on the edge shared with dashboard-main */
 .sidebar-resize-handle {
   position: absolute;
