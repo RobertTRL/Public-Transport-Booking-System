@@ -6,6 +6,9 @@ export default function Homepage() {
     return (
         <div className="booking-homepage">
             <BookingNavbar />
+            <header className="booking-homepage__header">
+                <span className="booking-homepage__brand">HopOn</span>
+            </header>
             <main className="booking-homepage__content">
                 <Outlet />
             </main>
