@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import Problem from '../components/Problem'
 import Solution from '../components/Solution'
 import HowItWorks from '../components/HowItWorks'
+import BookVehicle from '../components/BookVehicle'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Solution />
         <h2 className='aboutus-title'>How it works</h2>
         <HowItWorks />
+        <BookVehicle />
       </div>
       <Footer />
     </div>
