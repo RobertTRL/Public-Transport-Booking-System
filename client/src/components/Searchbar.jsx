@@ -3,7 +3,6 @@ import "../styles/user.css";
 
 const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -19,24 +18,25 @@ const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
 
   return (
     <form
-  className="search-bar"
-  onSubmit={handleSearch}
-  aria-label="Route search"
->
+      className="search-bar"
+      onSubmit={handleSubmit}
+      aria-label="Route search"
+    >
       <span className="search-icon" aria-hidden="true">
         ⌕
       </span>
 
-        <input
-         type="text"
-         id="route-search"
-         name="route-search"
-         placeholder={placeholder}
-         value={searchTerm}
-         onChange={(e) => setSearchTerm(e.target.value)}
-         aria-label="Search routes"
-         autoComplete="off"
-         />
+      <input
+        type="text"
+        id="route-search"
+        name="route-search"
+        placeholder={placeholder}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        aria-label="Search routes"
+        autoComplete="off"
+      />
+
       {searchTerm && (
         <button
           type="button"
@@ -46,7 +46,7 @@ const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
         >
           ×
         </button>
-      </form>
+      )}
 
       <button
         type="submit"
@@ -57,6 +57,6 @@ const SearchBar = ({ placeholder = "Search routes by name or stop..." }) => {
       </button>
     </form>
   );
-}
+};
 
 export default SearchBar;
