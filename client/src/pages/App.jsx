@@ -26,7 +26,7 @@ function App() {
         <HowItWorks />
         <BookVehicle />
         <TextLoop
-            text="THAT's IT"
+            text="THAT's IT!"
             shape="wave"
             speed={90}
             direction="forward"
