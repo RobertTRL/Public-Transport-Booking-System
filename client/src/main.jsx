@@ -36,8 +36,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="stops" element={<Stops />} />
         </Route>
 
-        <Route path="/home" element={<Home />}>
-          <Route index element={<Homepage />} />
+        <Route path="/home" element={<Homepage />}>
+          <Route index element={<Home />} />
           {/* <Route path="map" element={<BookingMap />} />  */}
           <Route path="activity" element={<Activity />} />
           <Route path="profile" element={<ProfilePage />} />
