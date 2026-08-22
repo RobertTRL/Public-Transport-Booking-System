@@ -8,6 +8,7 @@ import Solution from '../components/Solution'
 import HowItWorks from '../components/HowItWorks'
 import BookVehicle from '../components/BookVehicle'
 import TextLoop from '../components/TextLoop'
+import FAQ from '../components/FAQs'
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             ribbonWidth={86}
           />
       </div>
+      <FAQ />
       <Footer />
     </div>
   )
