@@ -6,6 +6,14 @@ import RoutingLine from "./RoutingLine";
 
 const DEFAULT_CENTER = [-1.286389, 36.817223];
 
+const defaultIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
 const originIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
@@ -52,7 +60,7 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
     if (origin && stop.id === origin.id) return originIcon;
     if (destination && stop.id === destination.id) return destinationIcon;
     if (highlightedStopIds.includes(stop.id)) return highlightedIcon;
-    return undefined; // default Leaflet pin
+    return defaultIcon;
   }
 
   return (
