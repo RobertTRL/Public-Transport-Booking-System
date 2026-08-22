@@ -2,14 +2,17 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import App from "./pages/App.jsx";
 import Login from "./pages/Login.jsx";
 import AccountCreation from "./pages/AccountCreation.jsx";
+
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
 import RoutesPage from "./pages/Routes.jsx";
 import Stops from "./pages/Stops.jsx";
 import Vehicles from "./pages/Vehicles.jsx";
+
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
