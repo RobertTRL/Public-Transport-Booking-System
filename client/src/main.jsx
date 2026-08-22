@@ -8,19 +8,17 @@ import Login from "./pages/Login.jsx";
 import AccountCreation from "./pages/AccountCreation.jsx";
 
 import Dashboard from "./pages/Dashboard.jsx";
+import DashboardSummary from "./components/dashboard/Summary.jsx";
 import Bookings from "./components/dashboard/Bookings.jsx";
 import RoutesPage from "./components/dashboard/Routes.jsx";
 import Stops from "./components/dashboard/Stops.jsx";
 import Vehicles from "./components/dashboard/Vehicles.jsx";
 
 import ProfilePage from "./components/bookings/ProfilePage.jsx";
-import Home from "./pages/Homepage.jsx";
-import DashboardSummary from "./components/dashboard/Summary.jsx";
-// import Homepage from "./pages/Booking/Homepage.jsx"
+import Home from "./components/bookings/Home.jsx";
+import Homepage from "./pages/Homepage.jsx"
 // import BookingMap from "./pages/Booking/BookingMap.jsx"
-// import Activity from "./pages/Booking/Activity.jsx"
-// import Profile from "./pages/Booking/Profile.jsx"
-
+import Activity from "./components/bookings/Activity.jsx"
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -39,10 +37,10 @@ createRoot(document.getElementById("root")).render(
         </Route>
 
         <Route path="/home" element={<Home />}>
-          {/* <Route index element={<Homepage />} />
-          <Route path="map" element={<BookingMap />} /> 
+          <Route index element={<Homepage />} />
+          {/* <Route path="map" element={<BookingMap />} />  */}
           <Route path="activity" element={<Activity />} />
-          <Route path="profile" element={<Profile />} /> */ }
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
