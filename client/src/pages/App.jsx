@@ -7,6 +7,8 @@ import Problem from '../components/Problem'
 import Solution from '../components/Solution'
 import HowItWorks from '../components/HowItWorks'
 import BookVehicle from '../components/BookVehicle'
+import TextLoop from '../components/TextLoop'
+import FAQ from '../components/FAQs'
 
 function App() {
   return (
@@ -24,7 +26,24 @@ function App() {
         <h2 className='aboutus-title'>How it works</h2>
         <HowItWorks />
         <BookVehicle />
+        <TextLoop
+            text="THAT's IT!"
+            shape="wave"
+            speed={90}
+            direction="forward"
+            separator="✦"
+            curviness={25}
+            fontSize={36}
+            fontWeight={800}
+            letterSpacing={2}
+            uppercase
+            color="#ffffff"
+            ribbon
+            ribbonColor="#5227FF"
+            ribbonWidth={86}
+          />
       </div>
+      <FAQ />
       <Footer />
     </div>
   )
