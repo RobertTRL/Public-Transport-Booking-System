@@ -36,29 +36,36 @@ function HowItWorks() {
       <Navbar />
 
       <main>
-        <section className="how-it-works-intro">
-          <p className="section-label">HOW IT WORKS</p>
-          <h1>Plan your route</h1>
-          <p>Pick where you're starting from and where you're headed, and we'll show you the route.</p>
+        <section className="problem">
+          <div className="problem__inner">
+            <div className="problem__text">
+              <p className="section-label">HOW IT WORKS</p>
+              <h1 className="problem__title">Plan your route</h1>
+              <p className="problem__description">
+                Pick where you're starting from and where you're headed, and we'll show you the
+                route.
+              </p>
+            </div>
+
+            <RouteSearch
+              origin={origin}
+              destination={destination}
+              onSelectOrigin={handleSelectOrigin}
+              onSelectDestination={handleSelectDestination}
+            />
+
+            <div className="map-wrapper">
+              <Map
+                stops={allStops}
+                origin={origin}
+                destination={destination}
+                highlightedStopIds={selection?.highlightedStopIds || []}
+                waypoints={selection?.waypoints}
+                onSelectStop={handleSelectStop}
+              />
+            </div>
+          </div>
         </section>
-
-        <RouteSearch
-          origin={origin}
-          destination={destination}
-          onSelectOrigin={handleSelectOrigin}
-          onSelectDestination={handleSelectDestination}
-        />
-
-        <div className="map-wrapper">
-          <Map
-            stops={allStops}
-            origin={origin}
-            destination={destination}
-            highlightedStopIds={selection?.highlightedStopIds || []}
-            waypoints={selection?.waypoints}
-            onSelectStop={handleSelectStop}
-          />
-        </div>
       </main>
     </div>
   );
