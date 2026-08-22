@@ -1,67 +1,5 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
-import Map from "../components/Map";
-
-const transportLocations = [
-  {
-    id: 1,
-    name: "Nairobi CBD",
-    position: [-1.286389, 36.817223],
-    type: "Main Terminal",
-    description: "Central Nairobi pickup and drop-off point.",
-  },
-  {
-    id: 2,
-    name: "Westlands",
-    position: [-1.2676, 36.8108],
-    type: "Transport Stop",
-    description: "Popular passenger pickup point serving Westlands.",
-  },
-  {
-    id: 3,
-    name: "Ngong Road",
-    position: [-1.3008, 36.7876],
-    type: "Transport Stop",
-    description: "Passenger pickup point serving Ngong Road.",
-  },
-  {
-    id: 4,
-    name: "Kasarani",
-    position: [-1.2219, 36.8976],
-    type: "Transport Stop",
-    description: "Passenger pickup point serving Kasarani.",
-  },
-];
-
-const transportRoutes = [
-  {
-    id: 1,
-    name: "CBD → Westlands",
-    positions: [
-      [-1.286389, 36.817223],
-      [-1.2676, 36.8108],
-    ],
-    description: "Route connecting Nairobi CBD and Westlands.",
-  },
-  {
-    id: 2,
-    name: "CBD → Ngong Road",
-    positions: [
-      [-1.286389, 36.817223],
-      [-1.3008, 36.7876],
-    ],
-    description: "Route connecting Nairobi CBD and Ngong Road.",
-  },
-  {
-    id: 3,
-    name: "CBD → Kasarani",
-    positions: [
-      [-1.286389, 36.817223],
-      [-1.2219, 36.8976],
-    ],
-    description: "Route connecting Nairobi CBD and Kasarani.",
-  },
-];
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -139,21 +77,6 @@ function Home() {
           </div>
         </section>
 
-        <section className="map-section">
-          <div>
-            <p className="section-label">MAP</p>
-
-            <h2>Explore routes on the map</h2>
-
-            <p>
-              View routes and stops across Nairobi directly on the map.
-            </p>
-          </div>
-
-          <div className="map-wrapper">
-            <Map locations={transportLocations} />
-          </div>
-        </section>
       </main>
     </div>
   );
