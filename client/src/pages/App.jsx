@@ -17,7 +17,8 @@ function App() {
         <HeroBackground color1="#3B82F6" color2="#F0F9FF" speed={0.6} />
         <Header/>
         <HeroGeometric
-          title2="HopOn!"
+          title1="HopOn!"
+          title2="Move around Nairobi with ease."
           description="View public transport vehicle routes, stops and reserve seats for customers or add stops for routes and manage them for service providers!"
         />
         <Problem />
