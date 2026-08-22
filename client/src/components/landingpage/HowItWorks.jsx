@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import RouteSearch from "../RouteSearch";
-import Map from "../Map";
+import Map from "../maprelated/Map";
 import { allStops } from "../../data/nairobiRoutes";
 import { getRouteSelection } from "../../utils/routeSelection";
 

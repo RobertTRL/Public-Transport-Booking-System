@@ -1,4 +1,4 @@
-import LocationDropdown from "./LocationDropdown";
+import LocationDropdown from "./maprelated/LocationDropdown";
 import { allStops } from "../data/nairobiRoutes";
 
 function RouteSearch({ origin, destination, onSelectOrigin, onSelectDestination }) {
