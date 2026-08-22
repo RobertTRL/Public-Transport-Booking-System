@@ -67,6 +67,8 @@
 }
 
 .find-vehicles__search .route-search {
+  max-width: 420px;
+  margin: 0 auto;
   justify-content: center;
 }
 
