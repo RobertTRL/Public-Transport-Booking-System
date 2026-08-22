@@ -7,16 +7,16 @@
 
 /* Hero */
 .home-hero {
-  background: linear-gradient(135deg, #F2F7FF 0%, #FFFFFF 65%);
+  background: #F2F7FF;
   border: 1px solid #E9EEF6;
   border-radius: 28px;
   padding: clamp(2rem, 5vw, 3.5rem);
 }
 
 .home-hero__label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #1a73e8;
   margin: 0 0 0.75rem;
@@ -146,17 +146,9 @@
   background: #FFFFFF;
   border: 1px solid #ECEEF1;
   border-radius: 18px;
-  padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+  padding: 1.5rem;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.home-route-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: var(--route-color, #1a73e8);
 }
 
 .home-route-card:hover {
