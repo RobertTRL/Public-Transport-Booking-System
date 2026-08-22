@@ -2,7 +2,7 @@ import '../../styles/problem.css'
 
 export default function BookVehicle() {
     return (
-        <section className="problem">
+        <section className="bookabus">
             <div className="problem__inner">
                 <div className="problem__text">
                     <h2 className="problem__title">2. Book a vehicle and reserve a seat</h2>
