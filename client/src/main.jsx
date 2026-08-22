@@ -15,7 +15,7 @@ import Vehicles from "./pages/Vehicles.jsx";
 
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
-import DashboardSummary from "./components/Summary.jsx";
+import DashboardSummary from "./components/dashboard/Summary.jsx";
 // import Homepage from "./pages/Booking/Homepage.jsx"
 // import BookingMap from "./pages/Booking/BookingMap.jsx"
 // import Activity from "./pages/Booking/Activity.jsx"
