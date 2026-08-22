@@ -33,6 +33,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="bookings" element={<Bookings />} />
         <Route path="stops" element={<Stops />} />
         </Route>
+        <Route path="/home" element={<Home />}/>
         <Route path="/booking" element={<Bookings />} >
         {/* booking sub routes */}
           {/* <Route index element={<Homepage />} />
