@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import "../styles/dashboard.css";
 
-function Dashboard() {
+function Overview() {
   return (
     <div className="dashboard">
       <Sidebar />
@@ -47,4 +47,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Overview;
