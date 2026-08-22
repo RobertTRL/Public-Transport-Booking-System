@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import "../../styles/bookings.css";
+import "../../styles/bookingnavbar.css";
 
 function BookingNavbar(){
     return(
