@@ -1,0 +1,235 @@
+.home-page {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+/* Hero */
+.home-hero {
+  background: linear-gradient(135deg, #F2F7FF 0%, #FFFFFF 65%);
+  border: 1px solid #E9EEF6;
+  border-radius: 28px;
+  padding: clamp(2rem, 5vw, 3.5rem);
+}
+
+.home-hero__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a73e8;
+  margin: 0 0 0.75rem;
+}
+
+.home-hero__title {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #131313;
+  margin: 0 0 1rem;
+}
+
+.home-hero__text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #737373;
+  max-width: 480px;
+  margin: 0 0 2rem;
+}
+
+/* Search bar */
+.home-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 560px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 999px;
+  padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.home-search__field {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-search__field label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin-bottom: 0.15rem;
+}
+
+.home-search__field input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #131313;
+}
+
+.home-search__field input::placeholder {
+  color: #B0B7C3;
+}
+
+.home-search__button {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  background: #1a73e8;
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 1.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.home-search__button:hover {
+  background: #131313;
+  transform: translateY(-2px);
+}
+
+.home-search__button:focus-visible,
+.home-search__field input:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+/* Shared section labels */
+.home-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a73e8;
+  margin: 0 0 0.5rem;
+}
+
+.home-routes h2,
+.home-steps h2 {
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #131313;
+  margin: 0 0 0.5rem;
+}
+
+.home-section-text {
+  font-size: 0.95rem;
+  color: #737373;
+  max-width: 520px;
+  margin: 0;
+}
+
+/* Route cards */
+.home-routes__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.home-route-card {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid #ECEEF1;
+  border-radius: 18px;
+  padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-route-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--route-color, #1a73e8);
+}
+
+.home-route-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.home-route-card__dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--route-color, #1a73e8);
+  margin-bottom: 0.75rem;
+}
+
+.home-route-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #131313;
+  margin: 0 0 0.25rem;
+}
+
+.home-route-card p {
+  font-size: 0.88rem;
+  color: #737373;
+  margin: 0;
+}
+
+/* How it works */
+.home-steps__intro {
+  margin-bottom: 2rem;
+}
+
+.home-steps__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.home-step__number {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #1a73e8;
+  margin-bottom: 0.5rem;
+}
+
+.home-step h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #131313;
+  margin: 0 0 0.4rem;
+}
+
+.home-step p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #737373;
+  margin: 0;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .home-search {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 22px;
+    padding: 1rem;
+  }
+
+  .home-search__button {
+    width: 100%;
+  }
+}
