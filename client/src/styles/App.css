@@ -44,36 +44,3 @@
   border: 1px solid #ddd;
   border-radius: 8px;
 }
-
-.location-dropdown-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-top: 4px;
-  max-height: 220px;
-  overflow-y: auto;
-  list-style: none;
-  padding: 0.25rem 0;
-}
-
-.location-dropdown-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0.8rem;
-  cursor: pointer;
-}
-
-.location-dropdown-list li:hover,
-.location-dropdown-list li.selected {
-  background: #f2f6ff;
-}
-
-.location-dropdown-route {
-  color: #888;
-  font-size: 0.8rem;
-}
