@@ -68,21 +68,24 @@
 
 .find-vehicles__search .route-search {
   display: flex;
-  flex-direction: row;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: flex-end;
   justify-content: center;
   gap: 1rem;
-  max-width: 420px;
+  width: 100%;
+  max-width: min(600px, 94vw);
   margin: 0 auto;
-  flex-wrap: nowrap; /* force no wrap, in case something upstream sets wrap */
 }
 
 .find-vehicles__search .route-search > * {
-  flex: 0 1 180px;
-  min-width: 0; /* critical: without this, a flex item won't shrink below
-                   its content's intrinsic width (e.g. a wide input or
-                   long placeholder), which can cause overflow that looks
-                   like a broken/stacked layout */
+  flex: 1 1 clamp(170px, 38vw, 260px);
+  min-width: 0;
+}
+
+.find-vehicles__search .route-search input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .find-vehicles__results {
