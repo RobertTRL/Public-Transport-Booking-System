@@ -1,12 +1,29 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
 import { allStops } from "../../data/nairobiRoutes";
 import { getRouteSelection } from "../../utils/routeSelection";
 
 function HowItWorks() {
+  const [searchParams] = useSearchParams();
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+
+  useEffect(() => {
+    const fromId = searchParams.get("from");
+    const toId = searchParams.get("to");
+    if (!fromId && !toId) return;
+
+    const fromStop = allStops.find((stop) => stop.id === fromId);
+    const toStop = allStops.find((stop) => stop.id === toId);
+
+    if (fromStop) setOrigin(fromStop);
+    if (toStop) setDestination(toStop);
+    // Only meant to seed initial state from Home's search handoff — after this,
+    // dropdown/map clicks own origin/destination, so deps are intentionally empty.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleSelectStop(stop) {
     if (!origin || (origin && destination)) {

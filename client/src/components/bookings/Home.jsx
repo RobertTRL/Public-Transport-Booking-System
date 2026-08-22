@@ -47,7 +47,7 @@ function Home() {
   function handleFindVehicles(event) {
     event.preventDefault();
     if (!origin || !destination) return;
-    navigate(`/booking/map?from=${origin.id}&to=${destination.id}`);
+    navigate(`/home/map?from=${origin.id}&to=${destination.id}`);
   }
 
   return (
@@ -107,7 +107,51 @@ function Home() {
         </motion.form>
       </section>
 
-      {/* home-routes and home-steps sections unchanged */}
+      <section className="home-routes" id="routes">
+        <div className="home-routes__intro">
+          <p className="home-section-label">EXPLORE</p>
+          <h2>Find your route</h2>
+          <p className="home-section-text">
+            Every highway on the map, colour-coded the same way you'll see it
+            once you're picking stops.
+          </p>
+        </div>
+
+        <div className="home-routes__grid">
+          {routeHighlights.map((route, index) => (
+            <motion.div
+              key={route.id}
+              className="home-route-card"
+              style={{ "--route-color": route.color }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
+            >
+              <span className="home-route-card__dot" />
+              <h3>{route.name}</h3>
+              <p>{route.stops}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="home-steps">
+        <div className="home-steps__intro">
+          <p className="home-section-label">HOW IT WORKS</p>
+          <h2>Three steps to your stop</h2>
+        </div>
+
+        <div className="home-steps__grid">
+          {steps.map((step) => (
+            <div className="home-step" key={step.number}>
+              <span className="home-step__number">{step.number}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

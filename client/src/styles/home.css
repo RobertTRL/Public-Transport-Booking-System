@@ -39,47 +39,31 @@
   margin: 0 0 2rem;
 }
 
-/* Search bar */
+/* Search bar (wraps RouteSearch's From/To dropdowns + Find Vehicles button) */
 .home-search {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  max-width: 560px;
+  align-items: flex-end;
+  gap: 1rem;
+  max-width: 640px;
   background: #FFFFFF;
   border: 1.5px solid #E2E8F0;
-  border-radius: 999px;
-  padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+  border-radius: 24px;
+  padding: 1.25rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
-.home-search__field {
+.home-search .route-search {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.home-search .route-search > * {
   flex: 1;
   min-width: 160px;
-  display: flex;
-  flex-direction: column;
-}
-
-.home-search__field label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #9CA3AF;
-  margin-bottom: 0.15rem;
-}
-
-.home-search__field input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 1rem;
-  color: #131313;
-}
-
-.home-search__field input::placeholder {
-  color: #B0B7C3;
 }
 
 .home-search__button {
@@ -93,16 +77,21 @@
   padding: 0.85rem 1.75rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  align-self: stretch;
+  transition: transform 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
 }
 
-.home-search__button:hover {
+.home-search__button:hover:not(:disabled) {
   background: #131313;
   transform: translateY(-2px);
 }
 
-.home-search__button:focus-visible,
-.home-search__field input:focus-visible {
+.home-search__button:disabled {
+  background: #CBD5E1;
+  cursor: not-allowed;
+}
+
+.home-search__button:focus-visible {
   outline: 2px solid #1a73e8;
   outline-offset: 2px;
 }
@@ -217,8 +206,10 @@
   .home-search {
     flex-direction: column;
     align-items: stretch;
-    border-radius: 22px;
-    padding: 1rem;
+  }
+
+  .home-search .route-search {
+    flex-direction: column;
   }
 
   .home-search__button {
