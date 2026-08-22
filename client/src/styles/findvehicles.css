@@ -67,17 +67,22 @@
 }
 
 .find-vehicles__search .route-search {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
   max-width: 420px;
   margin: 0 auto;
-  justify-content: center;
+  flex-wrap: nowrap; /* force no wrap, in case something upstream sets wrap */
 }
 
-/* Sheet is always bottom-anchored now, so dropdowns always open upward */
-.find-vehicles__search .location-dropdown-list {
-  top: auto;
-  bottom: 100%;
-  margin-top: 0;
-  margin-bottom: 0.25rem;
+.find-vehicles__search .route-search > * {
+  flex: 0 1 180px;
+  min-width: 0; /* critical: without this, a flex item won't shrink below
+                   its content's intrinsic width (e.g. a wide input or
+                   long placeholder), which can cause overflow that looks
+                   like a broken/stacked layout */
 }
 
 .find-vehicles__results {
