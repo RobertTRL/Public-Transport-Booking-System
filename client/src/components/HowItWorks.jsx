@@ -39,8 +39,7 @@ function HowItWorks() {
         <section className="how-it-works">
           <div className="how-it-works__card">
             <div className="how-it-works__intro">
-              <p className="section-label">HOW IT WORKS</p>
-              <h1 className="how-it-works__title">Plan your route.</h1>
+              <h1 className="how-it-works__title">1. Plan your route.</h1>
               <p className="how-it-works__description">
                 Pick where you're starting from and where you're headed, and we'll show you the
                 route.
