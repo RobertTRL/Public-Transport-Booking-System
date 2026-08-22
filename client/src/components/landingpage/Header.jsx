@@ -6,7 +6,7 @@ function Header() {
         <header className="header">
             <div className="header-content">
                 <h1>Hop On!</h1>
-                <NavLink to="/book" className="header-cta">
+                <NavLink to="/home" className="header-cta">
                     Book a Ride
                 </NavLink>
             </div>
