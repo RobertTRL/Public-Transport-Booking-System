@@ -1,15 +1,14 @@
 import { NavLink } from "react-router-dom";
 import "../../styles/bookingnavbar.css";
 
-// Placeholder paths — swap these for your real icon files
-import homeFilled from "../../assets/icons/home-filled.svg";
-import homeOutline from "../../assets/icons/home-outline.svg";
-import mapFilled from "../../assets/icons/map-filled.svg";
-import mapOutline from "../../assets/icons/map-outline.svg";
-import activityFilled from "../../assets/icons/activity-filled.svg";
-import activityOutline from "../../assets/icons/activity-outline.svg";
-import profileFilled from "../../assets/icons/profile-filled.svg";
-import profileOutline from "../../assets/icons/profile-outline.svg";
+import homeFilled from "../../assets/home-fill.webp";
+import homeOutline from "../../assets/home-outline.webp";
+import mapFilled from "../../assets/map-fill.webp";
+import mapOutline from "../../assets/map-outline.webp";
+import activityFilled from "../../assets/bus-fill.webp";
+import activityOutline from "../../assets/bus-outline.webp";
+import profileFilled from "../../assets/user-fill.webp";
+import profileOutline from "../../assets/user-outline.webp";
 
 const navItems = [
   { to: "/booking", end: true, label: "Home", filled: homeFilled, outline: homeOutline },

@@ -4,56 +4,84 @@
 }
 
 .booking-main {
-  padding: 70px 16px 20px; /* space for top nav bar */
   max-width: 900px;
   margin: 0 auto;
+  padding: clamp(1rem, 4vw, 1.5rem);
+  padding-bottom: clamp(5.5rem, 18vw, 6.5rem); /* clears floating nav on mobile (bottom) */
+}
+
+@media (min-width: 768px) {
+  .booking-main {
+    padding-top: clamp(5.5rem, 10vw, 6.5rem); /* clears floating nav on desktop (top) */
+    padding-bottom: clamp(1.5rem, 3vw, 2rem);
+  }
 }
 
 .booking-navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 56px;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  left: 50%;
+  bottom: clamp(0.75rem, 4vw, 1.5rem);
+  top: auto;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: space-around;
   align-items: center;
+  gap: clamp(0.2rem, 1.2vw, 0.5rem);
+  background: #FFFFFF;
+  border: 1px solid #E9EEF6;
+  border-radius: clamp(20px, 5vw, 28px);
+  padding: clamp(0.35rem, 1.5vw, 0.55rem);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
   z-index: 100;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+@media (min-width: 768px) {
+  .booking-navbar {
+    top: clamp(1rem, 2.5vw, 1.5rem);
+    bottom: auto;
+  }
 }
 
 .nav-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.8vw, 4px);
   text-decoration: none;
-  color: #64748b;
-  font-size: 11px;
-  gap: 2px;
+  color: #64748B;
+  padding: clamp(0.4rem, 2vw, 0.65rem) clamp(0.7rem, 3.5vw, 1.25rem);
+  border-radius: clamp(16px, 4vw, 22px);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.nav-btn .icon {
-  font-size: 18px;
+.nav-btn:hover {
+  background: #F1F5F9;
 }
 
-.nav-btn.active {
-  color: #2563eb;
+.nav-btn__icon {
+  width: clamp(18px, 4.5vw, 22px);
+  height: clamp(18px, 4.5vw, 22px);
+  object-fit: contain;
+}
+
+.nav-btn__label {
+  font-size: clamp(0.6rem, 2.2vw, 0.72rem);
   font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
-@media (max-width: 349px) {
-  .booking-navbar {
-    top: auto;
-    bottom: 0;
-    border-top: 1px solid #e2e8f0;
-    border-bottom: none;
-  }
+.nav-btn--active {
+  background: #131313;
+  color: #F0F9FF;
 }
 
-@media (max-width: 349px) {
-  .booking-main {
-    padding-top: 16px;
-    padding-bottom: 70px; /* Space for bottom navbar */
-  }
+.nav-btn--active:hover {
+  background: #131313;
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
 }
