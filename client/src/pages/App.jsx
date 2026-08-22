@@ -5,6 +5,8 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Problem from '../components/Problem'
 import Solution from '../components/Solution'
+import HowItWorks from '../components/HowItWorks'
+
 function App() {
   return (
     <div>
@@ -18,6 +20,7 @@ function App() {
         <Problem />
         <h2 className='aboutus-title'>About us</h2>
         <Solution />
+        <HowItWorks />
       </div>
       <Footer />
     </div>
