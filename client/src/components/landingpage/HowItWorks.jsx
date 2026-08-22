@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
-import RouteSearch from "../components/RouteSearch";
-import Map from "../components/Map";
-import { allStops } from "../data/nairobiRoutes";
-import { getRouteSelection } from "../utils/routeSelection";
+import RouteSearch from "../RouteSearch";
+import Map from "../Map";
+import { allStops } from "../../data/nairobiRoutes";
+import { getRouteSelection } from "../../utils/routeSelection";
 
 function HowItWorks() {
   const [origin, setOrigin] = useState(null);
