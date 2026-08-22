@@ -35,7 +35,7 @@
   align-items: center;
   background: transparent;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  padding: 0 0 clamp(3rem, 8vw, 6rem) 0;
+  padding: 20px 0 clamp(3rem, 8vw, 6rem) 0;
 }
 
 .how-it-works__card {
