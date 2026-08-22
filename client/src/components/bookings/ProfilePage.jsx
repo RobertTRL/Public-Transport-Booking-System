@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import '../styles/user.css'
+import '../../styles/user.css'
 
 function ProfilePage() {
   const navigate = useNavigate()
