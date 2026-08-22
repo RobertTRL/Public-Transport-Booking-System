@@ -11,10 +11,10 @@ import profileFilled from "../../assets/user-fill.webp";
 import profileOutline from "../../assets/user-outline.webp";
 
 const navItems = [
-  { to: "/booking", end: true, label: "Home", filled: homeFilled, outline: homeOutline },
-  { to: "/booking/map", label: "Map", filled: mapFilled, outline: mapOutline },
-  { to: "/booking/activity", label: "Activity", filled: activityFilled, outline: activityOutline },
-  { to: "/booking/profile", label: "Profile", filled: profileFilled, outline: profileOutline },
+  { to: "/home", end: true, label: "Home", filled: homeFilled, outline: homeOutline },
+  { to: "/home/map", label: "Map", filled: mapFilled, outline: mapOutline },
+  { to: "/home/activity", label: "Activity", filled: activityFilled, outline: activityOutline },
+  { to: "/home/profile", label: "Profile", filled: profileFilled, outline: profileOutline },
 ];
 
 function BookingNavbar() {
