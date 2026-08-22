@@ -8,10 +8,10 @@ import Login from "./pages/Login.jsx";
 import AccountCreation from "./pages/AccountCreation.jsx";
 
 import Dashboard from "./pages/Dashboard.jsx";
-import Bookings from "./pages/Bookings.jsx";
-import RoutesPage from "./pages/Routes.jsx";
-import Stops from "./pages/Stops.jsx";
-import Vehicles from "./pages/Vehicles.jsx";
+import Bookings from "./components/dashboard/Bookings.jsx";
+import RoutesPage from "./components/dashboard/Routes.jsx";
+import Stops from "./components/dashboard/Stops.jsx";
+import Vehicles from "./components/dashboard/Vehicles.jsx";
 
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
