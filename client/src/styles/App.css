@@ -26,31 +26,68 @@
   border-radius: 2px;
 }
 
-.route-search {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.location-dropdown {
+.how-it-works {
   position: relative;
-  flex: 1;
-  min-width: 220px;
+  z-index: 10; /* same layer as hero-geometric__content, above hero-geometric__bg */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: clamp(3rem, 8vw, 6rem) 0;
 }
 
-.location-dropdown input {
+.how-it-works__card {
   width: 100%;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(19, 19, 19, 0.08);
+  border-radius: clamp(16px, 3vw, 28px);
+}
+
+.how-it-works__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 640px;
+}
+
+.how-it-works__title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: #131313;
+  margin: 0 0 clamp(1rem, 3vw, 1.5rem) 0;
+}
+
+.how-it-works__description {
+  font-size: clamp(1rem, 1.35rem, 1.5rem);
+  line-height: 1.625;
+  color: #737373;
+  font-weight: 400;
+  margin: 0;
 }
 
 .route-search {
   position: relative;
   z-index: 1000; /* above Leaflet's internal panes/controls */
   display: flex;
-  gap: 1rem;
+  justify-content: center;
   flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+  max-width: 640px;
 }
 
 .location-dropdown {
@@ -100,7 +137,17 @@
   font-size: 0.8rem;
 }
 
-.map-wrapper {
+.how-it-works__map {
   position: relative;
-  z-index: 0; /* keeps the map's stacking context below the search dropdowns */
+  z-index: 0;
+  width: 100%;
+  height: 420px; /* Leaflet needs an explicit height to render */
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.how-it-works__map .transport-map,
+.how-it-works__map .map-container {
+  width: 100%;
+  height: 100%;
 }
