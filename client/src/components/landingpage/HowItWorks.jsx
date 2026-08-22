@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import Navbar from "../components/Navbar";
 import RouteSearch from "../RouteSearch";
 import Map from "../Map";
 import { allStops } from "../../data/nairobiRoutes";
@@ -33,8 +32,6 @@ function HowItWorks() {
 
   return (
     <div className="how-it-works-page">
-      <Navbar />
-
       <main>
         <section className="how-it-works">
           <div className="how-it-works__card">

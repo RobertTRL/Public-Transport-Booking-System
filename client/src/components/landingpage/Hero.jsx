@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import "../styles/hero.css";
+import "../../styles/hero.css";
 import { NavLink } from "react-router-dom"
 
 export default function HeroGeometric({

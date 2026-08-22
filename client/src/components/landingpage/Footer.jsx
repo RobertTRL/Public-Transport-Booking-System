@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import '../styles/footer.css'
+import '../../styles/footer.css'
 
 function Footer() {
     const currentYear = new Date().getFullYear();

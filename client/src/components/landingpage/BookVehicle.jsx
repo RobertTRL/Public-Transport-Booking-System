@@ -1,4 +1,4 @@
-import '../styles/problem.css'
+import '../../styles/problem.css'
 
 export default function BookVehicle() {
     return (
