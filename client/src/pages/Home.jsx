@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar";
-
 function Home() {
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -10,7 +8,6 @@ function Home() {
   };
   return (
     <div className="home-page">
-      <Navbar />
 
       <main>
         <section className="hero">
