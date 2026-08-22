@@ -1,14 +1,15 @@
 import { NavLink } from "react-router-dom";
 
-function SidebarButton({ label, to }) {
+function SidebarButton({ icon, route, text }) {
   return (
     <NavLink
-      to={to}
+      to={route}
       className={({ isActive }) =>
         `sidebar-button ${isActive ? "active" : ""}`
       }
     >
-      {label}
+      <span className="sidebar-button-icon">{icon}</span>
+      <span className="sidebar-button-text">{text}</span>
     </NavLink>
   );
 }
