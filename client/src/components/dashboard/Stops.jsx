@@ -1,4 +1,4 @@
-import "../styles/dashboard.css";
+import "../../styles/dashboard.css";
 
 function Stops() {
   const stops = [
