@@ -29,16 +29,16 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<AccountCreation />} />
+        
         <Route path="/dashboard" element={<Dashboard />}>
-        <Route index element={<DashboardSummary />} />
-        <Route path="vehicles" element={<Vehicles />} />
-        <Route path="routes" element={<RoutesPage />} />
-        <Route path="bookings" element={<Bookings />} />
-        <Route path="stops" element={<Stops />} />
+            <Route index element={<DashboardSummary />} />
+            <Route path="vehicles" element={<Vehicles />} />
+            <Route path="routes" element={<RoutesPage />} />
+            <Route path="bookings" element={<Bookings />} />
+            <Route path="stops" element={<Stops />} />
         </Route>
-        <Route path="/home" element={<Home />}/>
-        <Route path="/booking" element={<Bookings />} >
-        {/* booking sub routes */}
+
+        <Route path="/home" element={<Home />}>
           {/* <Route index element={<Homepage />} />
           <Route path="map" element={<BookingMap />} /> 
           <Route path="activity" element={<Activity />} />
