@@ -9,7 +9,7 @@
 .booking-homepage__header {
   display: flex;
   justify-content: center;
-  padding: clamp(1.5rem, 4vw, 2rem) 1.5rem 0;
+  padding: clamp(6.5rem, 11vw, 7.5rem) 1.5rem 0; /* clears the fixed top navbar */
 }
 
 .booking-homepage__brand {
@@ -27,17 +27,7 @@
   padding: 1.5rem 1.5rem 2rem;
 }
 
-@media (max-width: 767px) {
-  .booking-homepage__content {
-    padding-bottom: clamp(5.5rem, 18vw, 6.5rem); /* clears the fixed floating navbar (bottom, mobile) */
-  }
-}
-
 @media (min-width: 768px) {
-  .booking-homepage__header {
-    padding-top: clamp(6.5rem, 11vw, 7.5rem); /* clears the fixed floating navbar (top, desktop) */
-  }
-
   .booking-homepage__content {
     padding: 1.5rem 2rem 3rem;
   }

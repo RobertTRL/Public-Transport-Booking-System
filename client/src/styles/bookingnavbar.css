@@ -1,27 +1,8 @@
-.booking-layout {
-  min-height: 100vh;
-  background: #f8fafc;
-}
-
-.booking-main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: clamp(1rem, 4vw, 1.5rem);
-  padding-bottom: clamp(5.5rem, 18vw, 6.5rem); /* clears floating nav on mobile (bottom) */
-}
-
-@media (min-width: 768px) {
-  .booking-main {
-    padding-top: clamp(5.5rem, 10vw, 6.5rem); /* clears floating nav on desktop (top) */
-    padding-bottom: clamp(1.5rem, 3vw, 2rem);
-  }
-}
-
 .booking-navbar {
   position: fixed;
   left: 50%;
-  bottom: clamp(0.75rem, 4vw, 1.5rem);
-  top: auto;
+  top: clamp(1rem, 2.5vw, 1.5rem);
+  bottom: auto;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -33,13 +14,6 @@
   box-shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
   z-index: 100;
   font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-@media (min-width: 768px) {
-  .booking-navbar {
-    top: clamp(1rem, 2.5vw, 1.5rem);
-    bottom: auto;
-  }
 }
 
 .nav-btn {

@@ -2,7 +2,6 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Full-viewport map — fixed positioning ignores Homepage's padding/max-width */
 .find-vehicles__map {
   position: fixed;
   inset: 0;
@@ -15,18 +14,17 @@
   height: 100%;
 }
 
-/* Sheet — anchored top on mobile (opposite the bottom navbar),
-   bottom on desktop (opposite the top navbar) */
 .find-vehicles__sheet {
   position: fixed;
   left: 0;
   right: 0;
-  top: 0;
+  top: auto;
+  bottom: 0;
   z-index: 60;
   display: flex;
   flex-direction: column;
   background: #FFFFFF;
-  border-radius: 0 0 24px 24px;
+  border-radius: 24px 24px 0 0;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
   overflow: hidden;
   transition: height 0.3s ease;
@@ -41,7 +39,7 @@
 }
 
 .find-vehicles__handle {
-  order: 2;
+  order: 1;
   align-self: stretch;
   padding: 0.6rem 0;
   background: transparent;
@@ -64,8 +62,20 @@
 }
 
 .find-vehicles__search {
-  order: 1;
+  order: 2;
   padding: 0 1.25rem 1rem;
+}
+
+.find-vehicles__search .route-search {
+  justify-content: center;
+}
+
+/* Sheet is always bottom-anchored now, so dropdowns always open upward */
+.find-vehicles__search .location-dropdown-list {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0.25rem;
 }
 
 .find-vehicles__results {
@@ -132,29 +142,4 @@
 .find-vehicles__vehicle-fare {
   font-weight: 700;
   color: #1a73e8;
-}
-
-/* Desktop: flip the sheet to the bottom edge, handle moves above the search bar */
-@media (min-width: 768px) {
-  .find-vehicles__sheet {
-    top: auto;
-    bottom: 0;
-    border-radius: 24px 24px 0 0;
-  }
-
-  .find-vehicles__handle {
-    order: 1;
-  }
-
-  .find-vehicles__search {
-    order: 2;
-  }
-
-  /* Dropdown lists need to open upward here so they don't run off the bottom edge */
-  .find-vehicles__search .location-dropdown-list {
-    top: auto;
-    bottom: 100%;
-    margin-top: 0;
-    margin-bottom: 0.25rem;
-  }
 }

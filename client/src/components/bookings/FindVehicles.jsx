@@ -78,7 +78,6 @@ function FindVehicles() {
 
   function handlePointerDown(event) {
     const startY = event.clientY;
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
 
     function handlePointerMove(moveEvent) {
       if (Math.abs(moveEvent.clientY - startY) > 10) {
@@ -92,10 +91,8 @@ function FindVehicles() {
       if (!suppressClickRef.current) return; // plain tap — onClick handles it
 
       const delta = upEvent.clientY - startY;
-      // Mobile sheet is anchored top (drag down = expand).
-      // Desktop sheet is anchored bottom (drag up = expand).
-      const expandDelta = isDesktop ? -delta : delta;
-      setSheetState(expandDelta > 0 ? SHEET_EXPANDED : SHEET_COLLAPSED);
+      // Sheet is always anchored to the bottom — dragging up expands it.
+      setSheetState(delta < 0 ? SHEET_EXPANDED : SHEET_COLLAPSED);
     }
 
     window.addEventListener("pointermove", handlePointerMove);
