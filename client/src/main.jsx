@@ -17,7 +17,7 @@ import Vehicles from "./components/dashboard/Vehicles.jsx";
 import ProfilePage from "./components/bookings/ProfilePage.jsx";
 import Home from "./components/bookings/Home.jsx";
 import Homepage from "./pages/Homepage.jsx"
-// import BookingMap from "./pages/Booking/BookingMap.jsx"
+import Map from "./components/maprelated/Map.jsx"
 import Activity from "./components/bookings/Activity.jsx"
 
 createRoot(document.getElementById("root")).render(
@@ -38,7 +38,7 @@ createRoot(document.getElementById("root")).render(
 
         <Route path="/home" element={<Homepage />}>
           <Route index element={<Home />} />
-          {/* <Route path="map" element={<BookingMap />} />  */}
+          <Route path="map" element={<Map />} /> 
           <Route path="activity" element={<Activity />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
