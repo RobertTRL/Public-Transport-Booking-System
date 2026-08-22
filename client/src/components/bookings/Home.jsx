@@ -4,7 +4,30 @@ import { useNavigate } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import "../../styles/home.css";
 
-// ...routeHighlights and steps arrays stay the same...
+const routeHighlights = [
+  { id: "thika-road", name: "CBD → Thika Road", color: "#e63946", stops: "7 stops" },
+  { id: "mombasa-road", name: "CBD → Mombasa Road", color: "#1a73e8", stops: "6 stops" },
+  { id: "waiyaki-way", name: "CBD → Waiyaki Way", color: "#2a9d8f", stops: "6 stops" },
+  { id: "ngong-road", name: "CBD → Ngong Road", color: "#f4a261", stops: "4 stops" },
+];
+
+const steps = [
+  {
+    number: "01",
+    title: "Search your route",
+    text: "Tell us where you're headed and we'll show the highways and stops that get you there.",
+  },
+  {
+    number: "02",
+    title: "Pick your stop",
+    text: "Choose the pickup and drop-off points closest to you on the route.",
+  },
+  {
+    number: "03",
+    title: "Book & go",
+    text: "Confirm your trip and you're set — no queuing at the stage.",
+  },
+];
 
 function Home() {
   const navigate = useNavigate();
