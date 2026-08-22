@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SidebarButton from "./SidebarButton";
-import "../styles/sidebar.css";
+import "../../styles/sidebar.css";
 
 const DEFAULT_WIDTH = 280;
 const MIN_WIDTH = 200;
