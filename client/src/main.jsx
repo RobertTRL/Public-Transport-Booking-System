@@ -13,7 +13,7 @@ import RoutesPage from "./components/dashboard/Routes.jsx";
 import Stops from "./components/dashboard/Stops.jsx";
 import Vehicles from "./components/dashboard/Vehicles.jsx";
 
-import ProfilePage from "./pages/ProfilePage.jsx";
+import ProfilePage from "./components/bookings/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/dashboard/Summary.jsx";
 // import Homepage from "./pages/Booking/Homepage.jsx"
