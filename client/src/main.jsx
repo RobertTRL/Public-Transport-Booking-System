@@ -14,7 +14,7 @@ import Stops from "./components/dashboard/Stops.jsx";
 import Vehicles from "./components/dashboard/Vehicles.jsx";
 
 import ProfilePage from "./components/bookings/ProfilePage.jsx";
-import Home from "./pages/Home.jsx";
+import Home from "./pages/Homepage.jsx";
 import DashboardSummary from "./components/dashboard/Summary.jsx";
 // import Homepage from "./pages/Booking/Homepage.jsx"
 // import BookingMap from "./pages/Booking/BookingMap.jsx"
@@ -29,7 +29,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<AccountCreation />} />
-        
+
         <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<DashboardSummary />} />
             <Route path="vehicles" element={<Vehicles />} />
