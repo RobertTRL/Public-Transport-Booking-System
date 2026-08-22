@@ -20,6 +20,7 @@ function App() {
         <Problem />
         <h2 className='aboutus-title'>About us</h2>
         <Solution />
+        <h2 className='aboutus-title'>How it works</h2>
         <HowItWorks />
       </div>
       <Footer />
