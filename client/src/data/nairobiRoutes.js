@@ -31,6 +31,7 @@ export const nairobiRoutes = [
     name: "Waiyaki Way",
     color: "#2a9d8f",
     stops: [
+      { id: "ww-0", name: "Archives", position: [-1.2850, 36.8258] }, // new — Nairobi CBD start
       { id: "ww-1", name: "Westlands", position: [-1.2676, 36.8108] },
       { id: "ww-2", name: "Mountain View", position: [-1.2625, 36.7811] },
       { id: "ww-3", name: "Kangemi", position: [-1.2649, 36.7503] },
