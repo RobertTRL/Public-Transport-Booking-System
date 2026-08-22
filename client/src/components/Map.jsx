@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -86,14 +86,7 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
             position={stop.position}
             icon={getIcon(stop)}
             eventHandlers={{ click: () => onSelectStop(stop) }}
-          >
-            <Popup>
-              <div className="map-popup">
-                <h3>{stop.name}</h3>
-                <strong>{stop.routeName}</strong>
-              </div>
-            </Popup>
-          </Marker>
+          />
         ))}
       </MapContainer>
     </div>
