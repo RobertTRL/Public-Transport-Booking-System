@@ -9,6 +9,7 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setOpen(false);
+        setQuery("");
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -25,19 +26,28 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
     setOpen(false);
   }
 
+  function handleFocus() {
+    setOpen(true);
+    setQuery("");
+  }
+
+  // Closed: show the selected stop's name as real text.
+  // Open: show whatever the user is typing to search.
+  const displayValue = open ? query : value ? value.name : "";
+
   return (
     <div className="location-dropdown" ref={containerRef}>
       <label>{label}</label>
 
       <input
         type="text"
-        placeholder={value ? value.name : placeholder}
-        value={query}
+        placeholder={placeholder}
+        value={displayValue}
         onChange={(event) => {
           setQuery(event.target.value);
           setOpen(true);
         }}
-        onFocus={() => setOpen(true)}
+        onFocus={handleFocus}
       />
 
       {open && (
