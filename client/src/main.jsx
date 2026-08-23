@@ -4,8 +4,8 @@ import "./styles/index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import App from "./pages/App.jsx";
-import Login from "./pages/DashLogin.jsx";
-import AccountCreation from "./pages/DashAccountCreation.jsx";
+import DashLogin from "./pages/DashLogin.jsx";
+import DashAccountCreation from "./pages/DashAccountCreation.jsx";
 
 import Dashboard from "./pages/Dashboard.jsx";
 import DashboardSummary from "./components/dashboard/Summary.jsx";
@@ -25,8 +25,8 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<AccountCreation />} />
+        <Route path="/dashlogin" element={<DashLogin />} />
+        <Route path="/dashsignup" element={<DashAccountCreation />} />
 
         <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<DashboardSummary />} />
