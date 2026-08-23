@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import '../styles/auth.css'
 
-function AccountCreation() {
+function DashAccountCreation() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
@@ -13,8 +13,8 @@ function AccountCreation() {
     <main className="auth-page">
       <section className="auth-card">
         <div className="auth-header">
-          <h1>Create your account</h1>
-          <p>Sign up to book rides and track your trips</p>
+          <h1>Create your operator account</h1>
+          <p>Set up your account to manage routes and services</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -73,11 +73,11 @@ function AccountCreation() {
 
         <p className="auth-footer">
           Already have an account?{' '}
-          <Link to="/login">Sign in</Link>
+          <Link to="/dashlogin">Sign in</Link>
         </p>
       </section>
     </main>
   )
 }
 
-export default AccountCreation
+export default DashAccountCreation

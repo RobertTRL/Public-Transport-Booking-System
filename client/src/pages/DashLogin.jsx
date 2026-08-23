@@ -1,16 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/auth.css'
 
-function Login() {
-  const navigateToHome = useNavigate()
+function DashLogin() {
+  const navigateToDashboard = useNavigate()
 
   const handleSubmit = (event) => {
     event.preventDefault()
 
     // Authentication will be connected to the backend later.
     console.log('Login form submitted')
-    navigateToHome("/home")
-    console.log('Moved to home')
+    navigateToDashboard("/dashboard")
+    console.log('Moved to dashboard')
   }
 
   return (
@@ -18,7 +18,7 @@ function Login() {
       <section className="auth-card">
         <div className="auth-header">
           <h1>Welcome back</h1>
-          <p>Sign in to book your next ride</p>
+          <p>Sign in to your Public Transport account</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -37,10 +37,6 @@ function Login() {
           <div className="form-group">
             <div className="password-label">
               <label htmlFor="password">Password</label>
-
-              <a href="#" className="forgot-password">
-                Forgot password?
-              </a>
             </div>
 
             <input
@@ -60,11 +56,11 @@ function Login() {
 
         <p className="auth-footer">
           Don't have an account?{' '}
-          <Link to="/signup">Create an account</Link>
+          <Link to="/dashsignup">Create an account</Link>
         </p>
       </section>
     </main>
   )
 }
 
-export default Login
+export default DashLogin

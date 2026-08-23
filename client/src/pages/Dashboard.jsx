@@ -1,16 +1,21 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/dashboard/Sidebar";
 import "../styles/dashboard.css";
 
 function Dashboard() {
   return (
-    <div className="dashboard">
-      {/* To do: Add dashboard header, spans across screens, stays on top */}
-      <Sidebar />
+    <div className="dashboard-shell">
+      <header className="dashboard-topbar">
+        <h1>Hop On Dashboard</h1>
+      </header>
 
-      <main className="dashboard-main">
-        <Outlet />
-      </main>
+      <div className="dashboard">
+        <Sidebar />
+
+        <main className="dashboard-main">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

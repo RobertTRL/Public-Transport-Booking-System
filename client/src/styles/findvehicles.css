@@ -1,0 +1,155 @@
+.find-vehicles {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.find-vehicles__map {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}
+
+.find-vehicles__map .map-container,
+.find-vehicles__map .transport-map {
+  width: 100%;
+  height: 100%;
+}
+
+.find-vehicles__sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: auto;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.find-vehicles__sheet--collapsed {
+  height: clamp(150px, 30vh, 190px);
+}
+
+.find-vehicles__sheet--expanded {
+  height: min(70vh, 560px);
+}
+
+.find-vehicles__handle {
+  order: 1;
+  align-self: stretch;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.find-vehicles__handle:active {
+  cursor: grabbing;
+}
+
+.find-vehicles__handle-bar {
+  display: block;
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: #D1D5DB;
+  margin: 0 auto;
+}
+
+.find-vehicles__search {
+  order: 2;
+  padding: 0 1.25rem 1rem;
+}
+
+.find-vehicles__search .route-search {
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: min(600px, 94vw);
+  margin: 0 auto;
+}
+
+.find-vehicles__search .route-search > * {
+  flex: 1 1 clamp(170px, 38vw, 260px);
+  min-width: 0;
+}
+
+.find-vehicles__search .route-search input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.find-vehicles__results {
+  order: 3;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.find-vehicles__results-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #1a73e8;
+  margin: 0 0 0.75rem;
+}
+
+.find-vehicles__vehicle-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.find-vehicles__vehicle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ECEEF1;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+}
+
+.find-vehicles__vehicle-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.find-vehicles__vehicle-plate {
+  font-weight: 700;
+  color: #131313;
+  font-size: 0.95rem;
+}
+
+.find-vehicles__vehicle-type {
+  font-size: 0.8rem;
+  color: #737373;
+}
+
+.find-vehicles__vehicle-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  font-size: 0.8rem;
+  color: #737373;
+}
+
+.find-vehicles__vehicle-fare {
+  font-weight: 700;
+  color: #1a73e8;
+}

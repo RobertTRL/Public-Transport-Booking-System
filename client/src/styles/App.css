@@ -25,3 +25,278 @@
   margin: clamp(1rem, 2.5vw, 1.5rem) auto 0;
   border-radius: 2px;
 }
+
+.how-it-works {
+  position: relative;
+  z-index: 10; /* same layer as hero-geometric__content, above hero-geometric__bg */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 20px 0 clamp(3rem, 8vw, 6rem) 0;
+}
+
+.how-it-works__card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(19, 19, 19, 0.08);
+  border-radius: clamp(16px, 3vw, 28px);
+}
+
+.how-it-works__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 640px;
+}
+
+.how-it-works__title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: #131313;
+  margin: 0 0 clamp(1rem, 3vw, 1.5rem) 0;
+}
+
+.how-it-works__description {
+  font-size: clamp(1rem, 1.35rem, 1.5rem);
+  line-height: 1.625;
+  color: #737373;
+  font-weight: 400;
+  margin: 0;
+}
+
+.route-search {
+  position: relative;
+  z-index: 1000; /* above Leaflet's internal panes/controls */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+  max-width: 640px;
+}
+
+.location-dropdown {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+
+.location-dropdown input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.location-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0.25rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.location-dropdown-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+}
+
+.location-dropdown-list li:hover,
+.location-dropdown-list li.selected {
+  background: #f2f6ff;
+}
+
+.location-dropdown-route {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.how-it-works__map {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 420px; /* Leaflet needs an explicit height to render */
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.how-it-works__map .transport-map,
+.how-it-works__map .map-container {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-routing-container {
+  display: none !important;
+}
+
+.how-it-works__map {
+  width: clamp(600px, 90vw, 100%);
+  height: 420px;
+}
+
+.text-loop {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+}
+
+.text-loop-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.text-loop-text {
+  user-select: none;
+}
+
+.text-loop-measure {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.faq {
+  width: 100%;
+  background: #000;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: clamp(3rem, 8vw, 6rem) 0;
+}
+
+.faq__inner {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.faq__label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #60a5fa;
+  margin: 0 0 0.75rem 0;
+}
+
+.faq__title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: #fafafa;
+  margin: 0 0 0.75rem 0;
+}
+
+.faq__description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #a1a1aa;
+  margin: 0 0 clamp(2rem, 5vw, 3rem) 0;
+}
+
+.faq__list {
+  width: 100%;
+  text-align: left;
+  border-top: 1px solid #27272a;
+}
+
+.faq-item {
+  border-bottom: 1px solid #27272a;
+}
+
+.faq-item__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1.25rem 0.25rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fafafa;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+.faq-item__trigger:hover {
+  color: #a1a1aa;
+}
+
+.faq-item__icon {
+  flex-shrink: 0;
+  color: #71717a;
+  transition: transform 0.2s ease;
+}
+
+.faq-item__icon.open {
+  transform: rotate(180deg);
+}
+
+.faq-item__content-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.faq-item__content-wrapper.open {
+  grid-template-rows: 1fr;
+}
+
+.faq-item__content-inner {
+  overflow: hidden;
+}
+
+.faq-item__content-inner p {
+  margin: 0;
+  padding: 0 0.25rem 1.25rem 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #a1a1aa;
+}
+
+.bookabus {
+  position: relative;
+  z-index: 10;                              /* same layer as hero-geometric__content (10), above hero-geometric__bg (0) */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;                  /* let Hero's bg show through around the card */
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: clamp(3rem, 8vw, 6rem) 0 0 0;
+}
