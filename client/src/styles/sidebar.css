@@ -157,6 +157,36 @@
   background: rgba(37, 99, 235, 0.35);
 }
 
+/* Collapsed state — sidebar dragged below the 200px breakpoint */
+
+.sidebar.collapsed {
+  padding: 1.25rem 0.5rem;
+}
+
+.sidebar.collapsed .sidebar-profile {
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
+.sidebar.collapsed .sidebar-profile-info,
+.sidebar.collapsed .sidebar-nav-label,
+.sidebar.collapsed .sidebar-button-text,
+.sidebar.collapsed .logout-button span {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-button,
+.sidebar.collapsed .logout-button {
+  justify-content: center;
+  padding: 0.75rem;
+}
+
+.sidebar.collapsed .sidebar-button-icon svg,
+.sidebar.collapsed .logout-button svg {
+  width: 22px;
+  height: 22px;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     display: none;
