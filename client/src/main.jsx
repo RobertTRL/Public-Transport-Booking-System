@@ -4,7 +4,7 @@ import "./styles/index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import App from "./pages/App.jsx";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/DashLogin.jsx";
 import AccountCreation from "./pages/DashAccountCreation.jsx";
 
 import Dashboard from "./pages/Dashboard.jsx";
