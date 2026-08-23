@@ -9,19 +9,12 @@ function AccountCreation() {
     console.log('Account creation form submitted')
   }
 
-  const handleGoogleSignup = () => {
-    // Google authentication will be implemented by the backend team.
-    console.log('Continue with Google')
-  }
-
   return (
     <main className="auth-page">
       <section className="auth-card">
         <div className="auth-header">
-          <div className="auth-logo">PT</div>
-
-          <h1>Create an account</h1>
-          <p>Get started with your Public Transport account</p>
+          <h1>Create your operator account</h1>
+          <p>Set up your account to manage routes and services</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -73,64 +66,10 @@ function AccountCreation() {
             />
           </div>
 
-<div className="form-group">
-  <label>Choose your account type</label>
-
-  <div className="account-type-options">
-    <label className="account-type-option">
-      <input
-        type="radio"
-        name="accountType"
-        value="passenger"
-        required
-      />
-
-      <div className="account-type-content">
-        <div className="account-type-icon">🚌</div>
-
-        <div>
-          <strong>Passenger</strong>
-          <span>Book seats and discover routes</span>
-        </div>
-      </div>
-    </label>
-
-    <label className="account-type-option">
-      <input
-        type="radio"
-        name="accountType"
-        value="service-operator"
-      />
-
-      <div className="account-type-content">
-        <div className="account-type-icon">🚍</div>
-
-        <div>
-          <strong>Service Operator</strong>
-          <span>Manage routes and transport services</span>
-        </div>
-      </div>
-    </label>
-  </div>
-</div>
-
           <button type="submit" className="auth-button">
             Create account
           </button>
         </form>
-
-        <div className="auth-divider">
-          <span>OR</span>
-        </div>
-
-        <button
-          type="button"
-          className="google-button"
-          onClick={handleGoogleSignup}
-        >
-          <span className="google-icon">G</span>
-          Continue with Google
-        </button>
 
         <p className="auth-footer">
           Already have an account?{' '}
