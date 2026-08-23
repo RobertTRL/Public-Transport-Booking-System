@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./pages/App.jsx";
 import DashLogin from "./pages/DashLogin.jsx";
 import DashAccountCreation from "./pages/DashAccountCreation.jsx";
+import Login from "./pages/Login.jsx";
+import AccountCreation from "./pages/AccountCreation.jsx";
 
 import Dashboard from "./pages/Dashboard.jsx";
 import DashboardSummary from "./components/dashboard/Summary.jsx";
@@ -27,6 +29,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<App />} />
         <Route path="/dashlogin" element={<DashLogin />} />
         <Route path="/dashsignup" element={<DashAccountCreation />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<AccountCreation />} />
 
         <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<DashboardSummary />} />
