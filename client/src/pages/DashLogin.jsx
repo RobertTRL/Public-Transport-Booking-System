@@ -37,10 +37,6 @@ function Login() {
           <div className="form-group">
             <div className="password-label">
               <label htmlFor="password">Password</label>
-
-              <a href="#" className="forgot-password">
-                Forgot password?
-              </a>
             </div>
 
             <input
