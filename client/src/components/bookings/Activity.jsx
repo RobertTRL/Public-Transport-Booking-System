@@ -7,7 +7,7 @@ const Activity = () => {
         className="activity-empty__image"
       />
       <p className="activity-empty__text">
-        No activity, give this space some love
+        No activity, give this space some love!
       </p>
     </div>
   );
