@@ -8,7 +8,9 @@
   --ring: #18181b;
   --primary: #18181b;
   --primary-foreground: #fafafa;
-  --radius: 0.625rem;
+
+  --radius-card: clamp(1.5rem, 4vw, 2rem);
+  --radius-control: clamp(0.85rem, 2vw, 1.1rem);
 }
 
 .auth-page {
@@ -18,28 +20,30 @@
   align-items: center;
   justify-content: center;
 
-  padding: 2rem 1.25rem;
+  padding: clamp(1.25rem, 5vw, 2rem);
 
   background: var(--page-bg);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 400px;
+  max-width: clamp(320px, 90vw, 420px);
 
-  padding: 2rem;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
 
   background: var(--background);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
 
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 10px 30px rgba(9, 9, 11, 0.07),
+    0 2px 8px rgba(9, 9, 11, 0.04);
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: clamp(1.5rem, 4vw, 1.75rem);
 }
 
 .auth-header h1 {
@@ -47,7 +51,7 @@
 
   color: var(--foreground);
 
-  font-size: 1.5rem;
+  font-size: clamp(1.35rem, 4vw, 1.6rem);
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -57,7 +61,7 @@
 
   color: var(--muted-foreground);
 
-  font-size: 0.875rem;
+  font-size: clamp(0.85rem, 2vw, 0.9rem);
   line-height: 1.5;
 }
 
@@ -65,7 +69,7 @@
   display: flex;
   flex-direction: column;
 
-  gap: 1.125rem;
+  gap: clamp(1rem, 3vw, 1.125rem);
 }
 
 .form-group {
@@ -85,16 +89,17 @@
   width: 100%;
   box-sizing: border-box;
 
-  height: 40px;
-  padding: 0 12px;
+  height: 42px;
+  padding: 0 14px;
 
   border: 1px solid var(--input);
-  border-radius: calc(var(--radius) - 4px);
+  border-radius: var(--radius-control);
 
   background: var(--background);
   color: var(--foreground);
 
   font-size: 0.875rem;
+  font-family: inherit;
 
   outline: none;
 
@@ -131,16 +136,17 @@
 
 .auth-button {
   width: 100%;
-  height: 40px;
+  height: 42px;
 
   border: none;
-  border-radius: calc(var(--radius) - 4px);
+  border-radius: var(--radius-control);
 
   background: var(--primary);
   color: var(--primary-foreground);
 
   font-size: 0.875rem;
   font-weight: 500;
+  font-family: inherit;
 
   cursor: pointer;
 
@@ -156,7 +162,7 @@
 }
 
 .auth-footer {
-  margin: 1.5rem 0 0;
+  margin: clamp(1.25rem, 4vw, 1.5rem) 0 0;
 
   text-align: center;
 
@@ -176,15 +182,8 @@
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
-  .auth-page {
-    padding: 1rem;
-    background: var(--background);
-  }
-
+@media (max-width: 380px) {
   .auth-card {
-    padding: 1.5rem;
-
     border: none;
     box-shadow: none;
   }
