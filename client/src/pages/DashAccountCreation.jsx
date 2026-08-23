@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import '../styles/auth.css'
 
-function AccountCreation() {
+function DashAccountCreation() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
@@ -80,4 +80,4 @@ function AccountCreation() {
   )
 }
 
-export default AccountCreation
+export default DashAccountCreation
