@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/auth.css'
 
-function Login() {
+function DashLogin() {
   const navigateToDashboard = useNavigate()
 
   const handleSubmit = (event) => {
@@ -63,4 +63,4 @@ function Login() {
   )
 }
 
-export default Login
+export default DashLogin
