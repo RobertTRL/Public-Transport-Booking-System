@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import App from "./pages/App.jsx";
 import Login from "./pages/Login.jsx";
-import AccountCreation from "./pages/AccountCreation.jsx";
+import AccountCreation from "./pages/DashAccountCreation.jsx";
 
 import Dashboard from "./pages/Dashboard.jsx";
 import DashboardSummary from "./components/dashboard/Summary.jsx";
