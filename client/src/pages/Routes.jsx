@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Routes.css";
+import "../styles/Routes.css";
 
 const vehicles = [
   {

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import "./RouteDetail.css";
+import "../styles/RouteDetail.css";
 
 const vehicles = [
   {
