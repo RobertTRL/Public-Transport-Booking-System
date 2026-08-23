@@ -1,0 +1,42 @@
+.route-detail-page {
+  width: 100%;
+}
+
+.route-detail-content {
+  padding: 20px;
+}
+
+.route-detail-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.route-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.route-detail-table th,
+.route-detail-table td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.route-detail-table th {
+  font-weight: 600;
+}
+
+.route-detail-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+@media (max-width: 600px) {
+  .route-detail-table th,
+  .route-detail-table td {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+}

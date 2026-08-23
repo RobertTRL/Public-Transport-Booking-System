@@ -10,6 +10,7 @@ import Bookings from "./pages/Bookings.jsx";
 import RoutesPage from "./pages/Routes.jsx";
 import Stops from "./pages/Stops.jsx";
 import Vehicles from "./pages/Vehicles.jsx";
+import RouteDetail from "./pages/RouteDetail.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import Home from "./pages/Home.jsx";
 import DashboardSummary from "./components/Summary.jsx";
@@ -30,6 +31,7 @@ createRoot(document.getElementById("root")).render(
         <Route index element={<DashboardSummary />} />
         <Route path="vehicles" element={<Vehicles />} />
         <Route path="routes" element={<RoutesPage />} />
+        <Route path="route/:routeName" element={<RouteDetail />} />
         <Route path="bookings" element={<Bookings />} />
         <Route path="stops" element={<Stops />} />
         </Route>
