@@ -9,35 +9,35 @@ The project tasks will be divided into two main sections: Frontend and Backend(i
 - Account creation page - Done
 - Actual dashboard - Done
 - Search bar - Done, not checked
-- Logout button - Not done
+- Logout button - Done
 - Sidebar panel - Done
 - Profile (within sidebar) - not done within expectation
 - Footer - Done
 - Header - Done
 - Main content - Done
-- Buttons to specific items - Not done
-- Dashboard header - Not done
-- Overview - Not done
+- Buttons to specific items - Done
+- Dashboard header - Done
+- Overview - Done
 - Vehicles with info, schedule and route - Not done
 - Routes with stops - view routes, buses going through specific routes - Not done
 - Add/edit/remove stop(s) - Not done
-- Bookings info - who booked, stop, when, vehicle booked etc - Not done
+- Bookings info - who booked, stop, when, vehicle booked etc - Done
  
 **b) Booking panel** i.e Passenger side
 
-- Navbar - Not done
-- Home page - Not done -> Banner, View map, Book a ride, search bar - 
+- Navbar - Done
+- Home page - Done -> Banner, View map, Book a ride, search bar - 
                from search bar renders on search bar click.
                One enters values. Routes to map showing location on map,
                with options
 
-- Map - Not done -> search bar with from and to inputs, on fills, shows location points on map.
+- Map - Done -> search bar with from and to inputs, on fills, shows location points on map.
         shows available buses going through that route, allows one to pick
         Once one picks that bus, displays relevant information, after 5 minutes tells 
         someone bus arrives.
 
-- Activity - Not done -> Shows all bookings made by user
-- Profile - Not done -> shows relevant user details
+- Activity - Done -> Shows all bookings made by user
+- Profile - Done -> shows relevant user details
  
     
 **c) Shared features**
@@ -73,6 +73,5 @@ src/
 
 ```
 - Authentication - Backend
-- Continue with Google functionality - Backend
-- Login page (passengers, service operators) - Not done well
+- Login page (passengers, service operators) - Done
 ## 2. Backend
