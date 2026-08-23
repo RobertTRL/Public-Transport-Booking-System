@@ -14,9 +14,11 @@ import "../../styles/sidebar.css";
 const DEFAULT_WIDTH = 280;
 const MIN_WIDTH = 200;
 const MAX_WIDTH = 420;
+const COLLAPSED_WIDTH = 90;
 
 function Sidebar() {
   const [width, setWidth] = useState(DEFAULT_WIDTH);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const sidebarRef = useRef(null);
   const isResizing = useRef(false);
   const navigate = useNavigate();
@@ -35,6 +37,13 @@ function Sidebar() {
     const { left } = sidebarRef.current.getBoundingClientRect();
     const nextWidth = e.clientX - left;
 
+    if (nextWidth < MIN_WIDTH) {
+      setIsCollapsed(true);
+      setWidth(COLLAPSED_WIDTH);
+      return;
+    }
+
+    setIsCollapsed(false);
     setWidth(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, nextWidth)));
   }, []);
 
@@ -57,6 +66,7 @@ function Sidebar() {
   }, [resize, stopResizing]);
 
   const resetWidth = useCallback(() => {
+    setIsCollapsed(false);
     setWidth(DEFAULT_WIDTH);
   }, []);
 
@@ -65,11 +75,15 @@ function Sidebar() {
   };
 
   return (
-    <aside className="sidebar" ref={sidebarRef} style={{ width }}>
+    <aside
+      className={`sidebar ${isCollapsed ? "collapsed" : ""}`}
+      ref={sidebarRef}
+      style={{ width }}
+    >
       <div className="sidebar-profile">
         <div className="profile-placeholder">P</div>
 
-        <div>
+        <div className="sidebar-profile-info">
           <h3>Provider</h3>
           <p>Service Provider</p>
         </div>
@@ -82,6 +96,7 @@ function Sidebar() {
           icon={<LayoutDashboard size={18} />}
           route="/dashboard"
           text="Overview"
+          end
         />
 
         <SidebarButton
