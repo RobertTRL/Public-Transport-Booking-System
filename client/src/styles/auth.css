@@ -51,9 +51,10 @@
 
   color: var(--foreground);
 
-  font-size: clamp(1.35rem, 4vw, 1.6rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 
 .auth-header p {
