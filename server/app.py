@@ -1,17 +1,16 @@
 from flask import Flask
 from flask_migrate import Migrate
-from models import db, Route, Operator,User,Stop, Vehicle, Manager, Seat,Trip, Booking, Occupation
-from schemas import DriverSchema
+from models import db
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tomashi-logistics.db'
 
-# disable the modification tracking feature of SQLAlchemy to avoid unnecessary overhead
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-migrate = Migrate(app, db)
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    "postgresql://postgres:postgres@localhost:5432/transport_booking_db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+migrate = Migrate(app, db)
 
-if __name__ == '__main__':
-    app.run(debug=True)  
+if __name__ == "__main__":
+    app.run(debug=True, port=5555)

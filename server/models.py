@@ -1,10 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-
-
-metadata = MetaData()
-
-db = SQLAlchemy(metadata=metadata)
+from config import db
 
 
 class Route(db.Model):
