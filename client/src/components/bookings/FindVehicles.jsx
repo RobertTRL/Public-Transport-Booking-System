@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
-import { allStops } from "../../data/nairobiRoutes";
-import { getRouteSelection } from "../../utils/routeSelection";
+import { allStops, getStopById } from "../../data/nairobiRoutes";
+import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
@@ -18,22 +18,17 @@ const DUMMY_VEHICLES = [
 
 function FindVehicles() {
   const [searchParams] = useSearchParams();
-  const [origin, setOrigin] = useState(null);
-  const [destination, setDestination] = useState(null);
-  const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
-  const suppressClickRef = useRef(false);
 
-  useEffect(() => {
-    const fromId = searchParams.get("from");
-    const toId = searchParams.get("to");
-    const fromStop = allStops.find((stop) => stop.id === fromId);
-    const toStop = allStops.find((stop) => stop.id === toId);
-    if (fromStop) setOrigin(fromStop);
-    if (toStop) setDestination(toStop);
-    // Seeds initial state from Home's handoff only — after this, the sheet
-    // owns origin/destination, so deps are intentionally empty.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Seed initial state from URL search params (Home handoff)
+  const initialOrigin = getStopById(searchParams.get("from"));
+  const initialDestination = getStopById(searchParams.get("to"));
+
+  const [origin, setOrigin] = useState(initialOrigin);
+  const [destination, setDestination] = useState(initialDestination);
+  const [sheetState, setSheetState] = useState(
+    initialOrigin && initialDestination ? SHEET_EXPANDED : SHEET_COLLAPSED
+  );
+  const suppressClickRef = useRef(false);
 
   function handleSelectOrigin(stop) {
     setOrigin(stop);
@@ -41,7 +36,7 @@ function FindVehicles() {
   }
 
   function handleSelectDestination(stop) {
-    if (origin && stop.id === origin.id) return;
+    if (stop && origin && stop.id === origin.id) return;
     setDestination(stop);
   }
 
@@ -57,11 +52,14 @@ function FindVehicles() {
 
   const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
   const hasRoute = Boolean(selection);
+  const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
 
-  // Auto-expand once a route is found, so the vehicle list is visible without a manual drag
-  useEffect(() => {
-    if (hasRoute) setSheetState(SHEET_EXPANDED);
-  }, [hasRoute]);
+  // Auto-expand once a route is found
+  const prevHasRoute = useRef(hasRoute);
+  if (hasRoute && !prevHasRoute.current) {
+    setSheetState(SHEET_EXPANDED);
+  }
+  prevHasRoute.current = hasRoute;
 
   function toggleSheet() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
@@ -103,7 +101,7 @@ function FindVehicles() {
     <div className="find-vehicles">
       <div className="find-vehicles__map">
         <Map
-          stops={allStops}
+          stops={visibleStops}
           origin={origin}
           destination={destination}
           highlightedStopIds={selection?.highlightedStopIds || []}
