@@ -8,3 +8,8 @@ from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+
+load_dotenv()
+
+# Initialize Flask application
+app = Flask(__name__)
