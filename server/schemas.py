@@ -37,3 +37,15 @@ class UserSchema(ma.Schema):
 
     class Meta:
         ordered = True
+
+
+class OperatorSchema(ma.Schema):
+    """Bus/transit operators. ERD: Operators(id, name, address, contact)."""
+
+    id = fields.Integer(dump_only=True)
+    name = fields.String(required=True)
+    address = fields.String(allow_none=True)
+    contact = fields.String(required=True)
+
+    class Meta:
+        ordered = True
