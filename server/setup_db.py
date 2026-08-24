@@ -32,3 +32,6 @@ def create_database():
         conn.close()
     except Exception as e:
         print(f"[-] Error setting up database: {e}")
+
+if __name__ == "__main__":
+    create_database()
