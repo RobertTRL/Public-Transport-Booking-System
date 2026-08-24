@@ -78,3 +78,19 @@ class RouteSchema(ma.Schema):
 
     class Meta:
         ordered = True
+
+
+class StopSchema(ma.Schema):
+    """ERD: Stops(id, route_id, name, x_coordinate, y_coordinate). Each stop
+    belongs to exactly one route (route_id is a plain FK field here, not a
+    nested Route, to avoid Route <-> Stop circular serialization — see
+    RouteSchema.stops in the relationships section below)."""
+
+    id = fields.Integer(dump_only=True)
+    route_id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    x_coordinate = fields.Float(required=True)
+    y_coordinate = fields.Float(required=True)
+
+    class Meta:
+        ordered = True
