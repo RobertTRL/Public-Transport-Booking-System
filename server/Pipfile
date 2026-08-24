@@ -4,9 +4,24 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+marshmallow = "==3.20.1"
+importlib-metadata = "==6.0.0"
+importlib-resources = "==5.10.0"
+werkzeug = "==2.2.2"
 flask = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-restful = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask-bcrypt = "*"
+flask-jwt-extended = "*"
+flask-cors = "*"
+psycopg2-binary = "*"
+python-dotenv = "*"
+faker = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.12"
+python_version = "*"
