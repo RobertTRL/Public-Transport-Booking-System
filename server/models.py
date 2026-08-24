@@ -23,3 +23,12 @@ class Operator(db.Model):
     name = db.Column(db.String, unique=True, nullable=False)
     address = db.Column(db.String)
     contact = db.Column(db.String, nullable=False)
+
+class User(db.Model):
+
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
+    phone_number = db.Column(db.String)
