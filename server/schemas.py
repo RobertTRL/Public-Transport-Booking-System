@@ -22,3 +22,18 @@ Schemas defined in this module (see Schema.txt for the full ERD):
 
 from config import ma
 from marshmallow import fields, validate, validates_schema, ValidationError
+
+
+class UserSchema(ma.Schema):
+    """Riders. ERD: Users(id, email, password_hash, phone_number)."""
+
+    id = fields.Integer(dump_only=True)
+    email = fields.Email(required=True)
+    # Exposed as "password" (not "password_hash"): schemas validate the raw
+    # input the client sends. Hashing into User.password_hash happens in the
+    # resource/view layer, never here.
+    password = fields.String(required=True, load_only=True)
+    phone_number = fields.String(allow_none=True)
+
+    class Meta:
+        ordered = True
