@@ -97,3 +97,46 @@ class Seat(db.Model):
             name='unique_vehicle_seat'
         ),
     )
+class Trip(db.Model):
+
+    __tablename__ = 'trips'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    origin_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stops.id'),
+        nullable=False
+    )
+
+    destination_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stops.id'),
+        nullable=False
+    )
+
+    vehicle_id = db.Column(
+        db.Integer,
+        db.ForeignKey('vehicles.id'),
+        nullable=False
+    )
+
+    start_time = db.Column(db.DateTime, nullable=False)
+    stop_time = db.Column(db.DateTime)
+
+    origin = db.relationship(
+        'Stop',
+        foreign_keys=[origin_id],
+        backref='origin_trips'
+    )
+
+    destination = db.relationship(
+        'Stop',
+        foreign_keys=[destination_id],
+        backref='destination_trips'
+    )
+
+    vehicle = db.relationship(
+        'Vehicle',
+        backref='trips'
+    )
