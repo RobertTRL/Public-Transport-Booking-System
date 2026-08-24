@@ -19,7 +19,7 @@ flask-jwt-extended = "*"
 flask-cors = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
-
+werkzeug = "==2.2.2"
 
 [dev-packages]
 
