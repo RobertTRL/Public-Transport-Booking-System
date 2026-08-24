@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
-import { allStops, getStopById } from "../../data/nairobiRoutes";
+import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 
 function HowItWorks() {

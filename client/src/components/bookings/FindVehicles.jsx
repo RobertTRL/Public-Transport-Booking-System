@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
-import { allStops, getStopById } from "../../data/nairobiRoutes";
+import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
@@ -38,6 +38,7 @@ function FindVehicles() {
   function handleSelectDestination(stop) {
     if (stop && origin && stop.id === origin.id) return;
     setDestination(stop);
+    if (stop && origin) setSheetState(SHEET_EXPANDED);
   }
 
   function handleSelectStop(stop) {
@@ -48,18 +49,12 @@ function FindVehicles() {
     }
     if (stop.id === origin.id) return;
     setDestination(stop);
+    setSheetState(SHEET_EXPANDED);
   }
 
   const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
   const hasRoute = Boolean(selection);
   const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
-
-  // Auto-expand once a route is found
-  const prevHasRoute = useRef(hasRoute);
-  if (hasRoute && !prevHasRoute.current) {
-    setSheetState(SHEET_EXPANDED);
-  }
-  prevHasRoute.current = hasRoute;
 
   function toggleSheet() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
