@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
@@ -35,24 +35,15 @@ const DUMMY_VEHICLES = [
 
 function FindVehicles() {
   const [searchParams] = useSearchParams();
-  const [origin, setOrigin] = useState(null);
-  const [destination, setDestination] = useState(null);
-
-  useEffect(() => {
+   const [origin, setOrigin] = useState(() => {
     const fromId = searchParams.get("from");
+    return allStops.find((stop) => stop.id === fromId) || null;
+  });
+
+  const [destination, setDestination] = useState(() => {
     const toId = searchParams.get("to");
-
-    const fromStop = allStops.find((stop) => stop.id === fromId);
-    const toStop = allStops.find((stop) => stop.id === toId);
-
-    if (fromStop) {
-      setOrigin(fromStop);
-    }
-
-    if (toStop) {
-      setDestination(toStop);
-    }
-  }, [searchParams]);
+    return allStops.find((stop) => stop.id === toId) || null;
+  });
 
   function handleSelectOrigin(stop) {
     setOrigin(stop);
