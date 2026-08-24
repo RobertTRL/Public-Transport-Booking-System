@@ -57,3 +57,21 @@ class Vehicle(db.Model):
 
     route = db.relationship('Route', backref='vehicles')
     operator = db.relationship('Operator', backref='vehicles')
+
+class Manager(db.Model):
+
+    __tablename__ = 'managers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
+    operator_id = db.Column(
+        db.Integer,
+        db.ForeignKey('operators.id'),
+        nullable=False
+    )
+    phone_number = db.Column(db.String)
+    role = db.Column(db.String)
+
+    operator = db.relationship('Operator', backref='managers')
