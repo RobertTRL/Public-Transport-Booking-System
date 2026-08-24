@@ -66,3 +66,15 @@ class ManagerSchema(ma.Schema):
 
     class Meta:
         ordered = True
+
+
+class RouteSchema(ma.Schema):
+    """ERD: Routes(id, name, color). `color` is used to render the route's
+    line on the map (see feature/map-preview)."""
+
+    id = fields.Integer(dump_only=True)
+    name = fields.String(required=True)
+    color = fields.String(required=True)
+
+    class Meta:
+        ordered = True
