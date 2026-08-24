@@ -49,3 +49,20 @@ class OperatorSchema(ma.Schema):
 
     class Meta:
         ordered = True
+
+
+class ManagerSchema(ma.Schema):
+    """Operator staff/admins. ERD: Managers(id, name, email, password_hash,
+    operator_id, phone_number, role)."""
+
+    id = fields.Integer(dump_only=True)
+    name = fields.String(required=True)
+    email = fields.Email(required=True)
+    # Same rationale as UserSchema.password: raw input, hashed downstream.
+    password = fields.String(required=True, load_only=True)
+    operator_id = fields.Integer(required=True)
+    phone_number = fields.String(allow_none=True)
+    role = fields.String(allow_none=True)
+
+    class Meta:
+        ordered = True
