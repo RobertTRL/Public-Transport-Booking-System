@@ -32,3 +32,15 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String)
+
+class Stop(db.Model):
+
+    __tablename__ = 'stops'
+
+    id = db.Column(db.Integer, primary_key=True)
+    route_id = db.Column(db.Integer, db.ForeignKey('routes.id'), nullable=False)
+    name = db.Column(db.String, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+
+    route = db.relationship('Route', backref='stops')
