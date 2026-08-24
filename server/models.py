@@ -140,3 +140,65 @@ class Trip(db.Model):
         'Vehicle',
         backref='trips'
     )
+
+class Booking(db.Model):
+
+    __tablename__ = 'bookings'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False
+    )
+
+    seat_id = db.Column(
+        db.Integer,
+        db.ForeignKey('seats.id'),
+        nullable=False
+    )
+
+    trip_id = db.Column(
+        db.Integer,
+        db.ForeignKey('trips.id'),
+        nullable=False
+    )
+
+    origin_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stops.id'),
+        nullable=False
+    )
+
+    destination_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stops.id'),
+        nullable=False
+    )
+
+    made_at = db.Column(db.DateTime, nullable=False)
+
+    user = db.relationship('User', backref='bookings')
+    seat = db.relationship('Seat', backref='bookings')
+    trip = db.relationship('Trip', backref='bookings')
+
+    origin = db.relationship(
+        'Stop',
+        foreign_keys=[origin_id],
+        backref='booking_origins'
+    )
+
+    destination = db.relationship(
+        'Stop',
+        foreign_keys=[destination_id],
+        backref='booking_destinations'
+    )
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            'seat_id',
+            'trip_id',
+            name='unique_seat_trip_booking'
+        ),
+    )
