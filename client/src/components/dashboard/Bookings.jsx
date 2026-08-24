@@ -41,22 +41,22 @@ function Bookings() {
       {
         label: "Bookings",
         data: weeklyBookingData.map((item) => item.bookings),
+        barThickness: 18,
+        maxBarThickness: 20,
+        categoryPercentage: 0.6,
+        barPercentage: 0.65,
       },
     ],
   };
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: false,
-      },
+      legend: {display: false,},
+      title: {display: false,},
     },
   };
-
   const busiestDay = weeklyBookingData.reduce(
     (highest, current) =>
       current.bookings > highest.bookings ? current : highest
