@@ -44,3 +44,16 @@ class Stop(db.Model):
     longitude = db.Column(db.Float, nullable=False)
 
     route = db.relationship('Route', backref='stops')
+
+class Vehicle(db.Model):
+
+    __tablename__ = 'vehicles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    number_plate = db.Column(db.String, unique=True, nullable=False)
+    route_id = db.Column(db.Integer, db.ForeignKey('routes.id'), nullable=False)
+    capacity = db.Column(db.Integer)
+    operator_id = db.Column(db.Integer, db.ForeignKey('operators.id'), nullable=False)
+
+    route = db.relationship('Route', backref='vehicles')
+    operator = db.relationship('Operator', backref='vehicles')
