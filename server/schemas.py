@@ -23,111 +23,129 @@ Schemas defined in this module (see Schema.txt for the full ERD):
 from config import ma
 from marshmallow import fields, validate, validates_schema, ValidationError
 
+# --- shared length/range limits (kept in one place instead of repeated
+# magic numbers across every schema) -----------------------------------
+NAME_MIN_LEN, NAME_MAX_LEN = 1, 100
+PASSWORD_MIN_LEN, PASSWORD_MAX_LEN = 8, 128
+PHONE_MIN_LEN, PHONE_MAX_LEN = 7, 20
+COLOR_MIN_LEN, COLOR_MAX_LEN = 1, 30
+CONTACT_MIN_LEN, CONTACT_MAX_LEN = 3, 100
+ADDRESS_MAX_LEN = 255
+ROLE_MAX_LEN = 50
 
-class UserSchema(ma.Schema):
-    """Riders. ERD: Users(id, email, password_hash, phone_number)."""
+EMAIL_ERROR_MESSAGES = {
+    "required": "Email is required.",
+    "invalid": "Not a valid email address.",
+}
 
-    id = fields.Integer(dump_only=True)
-    email = fields.Email(
-        required=True,
-        error_messages={
-            "required": "Email is required.",
-            "invalid": "Not a valid email address.",
-        },
+
+def name_field(required=True):
+    return fields.String(
+        required=required,
+        validate=validate.Length(
+            min=NAME_MIN_LEN, max=NAME_MAX_LEN, error="Name must be between {min} and {max} characters."
+        ),
     )
-    # Exposed as "password" (not "password_hash"): schemas validate the raw
-    # input the client sends. Hashing into User.password_hash happens in the
-    # resource/view layer, never here.
-    password = fields.String(
+
+
+def email_field():
+    return fields.Email(required=True, error_messages=EMAIL_ERROR_MESSAGES)
+
+
+def password_field():
+    """Raw input field, load_only. Hashing into *_hash happens in the
+    resource/view layer, never in the schema."""
+    return fields.String(
         required=True,
         load_only=True,
-        validate=validate.Length(min=8, max=128, error="Password must be between {min} and {max} characters."),
+        validate=validate.Length(
+            min=PASSWORD_MIN_LEN, max=PASSWORD_MAX_LEN, error="Password must be between {min} and {max} characters."
+        ),
     )
-    phone_number = fields.String(
+
+
+def phone_field():
+    return fields.String(
         allow_none=True,
-        validate=validate.Length(min=7, max=20, error="Phone number must be between {min} and {max} characters."),
+        validate=validate.Length(
+            min=PHONE_MIN_LEN, max=PHONE_MAX_LEN, error="Phone number must be between {min} and {max} characters."
+        ),
     )
+
+
+def positive_fk_field(label, required=True):
+    """An integer foreign-key field that must be a positive integer."""
+    return fields.Integer(
+        required=required,
+        validate=validate.Range(min=1, error=f"{label} must be a positive integer."),
+    )
+
+
+class BaseSchema(ma.Schema):
+    """Common shape for every schema below: an auto id, and stable key
+    ordering in dumped output."""
+
+    id = fields.Integer(dump_only=True)
 
     class Meta:
         ordered = True
 
 
-class OperatorSchema(ma.Schema):
+class UserSchema(BaseSchema):
+    """Riders. ERD: Users(id, email, password_hash, phone_number)."""
+
+    email = email_field()
+    password = password_field()
+    phone_number = phone_field()
+
+
+class OperatorSchema(BaseSchema):
     """Bus/transit operators. ERD: Operators(id, name, address, contact)."""
 
-    id = fields.Integer(dump_only=True)
-    name = fields.String(
-        required=True,
-        validate=validate.Length(min=1, max=100, error="Name must be between {min} and {max} characters."),
+    name = name_field()
+    address = fields.String(
+        allow_none=True, validate=validate.Length(max=ADDRESS_MAX_LEN, error="Address is too long.")
     )
-    address = fields.String(allow_none=True, validate=validate.Length(max=255, error="Address is too long."))
     contact = fields.String(
         required=True,
-        validate=validate.Length(min=3, max=100, error="Contact must be between {min} and {max} characters."),
+        validate=validate.Length(
+            min=CONTACT_MIN_LEN, max=CONTACT_MAX_LEN, error="Contact must be between {min} and {max} characters."
+        ),
     )
-    # One-to-many, dump only: a list of this operator's managers. Relies on
-    # the eventual Operator model exposing a `managers` relationship/backref
+    # One-to-many, dump only: this operator's managers. Relies on the
+    # eventual Operator model exposing a `managers` relationship/backref
     # with that exact attribute name. ManagerSchema only exposes operator_id
     # (not a nested operator), so there is no Operator <-> Manager cycle.
     managers = fields.Nested("ManagerSchema", many=True, dump_only=True)
 
-    class Meta:
-        ordered = True
 
-
-class ManagerSchema(ma.Schema):
+class ManagerSchema(BaseSchema):
     """Operator staff/admins. ERD: Managers(id, name, email, password_hash,
     operator_id, phone_number, role)."""
 
-    id = fields.Integer(dump_only=True)
-    name = fields.String(
-        required=True,
-        validate=validate.Length(min=1, max=100, error="Name must be between {min} and {max} characters."),
-    )
-    email = fields.Email(
-        required=True,
-        error_messages={
-            "required": "Email is required.",
-            "invalid": "Not a valid email address.",
-        },
-    )
-    # Same rationale as UserSchema.password: raw input, hashed downstream.
-    password = fields.String(
-        required=True,
-        load_only=True,
-        validate=validate.Length(min=8, max=128, error="Password must be between {min} and {max} characters."),
-    )
-    operator_id = fields.Integer(
-        required=True,
-        validate=validate.Range(min=1, error="operator_id must be a positive integer."),
-    )
-    phone_number = fields.String(
-        allow_none=True,
-        validate=validate.Length(min=7, max=20, error="Phone number must be between {min} and {max} characters."),
-    )
+    name = name_field()
+    email = email_field()
+    password = password_field()
+    operator_id = positive_fk_field("operator_id")
+    phone_number = phone_field()
     # No fixed set of roles confirmed yet — keeping this a free-text field
     # with a sane length cap until Robert specifies role values.
-    role = fields.String(allow_none=True, validate=validate.Length(max=50, error="Role is too long."))
-
-    class Meta:
-        ordered = True
+    role = fields.String(allow_none=True, validate=validate.Length(max=ROLE_MAX_LEN, error="Role is too long."))
 
 
-class RouteSchema(ma.Schema):
+class RouteSchema(BaseSchema):
     """ERD: Routes(id, name, color). `color` is used to render the route's
     line on the map (see feature/map-preview)."""
 
-    id = fields.Integer(dump_only=True)
-    name = fields.String(
-        required=True,
-        validate=validate.Length(min=1, max=100, error="Name must be between {min} and {max} characters."),
-    )
+    name = name_field()
     # Length-only for now — Schema.txt doesn't say whether this is a hex code
     # (e.g. "#1E90FF") or a named color. Tighten with validate.Regexp once
     # Robert/the frontend map work settles on a format.
     color = fields.String(
         required=True,
-        validate=validate.Length(min=1, max=30, error="Color must be between {min} and {max} characters."),
+        validate=validate.Length(
+            min=COLOR_MIN_LEN, max=COLOR_MAX_LEN, error="Color must be between {min} and {max} characters."
+        ),
     )
     # One-to-many, dump only: this route's stops. Relies on the eventual
     # Route model exposing a `stops` relationship/backref with that exact
@@ -135,40 +153,27 @@ class RouteSchema(ma.Schema):
     # so there is no Route <-> Stop cycle.
     stops = fields.Nested("StopSchema", many=True, dump_only=True)
 
-    class Meta:
-        ordered = True
 
-
-class StopSchema(ma.Schema):
+class StopSchema(BaseSchema):
     """ERD: Stops(id, route_id, name, x_coordinate, y_coordinate). Each stop
     belongs to exactly one route (route_id is a plain FK field here, not a
-    nested Route, to avoid Route <-> Stop circular serialization — see
-    RouteSchema.stops in the relationships section below)."""
+    nested Route, to avoid a Route <-> Stop serialization cycle — see
+    RouteSchema.stops above)."""
 
-    id = fields.Integer(dump_only=True)
-    route_id = fields.Integer(
-        required=True,
-        validate=validate.Range(min=1, error="route_id must be a positive integer."),
-    )
-    name = fields.String(
-        required=True,
-        validate=validate.Length(min=1, max=100, error="Name must be between {min} and {max} characters."),
-    )
+    route_id = positive_fk_field("route_id")
+    name = name_field()
     # Assumes a non-negative pixel/map coordinate system (matches the custom
     # Schema.png map), not signed GPS lat/long. Adjust the range if Robert's
     # coordinate system turns out to be different.
     x_coordinate = fields.Float(required=True, validate=validate.Range(min=0, error="x_coordinate cannot be negative."))
     y_coordinate = fields.Float(required=True, validate=validate.Range(min=0, error="y_coordinate cannot be negative."))
 
-    class Meta:
-        ordered = True
-
 
 # ---------------------------------------------------------------------------
 # Note on the many-to-many requirement: Schema.txt does not show an explicit
 # M2M / join table among User, Operator, Manager, Route or Stop — Route<->Stop
-# and Operator<->Manager are both plain one-to-many FKs (handled above).
-# The one real association/junction entity in Robert's full ERD is Bookings,
+# and Operator<->Manager are both plain one-to-many FKs (handled above). The
+# one real association/junction entity in Robert's full ERD is Bookings,
 # which ties a User to a Seat and a Trip (unique on seat_id+trip_id prevents
 # double-booking a seat on a trip) — added below per team decision, even
 # though Booking/Seat/Trip aren't in this branch's assigned model list.
@@ -177,20 +182,15 @@ class StopSchema(ma.Schema):
 # ---------------------------------------------------------------------------
 
 
-class BookingSchema(ma.Schema):
+class BookingSchema(BaseSchema):
     """ERD: Bookings(id, user_id, seat_id, trip_id, origin_id, destination_id,
     made_at). Flat/FK-id shape — used for create/update and list views."""
 
-    id = fields.Integer(dump_only=True)
-    user_id = fields.Integer(required=True, validate=validate.Range(min=1, error="user_id must be a positive integer."))
-    seat_id = fields.Integer(required=True, validate=validate.Range(min=1, error="seat_id must be a positive integer."))
-    trip_id = fields.Integer(required=True, validate=validate.Range(min=1, error="trip_id must be a positive integer."))
-    origin_id = fields.Integer(
-        required=True, validate=validate.Range(min=1, error="origin_id must be a positive integer.")
-    )
-    destination_id = fields.Integer(
-        required=True, validate=validate.Range(min=1, error="destination_id must be a positive integer.")
-    )
+    user_id = positive_fk_field("user_id")
+    seat_id = positive_fk_field("seat_id")
+    trip_id = positive_fk_field("trip_id")
+    origin_id = positive_fk_field("origin_id")
+    destination_id = positive_fk_field("destination_id")
     made_at = fields.DateTime(dump_only=True)
 
     @validates_schema
@@ -199,9 +199,6 @@ class BookingSchema(ma.Schema):
             raise ValidationError(
                 "destination_id must be different from origin_id.", field_name="destination_id"
             )
-
-    class Meta:
-        ordered = True
 
 
 class BookingDetailSchema(BookingSchema):
