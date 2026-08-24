@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
@@ -7,23 +7,19 @@ import { getRouteSelection } from "../../utils/routeSelection";
 
 function HowItWorks() {
   const [searchParams] = useSearchParams();
-  const [origin, setOrigin] = useState(null);
-  const [destination, setDestination] = useState(null);
 
-  useEffect(() => {
+  const initialOrigin = useMemo(() => {
     const fromId = searchParams.get("from");
+    return allStops.find((stop) => stop.id === fromId) || null;
+  }, [searchParams]);
+
+  const initialDestination = useMemo(() => {
     const toId = searchParams.get("to");
-    if (!fromId && !toId) return;
+    return allStops.find((stop) => stop.id === toId) || null;
+  }, [searchParams]);
 
-    const fromStop = allStops.find((stop) => stop.id === fromId);
-    const toStop = allStops.find((stop) => stop.id === toId);
-
-    if (fromStop) setOrigin(fromStop);
-    if (toStop) setDestination(toStop);
-    // Only meant to seed initial state from Home's search handoff — after this,
-    // dropdown/map clicks own origin/destination, so deps are intentionally empty.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [origin, setOrigin] = useState(initialOrigin);
+  const [destination, setDestination] = useState(initialDestination);
 
   function handleSelectStop(stop) {
     if (!origin || (origin && destination)) {
@@ -31,6 +27,7 @@ function HowItWorks() {
       setDestination(null);
       return;
     }
+
     if (stop.id === origin.id) return;
     setDestination(stop);
   }
@@ -45,7 +42,10 @@ function HowItWorks() {
     setDestination(stop);
   }
 
-  const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
+  const selection = useMemo(
+    () => getRouteSelection(origin, destination),
+    [origin, destination]
+  );
 
   return (
     <div className="how-it-works-page">
@@ -53,10 +53,13 @@ function HowItWorks() {
         <section className="how-it-works">
           <div className="how-it-works__card">
             <div className="how-it-works__intro">
-              <h1 className="how-it-works__title">1. Plan your route.</h1>
+              <h1 className="how-it-works__title">
+                1. Plan your route.
+              </h1>
+
               <p className="how-it-works__description">
-                Pick where you're starting from and where you're headed, and we'll show you the
-                route.
+                Pick where you're starting from and where you're headed,
+                and we'll show you the route.
               </p>
             </div>
 
