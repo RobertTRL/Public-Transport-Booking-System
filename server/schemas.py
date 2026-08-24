@@ -97,8 +97,8 @@ class RouteSchema(BaseSchema):
 class StopSchema(BaseSchema):
     route_id = positive_fk_field("route_id")
     name = name_field()
-    longitude = fields.Float(required=True, validate=validate.Range(min=-180, max=180, error="Longitude must be between -180 and 180."))
-    latitude = fields.Float(required=True, validate=validate.Range(min=-90, max=90, error="Latitude must be between -90 and 90."))
+    longitude = fields.Float(required=True)
+    latitude = fields.Float(required=True)
 
 
 class BookingSchema(BaseSchema):
