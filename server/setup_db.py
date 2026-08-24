@@ -35,3 +35,6 @@ def create_database():
 
 if __name__ == "__main__":
     create_database()
+
+# run this file to create the database:
+# pipenv run python setup_db.py
