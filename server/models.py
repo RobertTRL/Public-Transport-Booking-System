@@ -202,3 +202,22 @@ class Booking(db.Model):
             name='unique_seat_trip_booking'
         ),
     )
+class Occupation(db.Model):
+
+    __tablename__ = 'occupations'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    booking_id = db.Column(
+        db.Integer,
+        db.ForeignKey('bookings.id'),
+        unique=True,
+        nullable=False
+    )
+
+    made_at = db.Column(db.DateTime, nullable=False)
+
+    booking = db.relationship(
+        'Booking',
+        backref='occupation'
+    )
