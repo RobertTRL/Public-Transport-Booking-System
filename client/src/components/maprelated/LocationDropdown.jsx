@@ -31,6 +31,12 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
     setQuery("");
   }
 
+  function handleClear() {
+    onChange(null);
+    setQuery("");
+    setOpen(false);
+  }
+
   // Closed: show the selected stop's name as real text.
   // Open: show whatever the user is typing to search.
   const displayValue = open ? query : value ? value.name : "";
@@ -39,16 +45,29 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
     <div className="location-dropdown" ref={containerRef}>
       <label>{label}</label>
 
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={displayValue}
-        onChange={(event) => {
-          setQuery(event.target.value);
-          setOpen(true);
-        }}
-        onFocus={handleFocus}
-      />
+      <div className="location-dropdown-input-wrapper">
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={displayValue}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setOpen(true);
+          }}
+          onFocus={handleFocus}
+        />
+
+        {value && !open && (
+          <button
+            type="button"
+            className="location-dropdown-clear"
+            onClick={handleClear}
+            aria-label={`Clear ${label}`}
+          >
+            ×
+          </button>
+        )}
+      </div>
 
       {open && (
         <ul className="location-dropdown-list">
