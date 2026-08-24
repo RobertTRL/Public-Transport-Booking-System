@@ -224,11 +224,10 @@ class Occupation(db.Model):
         unique=True,
         nullable=False
     )
-
     made_at = db.Column(
-    db.DateTime,
-    nullable=False,
-    default=db.func.now()
+        db.DateTime,
+        nullable=False,
+        default=db.func.now()
     )
 
     booking = db.relationship(
