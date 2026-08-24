@@ -38,3 +38,6 @@ if __name__ == "__main__":
 
 # run this file to create the database:
 # pipenv run python setup_db.py
+
+# if you dont have postgresql make sure to install it!
+# you can do :  winget install PostgreSQL.PostgreSQL.17
