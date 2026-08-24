@@ -75,3 +75,25 @@ class Manager(db.Model):
     role = db.Column(db.String)
 
     operator = db.relationship('Operator', backref='managers')
+
+class Seat(db.Model):
+
+    __tablename__ = 'seats'
+
+    id = db.Column(db.Integer, primary_key=True)
+    seat_number = db.Column(db.Integer, nullable=False)
+    vehicle_id = db.Column(
+        db.Integer,
+        db.ForeignKey('vehicles.id'),
+        nullable=False
+    )
+
+    vehicle = db.relationship('Vehicle', backref='seats')
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            'vehicle_id',
+            'seat_number',
+            name='unique_vehicle_seat'
+        ),
+    )
