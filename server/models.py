@@ -121,7 +121,11 @@ class Trip(db.Model):
         nullable=False
     )
 
-    start_time = db.Column(db.DateTime, nullable=False)
+    start_time = db.Column(
+    db.DateTime,
+    nullable=False,
+    default=db.func.now()
+    )
     stop_time = db.Column(db.DateTime)
 
     origin = db.relationship(
@@ -176,8 +180,14 @@ class Booking(db.Model):
         db.ForeignKey('stops.id'),
         nullable=False
     )
+    made_at = db.Column(
+    db.DateTime,
+    nullable=False,
+    default=db.func.now()
+    )
 
-    made_at = db.Column(db.DateTime, nullable=False)
+
+  
 
     user = db.relationship('User', backref='bookings')
     seat = db.relationship('Seat', backref='bookings')
@@ -215,7 +225,11 @@ class Occupation(db.Model):
         nullable=False
     )
 
-    made_at = db.Column(db.DateTime, nullable=False)
+    made_at = db.Column(
+    db.DateTime,
+    nullable=False,
+    default=db.func.now()
+    )
 
     booking = db.relationship(
         'Booking',
