@@ -203,3 +203,8 @@ def positive_fk_field(label, required=True):
         required=required,
         validate=validate.Range(min=1, error=f"{label} must be a positive integer."),
     )
+
+class BaseSchema(ma.Schema):
+    id = fields.Integer(dump_only=True)
+    class Meta:
+        ordered = True
