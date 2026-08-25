@@ -236,3 +236,15 @@ class SaccoSchema(BaseSchema):
         allow_none=True,
         validate=validate.Length(max=ADDRESS_MAX_LEN, error="Address is too long."),
     )
+
+
+class VehicleSchema(BaseSchema):
+    sacco_id = positive_fk_field("sacco_id")
+    number_plate = fields.String(
+        required=True,
+        validate=validate.Length(min=PLATE_MIN_LEN, max=PLATE_MAX_LEN, error="Number plate must be between {min} and {max} characters."),
+    )
+    capacity = fields.Integer(
+        required=True,
+        validate=validate.Range(min=1, error="Capacity must be at least 1 seat."),
+    )
