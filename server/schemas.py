@@ -261,3 +261,12 @@ class StopSchema(BaseSchema):
         required=True,
         validate=validate.Range(min=-90, max=90, error="Latitude must be between -90 and 90."),
     )
+
+
+class RouteSchema(BaseSchema):
+    name = name_field()
+    color = fields.String(
+        required=True,
+        validate=validate.Length(min=COLOR_MIN_LEN, max=COLOR_MAX_LEN, error="Color must be between {min} and {max} characters."),
+    )
+    stops = fields.Nested(StopSchema, many=True, dump_only=True)
