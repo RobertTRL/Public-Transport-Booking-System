@@ -180,3 +180,6 @@ def name_field(required=True):
         required=required,
         validate=validate.Length(min=NAME_MIN_LEN, max=NAME_MAX_LEN, error="Name must be between {min} and {max} characters."),
     )
+# validate the email
+def email_field():
+    return fields.Email(required=True, error_messages=EMAIL_ERROR_MESSAGES)
