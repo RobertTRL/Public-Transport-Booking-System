@@ -31,12 +31,6 @@ function LocationDropdown({ options, value, onChange, placeholder }) {
     setQuery("");
   }
 
-  function handleClear() {
-    onChange(null);
-    setQuery("");
-    setOpen(false);
-  }
-
   const displayValue = open ? query : value ? value.name : "";
 
   return (
@@ -52,17 +46,6 @@ function LocationDropdown({ options, value, onChange, placeholder }) {
           }}
           onFocus={handleFocus}
         />
-
-        {value && !open && (
-          <button
-            type="button"
-            className="location-dropdown-clear"
-            onClick={handleClear}
-            aria-label="Clear selection"
-          >
-            ×
-          </button>
-        )}
       </div>
 
       {open && (
