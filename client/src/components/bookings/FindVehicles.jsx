@@ -6,14 +6,31 @@ import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
-const SHEET_COLLAPSED = "collapsed";
-const SHEET_EXPANDED = "expanded";
-
-// Dummy data — real vehicle/availability data isn't wired up yet
 const DUMMY_VEHICLES = [
-  { id: "v1", plate: "KDA 214B", type: "Matatu · 14-seater", operator: "Super Metro", departsIn: "3 min", fare: "KSh 100" },
-  { id: "v2", plate: "KCX 771T", type: "Bus · 33-seater", operator: "Citi Hoppa", departsIn: "7 min", fare: "KSh 80" },
-  { id: "v3", plate: "KDB 552L", type: "Matatu · 14-seater", operator: "Metro Trans", departsIn: "12 min", fare: "KSh 100" },
+  {
+    id: "v1",
+    plate: "KDA 214B",
+    type: "Matatu · 14-seater",
+    operator: "Super Metro",
+    departsIn: "3 min",
+    fare: "KSh 100",
+  },
+  {
+    id: "v2",
+    plate: "KCX 771T",
+    type: "Bus · 33-seater",
+    operator: "Citi Hoppa",
+    departsIn: "7 min",
+    fare: "KSh 80",
+  },
+  {
+    id: "v3",
+    plate: "KDB 552L",
+    type: "Matatu · 14-seater",
+    operator: "Metro Trans",
+    departsIn: "12 min",
+    fare: "KSh 100",
+  },
 ];
 
 function FindVehicles() {
@@ -42,7 +59,7 @@ function FindVehicles() {
   }
 
   function handleSelectStop(stop) {
-    if (!origin || (origin && destination)) {
+    if (!origin || destination) {
       setOrigin(stop);
       setDestination(null);
       return;
@@ -60,37 +77,15 @@ function FindVehicles() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
   }
 
-  function handleHandleClick() {
-    if (suppressClickRef.current) {
-      // tail end of a drag we already resolved in pointerup — swallow this once
-      suppressClickRef.current = false;
-      return;
-    }
-    toggleSheet();
+    setDestination(stop);
   }
 
-  function handlePointerDown(event) {
-    const startY = event.clientY;
+  const selection = useMemo(
+    () => getRouteSelection(origin, destination),
+    [origin, destination]
+  );
 
-    function handlePointerMove(moveEvent) {
-      if (Math.abs(moveEvent.clientY - startY) > 10) {
-        suppressClickRef.current = true;
-      }
-    }
-
-    function handlePointerUp(upEvent) {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
-      if (!suppressClickRef.current) return; // plain tap — onClick handles it
-
-      const delta = upEvent.clientY - startY;
-      // Sheet is always anchored to the bottom — dragging up expands it.
-      setSheetState(delta < 0 ? SHEET_EXPANDED : SHEET_COLLAPSED);
-    }
-
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
-  }
+  const hasRoute = Boolean(selection);
 
   return (
     <div className="find-vehicles">
@@ -105,16 +100,11 @@ function FindVehicles() {
         />
       </div>
 
-      <div className={`find-vehicles__sheet find-vehicles__sheet--${sheetState}`}>
-        <button
-          type="button"
-          className="find-vehicles__handle"
-          onClick={handleHandleClick}
-          onPointerDown={handlePointerDown}
-          aria-label="Expand or collapse trip details"
-        >
-          <span className="find-vehicles__handle-bar" />
-        </button>
+      <aside className="find-vehicles__sidebar">
+        <div className="find-vehicles__sidebar-header">
+          <h2>Find your route</h2>
+          <p>Select your starting point and destination.</p>
+        </div>
 
         <div className="find-vehicles__search">
           <RouteSearch
@@ -127,25 +117,39 @@ function FindVehicles() {
 
         {hasRoute && (
           <div className="find-vehicles__results">
-            <p className="find-vehicles__results-label">Available vehicles</p>
+            <p className="find-vehicles__results-label">
+              Available vehicles
+            </p>
+
             <ul className="find-vehicles__vehicle-list">
               {DUMMY_VEHICLES.map((vehicle) => (
-                <li key={vehicle.id} className="find-vehicles__vehicle">
+                <li
+                  key={vehicle.id}
+                  className="find-vehicles__vehicle"
+                >
                   <div className="find-vehicles__vehicle-main">
-                    <span className="find-vehicles__vehicle-plate">{vehicle.plate}</span>
-                    <span className="find-vehicles__vehicle-type">{vehicle.type}</span>
+                    <span className="find-vehicles__vehicle-plate">
+                      {vehicle.plate}
+                    </span>
+
+                    <span className="find-vehicles__vehicle-type">
+                      {vehicle.type}
+                    </span>
                   </div>
+
                   <div className="find-vehicles__vehicle-meta">
                     <span>{vehicle.operator}</span>
                     <span>{vehicle.departsIn}</span>
-                    <span className="find-vehicles__vehicle-fare">{vehicle.fare}</span>
+                    <span className="find-vehicles__vehicle-fare">
+                      {vehicle.fare}
+                    </span>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
         )}
-      </div>
+      </aside>
     </div>
   );
 }

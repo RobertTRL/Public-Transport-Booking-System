@@ -627,8 +627,9 @@
 
 .chart-container {
   position: relative;
-  width: 100%;
-  min-height: 320px;
+  width: min(100%, 760px);
+  height: 260px;
+  margin: 0 auto;
 }
 .dashboard {
   --sb-border: #e4e4e7;
@@ -648,33 +649,34 @@
     sans-serif;
 }
 .dashboard {
-  min-height: 100vh;
+  --sb-border: #e4e4e7;
+  --sb-card: #ffffff;
+  --sb-bg: #ffffff;
+  --sb-foreground: #18181b;
+  --sb-muted: #71717a;
+  --sb-accent: #2563eb;
+  --sb-radius: 0.75rem;
+  --sb-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04),
+    0 1px 3px 0 rgb(0 0 0 / 0.06);
 
-  background:
-    radial-gradient(
-      circle at 85% 10%,
-      rgba(59, 130, 246, 0.12),
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at 15% 90%,
-      rgba(14, 165, 233, 0.08),
-      transparent 28%
-    ),
-    linear-gradient(
-      135deg,
-      #f8fafc 0%,
-      #eef6ff 50%,
-      #f8fafc 100%
-    );
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: calc(100vh - 60px);
+  background: #ffffff;
+  color: var(--sb-foreground);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 }
 .dashboard-main {
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  height: 100%;
   overflow-y: auto;
   padding: 2rem 2.5rem;
-    position: relative;
-
+  position: relative;
+  background: #ffffff;
 }
 
 .dashboard-header {
@@ -703,17 +705,35 @@
 }
 
 .dashboard-card {
+  position: relative;
+  overflow: hidden;
   background: var(--sb-card);
   border: 1px solid var(--sb-border);
   border-radius: var(--sb-radius);
   box-shadow: var(--sb-shadow);
   padding: 1.25rem 1.5rem;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Blue accent strip used on dashboard statistic cards */
+.dashboard-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #2563eb;
 }
 
 .dashboard-card:hover {
-  border-color: #d4d4d8;
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.06), 0 1px 3px 0 rgb(0 0 0 / 0.08);
+  transform: translateY(-3px);
+  border-color: #bfdbfe;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.08);
 }
 
 .dashboard-card h2 {
