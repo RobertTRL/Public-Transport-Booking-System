@@ -213,3 +213,14 @@ class PassengerSchema(BaseSchema):
     email = email_field()
     password = password_field()
     phone_number = phone_field()
+
+class UserSchema(BaseSchema):
+    sacco_id = positive_fk_field("sacco_id")
+    name = name_field()
+    email = email_field()
+    password = password_field()
+    phone_number = phone_field()
+    role = fields.String(
+        required=True,
+        validate=validate.Length(min=1, max=ROLE_MAX_LEN, error="Role must be between 1 and {max} characters."),
+    )
