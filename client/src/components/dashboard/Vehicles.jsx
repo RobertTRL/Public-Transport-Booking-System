@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Vehicles.css";
+// import "./Vehicles.css";
 
 const vehicles = [
   {
