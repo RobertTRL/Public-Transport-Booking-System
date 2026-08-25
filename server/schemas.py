@@ -191,3 +191,9 @@ def password_field():
         load_only=True,
         validate=validate.Length(min=PASSWORD_MIN_LEN, max=PASSWORD_MAX_LEN, error="Password must be between {min} and {max} characters."),
     )
+
+def phone_field():
+    return fields.String(
+        allow_none=True,
+        validate=validate.Length(min=PHONE_MIN_LEN, max=PHONE_MAX_LEN, error="Phone number must be between {min} and {max} characters."),
+    )
