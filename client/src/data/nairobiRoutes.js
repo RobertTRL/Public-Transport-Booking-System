@@ -60,3 +60,20 @@ export const allStops = nairobiRoutes.flatMap((route) =>
     routeName: route.name,
   }))
 );
+
+// Look up a single stop by its id across all routes
+export function getStopById(stopId) {
+  return allStops.find((s) => s.id === stopId) || null;
+}
+
+// Look up a route definition by its id
+export function getRouteById(routeId) {
+  return nairobiRoutes.find((r) => r.id === routeId) || null;
+}
+
+// Find which route a given stop belongs to
+export function getRouteForStop(stopId) {
+  return nairobiRoutes.find((route) =>
+    route.stops.some((s) => s.id === stopId)
+  ) || null;
+}

@@ -95,17 +95,16 @@ const TextLoop = ({
 
     const measure = () => {
       if (cancelled) return;
-      let length = 0;
-      let unitWidth;
+      let length, unitWidth;
       try {
         length = pathEl.getTotalLength();
         unitWidth = measureEl.getComputedTextLength();
       } catch {
         return;
       }
-      if (!length) return;
+      if (!length || !unitWidth) return;
 
-      const reps = unitWidth > 0 ? Math.max(1, Math.round(length / unitWidth)) : 1;
+      const reps = Math.max(1, Math.round(length / unitWidth));
       setMetrics(prev => (prev.length === length && prev.reps === reps ? prev : { length, reps }));
     };
 

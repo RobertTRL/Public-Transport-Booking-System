@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
-import { allStops } from "../../data/nairobiRoutes";
-import { getRouteSelection } from "../../utils/routeSelection";
+import { getStopById } from "../../data/nairobiRoutes";
+import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
 const DUMMY_VEHICLES = [
@@ -35,15 +35,17 @@ const DUMMY_VEHICLES = [
 
 function FindVehicles() {
   const [searchParams] = useSearchParams();
-   const [origin, setOrigin] = useState(() => {
-    const fromId = searchParams.get("from");
-    return allStops.find((stop) => stop.id === fromId) || null;
-  });
 
-  const [destination, setDestination] = useState(() => {
-    const toId = searchParams.get("to");
-    return allStops.find((stop) => stop.id === toId) || null;
-  });
+  // Seed initial state from URL search params (Home handoff)
+  const initialOrigin = getStopById(searchParams.get("from"));
+  const initialDestination = getStopById(searchParams.get("to"));
+
+  const [origin, setOrigin] = useState(initialOrigin);
+  const [destination, setDestination] = useState(initialDestination);
+  const [sheetState, setSheetState] = useState(
+    initialOrigin && initialDestination ? SHEET_EXPANDED : SHEET_COLLAPSED
+  );
+  const suppressClickRef = useRef(false);
 
   function handleSelectOrigin(stop) {
     setOrigin(stop);
@@ -51,9 +53,9 @@ function FindVehicles() {
   }
 
   function handleSelectDestination(stop) {
-    if (origin && stop.id === origin.id) return;
-
+    if (stop && origin && stop.id === origin.id) return;
     setDestination(stop);
+    if (stop && origin) setSheetState(SHEET_EXPANDED);
   }
 
   function handleSelectStop(stop) {
@@ -62,8 +64,18 @@ function FindVehicles() {
       setDestination(null);
       return;
     }
-
     if (stop.id === origin.id) return;
+    setDestination(stop);
+    setSheetState(SHEET_EXPANDED);
+  }
+
+  const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
+  const hasRoute = Boolean(selection);
+  const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
+
+  function toggleSheet() {
+    setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
+  }
 
     setDestination(stop);
   }
@@ -79,7 +91,7 @@ function FindVehicles() {
     <div className="find-vehicles">
       <div className="find-vehicles__map">
         <Map
-          stops={allStops}
+          stops={visibleStops}
           origin={origin}
           destination={destination}
           highlightedStopIds={selection?.highlightedStopIds || []}
