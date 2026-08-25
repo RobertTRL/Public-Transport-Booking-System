@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-function LocationDropdown({ label, options, value, onChange, placeholder }) {
+function LocationDropdown({ options, value, onChange, placeholder }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -37,14 +37,10 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
     setOpen(false);
   }
 
-  // Closed: show the selected stop's name as real text.
-  // Open: show whatever the user is typing to search.
   const displayValue = open ? query : value ? value.name : "";
 
   return (
     <div className="location-dropdown" ref={containerRef}>
-      <label>{label}</label>
-
       <div className="location-dropdown-input-wrapper">
         <input
           type="text"
@@ -62,7 +58,7 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
             type="button"
             className="location-dropdown-clear"
             onClick={handleClear}
-            aria-label={`Clear ${label}`}
+            aria-label="Clear selection"
           >
             ×
           </button>

@@ -49,6 +49,49 @@
   font-size: 0.95rem;
 }
 
+.location-dropdown-input-wrapper {
+  position: relative;
+}
+
+.location-dropdown-input-wrapper input {
+  padding-right: 2.25rem; /* keep typed text clear of the button */
+}
+
+.location-dropdown-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+  padding: 0;
+
+  color: #9a9a9a;
+  font-size: 1rem;
+  line-height: 1;
+
+  background: #f1f2f4;
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.location-dropdown-clear:hover {
+  background: #e3e5e9;
+  color: #4b4b4b;
+}
+
+.location-dropdown-clear:active {
+  background: #d7d9de;
+}
+
 @media (min-width: 640px) {
   .activity-empty__text {
     font-size: 1rem;
