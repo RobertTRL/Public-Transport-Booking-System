@@ -183,3 +183,11 @@ def name_field(required=True):
 # validate the email
 def email_field():
     return fields.Email(required=True, error_messages=EMAIL_ERROR_MESSAGES)
+
+def password_field():
+    # load_only ensures the raw password is never dumped to API responses
+    return fields.String(
+        required=True,
+        load_only=True,
+        validate=validate.Length(min=PASSWORD_MIN_LEN, max=PASSWORD_MAX_LEN, error="Password must be between {min} and {max} characters."),
+    )
