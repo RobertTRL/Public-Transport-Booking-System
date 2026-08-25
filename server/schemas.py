@@ -157,3 +157,13 @@
 
 from config import ma
 from marshmallow import fields, validate, validates_schema, ValidationError
+
+# constants for validating
+NAME_MIN_LEN, NAME_MAX_LEN = 1, 100
+PASSWORD_MIN_LEN, PASSWORD_MAX_LEN = 8, 128
+PHONE_MIN_LEN, PHONE_MAX_LEN = 7, 20
+COLOR_MIN_LEN, COLOR_MAX_LEN = 1, 30
+CONTACT_MIN_LEN, CONTACT_MAX_LEN = 3, 100
+ADDRESS_MAX_LEN = 255
+ROLE_MAX_LEN = 50
+PLATE_MIN_LEN, PLATE_MAX_LEN = 3, 20
