@@ -203,8 +203,13 @@ def positive_fk_field(label, required=True):
         required=required,
         validate=validate.Range(min=1, error=f"{label} must be a positive integer."),
     )
-
+# SCHEMAS
 class BaseSchema(ma.Schema):
     id = fields.Integer(dump_only=True)
     class Meta:
         ordered = True
+
+class PassengerSchema(BaseSchema):
+    email = email_field()
+    password = password_field()
+    phone_number = phone_field()
