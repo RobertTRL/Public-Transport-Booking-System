@@ -197,3 +197,9 @@ def phone_field():
         allow_none=True,
         validate=validate.Length(min=PHONE_MIN_LEN, max=PHONE_MAX_LEN, error="Phone number must be between {min} and {max} characters."),
     )
+# func to validate positive integere
+def positive_fk_field(label, required=True):
+    return fields.Integer(
+        required=required,
+        validate=validate.Range(min=1, error=f"{label} must be a positive integer."),
+    )
