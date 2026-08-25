@@ -310,3 +310,8 @@ class BookingSchema(BaseSchema):
         if origin and destination and origin == destination:
             raise ValidationError("destination_id must be different from origin_id.", field_name="destination_id")
 
+class BookingDetailSchema(BookingSchema):
+    user = fields.Nested(PassengerSchema, dump_only=True)
+    trip = fields.Nested(TripDetailSchema, dump_only=True)
+    origin = fields.Nested(StopSchema, dump_only=True)
+    destination = fields.Nested(StopSchema, dump_only=True)
