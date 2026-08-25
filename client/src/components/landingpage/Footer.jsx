@@ -17,7 +17,7 @@ function Footer() {
                         <div className="footer-col">
                             <h3>Product</h3>
                             <ul>
-                                <li><NavLink to="/book">Book a Ride</NavLink></li>
+                                <li><NavLink to="/book/login">Book a Ride</NavLink></li>
                                 <li><NavLink to="/login">Dashboard Login</NavLink></li>
                             </ul>
                         </div>
