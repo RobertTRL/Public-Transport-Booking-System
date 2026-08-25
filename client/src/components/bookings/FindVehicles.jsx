@@ -18,7 +18,6 @@ const DUMMY_VEHICLES = [
 function FindVehicles() {
   const [searchParams] = useSearchParams();
 
-  // Seed initial state from URL search params (Home handoff)
   const initialOrigin = getStopById(searchParams.get("from"));
   const initialDestination = getStopById(searchParams.get("to"));
 
@@ -28,6 +27,7 @@ function FindVehicles() {
     initialOrigin && initialDestination ? SHEET_EXPANDED : SHEET_COLLAPSED
   );
   const suppressClickRef = useRef(false);
+  const dragStartY = useRef(null);
 
   function handleSelectOrigin(stop) {
     setOrigin(stop);
@@ -59,6 +59,34 @@ function FindVehicles() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
   }
 
+  // Mobile-only: drag the handle to snap the sheet open/closed.
+  function handleHandlePointerDown(e) {
+    dragStartY.current = e.clientY;
+    suppressClickRef.current = false;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  }
+
+  function handleHandlePointerMove(e) {
+    if (dragStartY.current === null) return;
+    const delta = e.clientY - dragStartY.current;
+    if (Math.abs(delta) > 10) suppressClickRef.current = true;
+  }
+
+  function handleHandlePointerUp(e) {
+    if (dragStartY.current === null) return;
+    const delta = e.clientY - dragStartY.current;
+    dragStartY.current = null;
+
+    if (delta < -40) {
+      setSheetState(SHEET_EXPANDED);
+    } else if (delta > 40) {
+      setSheetState(SHEET_COLLAPSED);
+    } else if (!suppressClickRef.current) {
+      toggleSheet();
+    }
+    suppressClickRef.current = false;
+  }
+
   return (
     <div className="find-vehicles">
       <div className="find-vehicles__map">
@@ -72,7 +100,18 @@ function FindVehicles() {
         />
       </div>
 
-      <aside className="find-vehicles__sidebar">
+      <aside className={`find-vehicles__sidebar find-vehicles__sidebar--${sheetState}`}>
+        <button
+          type="button"
+          className="find-vehicles__sheet-handle"
+          onPointerDown={handleHandlePointerDown}
+          onPointerMove={handleHandlePointerMove}
+          onPointerUp={handleHandlePointerUp}
+          aria-label={sheetState === SHEET_EXPANDED ? "Collapse search panel" : "Expand search panel"}
+        >
+          <span className="find-vehicles__sheet-handle-bar" />
+        </button>
+
         <div className="find-vehicles__sidebar-header">
           <h2>Find your route</h2>
           <p>Select your starting point and destination.</p>
