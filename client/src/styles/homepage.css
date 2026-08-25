@@ -57,41 +57,6 @@
   padding-right: 2.25rem; /* keep typed text clear of the button */
 }
 
-.location-dropdown-clear {
-  position: absolute;
-  top: 50%;
-  right: 0.5rem;
-  transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 26px;
-  height: 20px;
-  padding: 0;
-
-  color: #ffffff;
-  font-size: 1rem;
-  line-height: 1;
-
-  background: #131313;
-  border: none;
-  border-radius: 8px;
-
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
-}
-
-.location-dropdown-clear:hover {
-  background: #2b2b2b;
-}
-
-.location-dropdown-clear:active {
-  background: #000000;
-  transform: translateY(-50%) scale(0.95);
-}
-
 @media (min-width: 640px) {
   .activity-empty__text {
     font-size: 1rem;
