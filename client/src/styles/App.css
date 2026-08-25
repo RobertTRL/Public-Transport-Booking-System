@@ -1,6 +1,15 @@
-html, body {
-  overflow-x: hidden;
+html,
+body {
   width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.hero-section,
+.how-it-works-page,
+.faq,
+.text-loop {
+  min-width: 0;
 }
 
 .hero-section {
@@ -10,99 +19,100 @@ html, body {
 .aboutus-title {
   position: relative;
   z-index: 10;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin: 0;
+  padding: clamp(2rem, 5vw, 3.5rem) 1.5rem clamp(0.5rem, 0.6vw, 1rem);
+  color: #131313;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
   font-weight: 700;
   letter-spacing: -0.01em;
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
   line-height: 1.15;
-  color: #131313;
   text-align: center;
-  padding: clamp(2rem, 5vw, 3.5rem) 1.5rem clamp(0.5rem, 0.6vw, 1rem);
-  margin: 0;
 }
 
 .aboutus-title::after {
-  content: '';
   display: block;
   width: 64px;
   height: 3px;
-  background: #131313;
   margin: clamp(1rem, 2.5vw, 1.5rem) auto 0;
   border-radius: 2px;
+  background: #131313;
+  content: "";
 }
 
 .how-it-works {
   position: relative;
-  z-index: 10; /* same layer as hero-geometric__content, above hero-geometric__bg */
-  width: 100%;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  padding: 20px clamp(1rem, 4vw, 1.5rem) clamp(3rem, 8vw, 6rem);
   background: transparent;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  padding: 20px 0 clamp(3rem, 8vw, 6rem) 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .how-it-works__card {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding: clamp(1.5rem, 4vw, 3rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: clamp(1.5rem, 4vw, 3rem);
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  width: min(100%, 1200px);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem);
   border: 1px solid rgba(19, 19, 19, 0.08);
   border-radius: clamp(16px, 3vw, 28px);
+  background: rgba(255, 255, 255, 0.65);
+  box-sizing: border-box;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .how-it-works__intro {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   max-width: 640px;
+  text-align: center;
 }
 
 .how-it-works__title {
+  margin: 0 0 clamp(1rem, 3vw, 1.5rem);
+  color: #131313;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  color: #131313;
-  margin: 0 0 clamp(1rem, 3vw, 1.5rem) 0;
 }
 
 .how-it-works__description {
-  font-size: clamp(1rem, 1.35rem, 1.5rem);
-  line-height: 1.625;
-  color: #737373;
-  font-weight: 400;
   margin: 0;
+  color: #737373;
+  font-size: clamp(1rem, 1.35rem, 1.5rem);
+  font-weight: 400;
+  line-height: 1.625;
 }
 
 .route-search {
   position: relative;
-  z-index: 1000; /* above Leaflet's internal panes/controls */
+  z-index: 1000;
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   width: 100%;
   max-width: 640px;
+  min-width: 0;
 }
 
 .location-dropdown {
   position: relative;
   flex: 1;
-  min-width: 220px;
+  min-width: 0;
 }
 
 .location-dropdown input {
   width: 100%;
+  min-width: 0;
   padding: 0.6rem 0.8rem;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -111,18 +121,18 @@ html, body {
 .location-dropdown-list {
   position: absolute;
   top: 100%;
-  left: 0;
   right: 0;
+  left: 0;
   z-index: 1001;
-  background: #fff;
+  max-height: 220px;
+  margin-top: 4px;
+  padding: 0.25rem 0;
+  overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 8px;
-  margin-top: 4px;
-  max-height: 220px;
-  overflow-y: auto;
-  list-style: none;
-  padding: 0.25rem 0;
+  background: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  list-style: none;
 }
 
 .location-dropdown-list li {
@@ -146,9 +156,9 @@ html, body {
   position: relative;
   z-index: 0;
   width: 100%;
-  height: 420px; /* Leaflet needs an explicit height to render */
-  border-radius: 16px;
+  height: clamp(260px, 70vw, 420px);
   overflow: hidden;
+  border-radius: 16px;
 }
 
 .how-it-works__map .transport-map,
@@ -185,49 +195,49 @@ html, body {
 .faq {
   width: 100%;
   background: #000;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   padding: clamp(3rem, 8vw, 6rem) 0;
 }
 
 .faq__inner {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding: 0 clamp(1.5rem, 4vw, 3rem);
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  box-sizing: border-box;
   text-align: center;
 }
 
 .faq__label {
+  margin: 0 0 0.75rem;
+  color: #60a5fa;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: #60a5fa;
-  margin: 0 0 0.75rem 0;
 }
 
 .faq__title {
+  margin: 0 0 0.75rem;
+  color: #fafafa;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  color: #fafafa;
-  margin: 0 0 0.75rem 0;
 }
 
 .faq__description {
+  margin: 0 0 clamp(2rem, 5vw, 3rem);
+  color: #a1a1aa;
   font-size: 1rem;
   line-height: 1.6;
-  color: #a1a1aa;
-  margin: 0 0 clamp(2rem, 5vw, 3rem) 0;
 }
 
 .faq__list {
   width: 100%;
-  text-align: left;
   border-top: 1px solid #27272a;
+  text-align: left;
 }
 
 .faq-item {
@@ -235,19 +245,20 @@ html, body {
 }
 
 .faq-item__trigger {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
+  width: 100%;
   padding: 1.25rem 0.25rem;
+  border: none;
+  background: none;
+  color: #fafafa;
+  cursor: pointer;
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #fafafa;
+  overflow-wrap: anywhere;
   text-align: left;
   transition: color 0.15s ease;
 }
@@ -283,19 +294,29 @@ html, body {
 .faq-item__content-inner p {
   margin: 0;
   padding: 0 0.25rem 1.25rem 0;
+  color: #a1a1aa;
   font-size: 0.9rem;
   line-height: 1.65;
-  color: #a1a1aa;
 }
 
 .bookabus {
   position: relative;
-  z-index: 10;                              /* same layer as hero-geometric__content (10), above hero-geometric__bg (0) */
-  width: 100%;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: transparent;                  /* let Hero's bg show through around the card */
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  padding: clamp(3rem, 8vw, 6rem) 0 0 0;
+  width: 100%;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem) 0;
+  background: transparent;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+@media (max-width: 600px) {
+  .route-search {
+    flex-direction: column;
+  }
+
+  .location-dropdown {
+    width: 100%;
+  }
 }
