@@ -294,3 +294,11 @@ class TripDetailSchema(TripSchema):
     origin = fields.Nested(StopSchema, dump_only=True)
     destination = fields.Nested(StopSchema, dump_only=True)
     vehicle = fields.Nested(VehicleSchema, dump_only=True)
+
+# schemas for bookings and transactions
+class BookingSchema(BaseSchema):
+    user_id = positive_fk_field("user_id")
+    trip_id = positive_fk_field("trip_id")
+    origin_id = positive_fk_field("origin_id")
+    destination_id = positive_fk_field("destination_id")
+    made_at = fields.DateTime(dump_only=True)
