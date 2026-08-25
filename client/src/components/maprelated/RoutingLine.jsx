@@ -10,7 +10,6 @@ function RoutingLine({ waypoints }) {
   useEffect(() => {
     if (!waypoints || waypoints.length < 2) return undefined;
 
-    // Remove previous control before creating a new one
     if (controlRef.current) {
       try {
         map.removeControl(controlRef.current);
@@ -25,7 +24,7 @@ function RoutingLine({ waypoints }) {
       routeWhileDragging: false,
       addWaypoints: false,
       draggableWaypoints: false,
-      fitSelectedRoutes: true,
+      fitSelectedRoutes: false,
       show: false,
       createMarker: () => null,
       lineOptions: {

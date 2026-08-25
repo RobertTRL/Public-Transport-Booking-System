@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import RoutingLine from "./RoutingLine";
 
 const DEFAULT_CENTER = [-1.286389, 36.817223];
+const MOBILE_BREAKPOINT = "(max-width: 768px)";
 
 const defaultIcon = new L.Icon({
   iconUrl:
@@ -42,23 +43,43 @@ function MapBounds({ stops }) {
   const map = useMap();
 
   useEffect(() => {
-    if (stops.length === 0) {
-      map.setView(DEFAULT_CENTER, 12);
-      return;
+    const mediaQuery = window.matchMedia(MOBILE_BREAKPOINT);
+
+    function fitToStops() {
+      if (stops.length === 0) {
+        map.setView(DEFAULT_CENTER, 12);
+        return;
+      }
+
+      const bounds = stops.map((stop) => stop.position);
+
+      // Offset the fitted view away from whichever side the search
+      // panel currently covers, so selected stops aren't hidden under it.
+      const fitOptions = mediaQuery.matches
+        ? {
+            // Bottom sheet on mobile — leave clearance below
+            paddingTopLeft: [24, 24],
+            paddingBottomRight: [24, 140],
+            maxZoom: 14,
+          }
+        : {
+            // Left sidebar on desktop (~360px wide) — leave clearance on the left
+            paddingTopLeft: [380, 40],
+            paddingBottomRight: [40, 40],
+            maxZoom: 14,
+          };
+
+      map.fitBounds(bounds, fitOptions);
     }
-    map.fitBounds(
-      stops.map((stop) => stop.position),
-      { padding: [40, 40], maxZoom: 14 }
-    );
+
+    fitToStops();
+    mediaQuery.addEventListener("change", fitToStops);
+    return () => mediaQuery.removeEventListener("change", fitToStops);
   }, [map, stops]);
 
   return null;
 }
 
-/**
- * Returns a role label for the tooltip based on whether the stop is
- * the origin, destination, or an intermediate stop on the segment.
- */
 function getStopLabel(stop, origin, destination) {
   if (origin && stop.id === origin.id) return `${stop.name} (Start)`;
   if (destination && stop.id === destination.id) return `${stop.name} (Destination)`;
@@ -78,7 +99,7 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={12}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         className="map-container"
       >
         <TileLayer
