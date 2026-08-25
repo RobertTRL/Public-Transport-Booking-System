@@ -167,3 +167,9 @@ CONTACT_MIN_LEN, CONTACT_MAX_LEN = 3, 100
 ADDRESS_MAX_LEN = 255
 ROLE_MAX_LEN = 50
 PLATE_MIN_LEN, PLATE_MAX_LEN = 3, 20
+
+# error messages that will be displayed
+EMAIL_ERROR_MESSAGES = {
+    "required": "Email is required.",
+    "invalid": "Not a valid email address.",
+}
