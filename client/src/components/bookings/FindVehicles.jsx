@@ -6,31 +6,13 @@ import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
+const SHEET_COLLAPSED = "collapsed";
+const SHEET_EXPANDED = "expanded";
+
 const DUMMY_VEHICLES = [
-  {
-    id: "v1",
-    plate: "KDA 214B",
-    type: "Matatu · 14-seater",
-    operator: "Super Metro",
-    departsIn: "3 min",
-    fare: "KSh 100",
-  },
-  {
-    id: "v2",
-    plate: "KCX 771T",
-    type: "Bus · 33-seater",
-    operator: "Citi Hoppa",
-    departsIn: "7 min",
-    fare: "KSh 80",
-  },
-  {
-    id: "v3",
-    plate: "KDB 552L",
-    type: "Matatu · 14-seater",
-    operator: "Metro Trans",
-    departsIn: "12 min",
-    fare: "KSh 100",
-  },
+  { id: "v1", plate: "KDA 214B", type: "Matatu · 14-seater", operator: "Super Metro", departsIn: "3 min", fare: "KSh 100" },
+  { id: "v2", plate: "KCX 771T", type: "Bus · 33-seater", operator: "Citi Hoppa", departsIn: "7 min", fare: "KSh 80" },
+  { id: "v3", plate: "KDB 552L", type: "Matatu · 14-seater", operator: "Metro Trans", departsIn: "12 min", fare: "KSh 100" },
 ];
 
 function FindVehicles() {
@@ -77,16 +59,6 @@ function FindVehicles() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
   }
 
-    setDestination(stop);
-  }
-
-  const selection = useMemo(
-    () => getRouteSelection(origin, destination),
-    [origin, destination]
-  );
-
-  const hasRoute = Boolean(selection);
-
   return (
     <div className="find-vehicles">
       <div className="find-vehicles__map">
@@ -117,32 +89,18 @@ function FindVehicles() {
 
         {hasRoute && (
           <div className="find-vehicles__results">
-            <p className="find-vehicles__results-label">
-              Available vehicles
-            </p>
-
+            <p className="find-vehicles__results-label">Available vehicles</p>
             <ul className="find-vehicles__vehicle-list">
               {DUMMY_VEHICLES.map((vehicle) => (
-                <li
-                  key={vehicle.id}
-                  className="find-vehicles__vehicle"
-                >
+                <li key={vehicle.id} className="find-vehicles__vehicle">
                   <div className="find-vehicles__vehicle-main">
-                    <span className="find-vehicles__vehicle-plate">
-                      {vehicle.plate}
-                    </span>
-
-                    <span className="find-vehicles__vehicle-type">
-                      {vehicle.type}
-                    </span>
+                    <span className="find-vehicles__vehicle-plate">{vehicle.plate}</span>
+                    <span className="find-vehicles__vehicle-type">{vehicle.type}</span>
                   </div>
-
                   <div className="find-vehicles__vehicle-meta">
                     <span>{vehicle.operator}</span>
                     <span>{vehicle.departsIn}</span>
-                    <span className="find-vehicles__vehicle-fare">
-                      {vehicle.fare}
-                    </span>
+                    <span className="find-vehicles__vehicle-fare">{vehicle.fare}</span>
                   </div>
                 </li>
               ))}
