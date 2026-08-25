@@ -19,46 +19,28 @@ Table Stops {
   id integer [primary key]
   route_id integer [not null]
   name varchar [not null]
-  x_coordinate float [not null]
-  y_coordinate float [not null]
+  longitude float [not null]
+  latitude float [not null]
 }
 
 Table Vehicles {
   id integer [primary key]
+  sacco_id integer [not null]
   number_plate varchar [unique, not null]
-  route_id integer [not null]
   capacity integer
-  operator_id integer [not null]
-}
-
-Table Operators {
-  id integer [primary key]
-  name varchar [unique, not null]
-  address varchar
-  contact varchar [not null]
-}
-
-Table Managers {
-  id integer [primary key]
-  name varchar [not null]
-  email varchar [unique, not null]
-  password_hash varchar [not null]
-  operator_id integer [not null]
-  phone_number varchar
-  role varchar
-}
-
-Table Seats {
-  id integer [primary key]
-  seat_number integer [not null]
-  vehicle_id integer [not null]
-
-  indexes {
-    (vehicle_id, seat_number) [unique] // one seat number per vehicle
-  }
 }
 
 Table Users {
+  id integer [primary key]
+  sacco_id integer [not null]
+  name varchar [unique, not null]
+  email varchar [not null, unique]
+  password_hash varchar [not null]
+  phone_number varchar
+  role varchar [not null]
+}
+
+Table Passengers {
   id integer [primary key]
   email varchar [not null, unique]
   password_hash varchar [not null]
@@ -68,54 +50,44 @@ Table Users {
 Table Bookings {
   id integer [primary key]
   user_id integer [not null]
-  seat_id integer [not null]
   trip_id integer [not null]
   origin_id integer [not null]
   destination_id integer [not null]
   made_at timestamp [not null] // [default: time.now()]
 
-  indexes {
-    (seat_id, trip_id) [unique] // prevents double-booking a seat on the same trip
-  }
-}
-
-Table Occupations {
-  id integer [primary key]
-  booking_id integer [unique, not null]
-  made_at timestamp [not null] // [default: time.now()]
 }
 
 Table Trips {
   id integer [primary key]
   origin_id integer [not null]
   destination_id integer [not null]
-  vehicle_id integer [not null]
   start_time timestamp [not null] // [default: time.now()]
   stop_time timestamp
+  vehicle_id integer [not null]
 }
 
+Table SACCOs {
+  id integer [primary key]
+  name varchar [not null]
+  contact varchar [not null]
+  address varchar
+}
 Ref: "Routes"."id" < "Stops"."route_id"
 
-Ref: "Vehicles"."route_id" > "Routes"."id"
-
-Ref: "Operators"."id" < "Managers"."operator_id"
-
-Ref: "Operators"."id" < "Vehicles"."operator_id"
-
-Ref: "Seats"."vehicle_id" > "Vehicles"."id"
-
-Ref: "Users"."id" < "Bookings"."user_id"
-
-Ref: "Bookings"."seat_id" > "Seats"."id"
+Ref: "Passengers"."id" < "Bookings"."user_id"
 
 Ref: "Bookings"."origin_id" > "Stops"."id"
 
 Ref: "Bookings"."destination_id" > "Stops"."id"
-
-Ref: "Bookings"."id" - "Occupations"."booking_id"
 
 Ref: "Vehicles"."id" < "Trips"."vehicle_id"
 
 Ref: "Trips"."origin_id" > "Stops"."id"
 
 Ref: "Trips"."destination_id" > "Stops"."id"
+
+Ref: "Bookings"."trip_id" ?> "Trips"."id"
+
+Ref: "SACCOs"."id" <? "Vehicles"."sacco_id"
+
+Ref: "SACCOs"."id" <? "Users"."sacco_id"
