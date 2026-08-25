@@ -162,7 +162,6 @@
   font-weight: 700;
 }
 
-/* Phone: sidebar becomes a bottom sheet / dropdown */
 @media (max-width: 768px) {
   .find-vehicles__sidebar {
     top: auto;
@@ -171,6 +170,8 @@
     bottom: 0;
     width: 100%;
     max-width: none;
+
+    height: auto;
     max-height: 80vh;
 
     padding: 1.25rem;
@@ -180,17 +181,7 @@
     border-radius: 20px 20px 0 0;
     box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.12);
 
-    transform: translateY(calc(100% - 104px));
-    transition: transform 0.28s ease;
-    will-change: transform;
-  }
-
-  .find-vehicles__sidebar--expanded {
-    transform: translateY(0);
-  }
-
-  .find-vehicles__sidebar--collapsed {
-    transform: translateY(calc(100% - 104px));
+    transition: max-height 0.25s ease;
   }
 
   .find-vehicles__sheet-handle {

@@ -59,7 +59,7 @@ function MapBounds({ stops }) {
         ? {
             // Bottom sheet on mobile — leave clearance below
             paddingTopLeft: [24, 24],
-            paddingBottomRight: [24, 140],
+            paddingBottomRight: [24, 260],
             maxZoom: 14,
           }
         : {
