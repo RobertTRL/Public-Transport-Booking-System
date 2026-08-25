@@ -302,3 +302,11 @@ class BookingSchema(BaseSchema):
     origin_id = positive_fk_field("origin_id")
     destination_id = positive_fk_field("destination_id")
     made_at = fields.DateTime(dump_only=True)
+
+    @validates_schema
+    def validate_origin_destination(self, data, **kwargs):
+        origin = data.get("origin_id")
+        destination = data.get("destination_id")
+        if origin and destination and origin == destination:
+            raise ValidationError("destination_id must be different from origin_id.", field_name="destination_id")
+
