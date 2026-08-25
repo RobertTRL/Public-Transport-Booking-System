@@ -289,3 +289,8 @@ class TripSchema(BaseSchema):
         stop = data.get("stop_time")
         if start and stop and stop <= start:
             raise ValidationError("stop_time must be later than start_time.", field_name="stop_time")
+
+class TripDetailSchema(TripSchema):
+    origin = fields.Nested(StopSchema, dump_only=True)
+    destination = fields.Nested(StopSchema, dump_only=True)
+    vehicle = fields.Nested(VehicleSchema, dump_only=True)
