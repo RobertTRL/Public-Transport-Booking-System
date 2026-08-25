@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .header {
   position: fixed;
   top: 0;
@@ -15,10 +21,11 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: clamp(1rem, 8vw, 4rem);
 }
 
 .header-content h1 {
@@ -27,6 +34,11 @@
   font-size: clamp(1.15rem, 2vw, 1.4rem);
   color: #131313;
   margin: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-cta {
@@ -41,9 +53,23 @@
   background: #131313;
   color: #F0F9FF;
   transition: transform 0.2s ease, background-color 0.2s ease;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .header-cta:hover {
   transform: translateY(-2px);
   background: #3B82F6;
+}
+
+@media (max-width: 380px) {
+  .header-content {
+    padding: 1rem 1rem;
+    gap: clamp(0.5rem, 5vw, 2rem);
+  }
+
+  .header-cta {
+    padding: 0.55rem 1.2rem;
+    font-size: 0.85rem;
+  }
 }

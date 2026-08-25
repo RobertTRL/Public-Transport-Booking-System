@@ -18,7 +18,6 @@ const DUMMY_VEHICLES = [
 function FindVehicles() {
   const [searchParams] = useSearchParams();
 
-  // Seed initial state from URL search params (Home handoff)
   const initialOrigin = getStopById(searchParams.get("from"));
   const initialDestination = getStopById(searchParams.get("to"));
 
@@ -28,6 +27,7 @@ function FindVehicles() {
     initialOrigin && initialDestination ? SHEET_EXPANDED : SHEET_COLLAPSED
   );
   const suppressClickRef = useRef(false);
+  const dragStartY = useRef(null);
 
   function handleSelectOrigin(stop) {
     setOrigin(stop);
@@ -54,9 +54,39 @@ function FindVehicles() {
   const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
   const hasRoute = Boolean(selection);
   const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
+  
+  const showResults = hasRoute && sheetState === SHEET_EXPANDED
 
   function toggleSheet() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
+  }
+
+  // Mobile-only: drag the handle to snap the sheet open/closed.
+  function handleHandlePointerDown(e) {
+    dragStartY.current = e.clientY;
+    suppressClickRef.current = false;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  }
+
+  function handleHandlePointerMove(e) {
+    if (dragStartY.current === null) return;
+    const delta = e.clientY - dragStartY.current;
+    if (Math.abs(delta) > 10) suppressClickRef.current = true;
+  }
+
+  function handleHandlePointerUp(e) {
+    if (dragStartY.current === null) return;
+    const delta = e.clientY - dragStartY.current;
+    dragStartY.current = null;
+
+    if (delta < -40) {
+      setSheetState(SHEET_EXPANDED);
+    } else if (delta > 40) {
+      setSheetState(SHEET_COLLAPSED);
+    } else if (!suppressClickRef.current) {
+      toggleSheet();
+    }
+    suppressClickRef.current = false;
   }
 
   return (
@@ -72,7 +102,20 @@ function FindVehicles() {
         />
       </div>
 
-      <aside className="find-vehicles__sidebar">
+      <aside className={`find-vehicles__sidebar find-vehicles__sidebar--${sheetState}`}>
+        {hasRoute && (
+          <button
+            type="button"
+            className="find-vehicles__sheet-handle"
+            onPointerDown={handleHandlePointerDown}
+            onPointerMove={handleHandlePointerMove}
+            onPointerUp={handleHandlePointerUp}
+            aria-label={sheetState === SHEET_EXPANDED ? "Hide vehicle list" : "Show vehicle list"}
+          >
+            <span className="find-vehicles__sheet-handle-bar" />
+          </button>
+        )}
+
         <div className="find-vehicles__sidebar-header">
           <h2>Find your route</h2>
           <p>Select your starting point and destination.</p>
@@ -87,7 +130,7 @@ function FindVehicles() {
           />
         </div>
 
-        {hasRoute && (
+        {showResults && (
           <div className="find-vehicles__results">
             <p className="find-vehicles__results-label">Available vehicles</p>
             <ul className="find-vehicles__vehicle-list">

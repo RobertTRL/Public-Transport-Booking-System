@@ -49,6 +49,14 @@
   font-size: 0.95rem;
 }
 
+.location-dropdown-input-wrapper {
+  position: relative;
+}
+
+.location-dropdown-input-wrapper input {
+  padding-right: 2.25rem; /* keep typed text clear of the button */
+}
+
 @media (min-width: 640px) {
   .activity-empty__text {
     font-size: 1rem;
