@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip, useMap } from "react-leaflet";
 import { useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -55,6 +55,16 @@ function MapBounds({ stops }) {
   return null;
 }
 
+/**
+ * Returns a role label for the tooltip based on whether the stop is
+ * the origin, destination, or an intermediate stop on the segment.
+ */
+function getStopLabel(stop, origin, destination) {
+  if (origin && stop.id === origin.id) return `${stop.name} (Start)`;
+  if (destination && stop.id === destination.id) return `${stop.name} (Destination)`;
+  return stop.name;
+}
+
 function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, onSelectStop }) {
   function getIcon(stop) {
     if (origin && stop.id === origin.id) return originIcon;
@@ -86,7 +96,11 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
             position={stop.position}
             icon={getIcon(stop)}
             eventHandlers={{ click: () => onSelectStop(stop) }}
-          />
+          >
+            <Tooltip direction="top" offset={[0, -42]} opacity={0.9}>
+              {getStopLabel(stop, origin, destination)}
+            </Tooltip>
+          </Marker>
         ))}
       </MapContainer>
     </div>
