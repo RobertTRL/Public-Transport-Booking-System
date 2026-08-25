@@ -173,3 +173,10 @@ EMAIL_ERROR_MESSAGES = {
     "required": "Email is required.",
     "invalid": "Not a valid email address.",
 }
+
+# func to validate a name field
+def name_field(required=True):
+    return fields.String(
+        required=required,
+        validate=validate.Length(min=NAME_MIN_LEN, max=NAME_MAX_LEN, error="Name must be between {min} and {max} characters."),
+    )
