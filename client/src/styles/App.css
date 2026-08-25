@@ -194,9 +194,9 @@ body {
 
 .faq {
   width: 100%;
+  padding: clamp(3rem, 8vw, 7rem) 0;
   background: #000;
   font-family: "Plus Jakarta Sans", sans-serif;
-  padding: clamp(3rem, 8vw, 6rem) 0;
 }
 
 .faq__inner {
@@ -309,6 +309,36 @@ body {
   padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem) 0;
   background: transparent;
   font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+@media (min-width: 768px) {
+  .faq__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: clamp(2rem, 8vw, 6rem);
+    align-items: start;
+    max-width: 1200px;
+    padding: clamp(1rem, 3vw, 2rem) clamp(1.5rem, 5vw, 3rem);
+    text-align: left;
+  }
+
+  .faq__title {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0 0 1rem;
+  }
+
+  .faq__description {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+  }
+
+  .faq__list {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
 }
 
 @media (max-width: 600px) {
