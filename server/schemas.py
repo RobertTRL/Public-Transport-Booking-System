@@ -270,3 +270,22 @@ class RouteSchema(BaseSchema):
         validate=validate.Length(min=COLOR_MIN_LEN, max=COLOR_MAX_LEN, error="Color must be between {min} and {max} characters."),
     )
     stops = fields.Nested(StopSchema, many=True, dump_only=True)
+
+class TripSchema(BaseSchema):
+    origin_id = positive_fk_field("origin_id")
+    destination_id = positive_fk_field("destination_id")
+    vehicle_id = positive_fk_field("vehicle_id")
+    start_time = fields.DateTime(dump_default=fields.DateTime(), load_default=fields.DateTime())
+    stop_time = fields.DateTime(allow_none=True)
+    @validates_schema
+    def validate_trip_locations(self, data, **kwargs):
+        origin = data.get("origin_id")
+        destination = data.get("destination_id")
+        if origin and destination and origin == destination:
+            raise ValidationError("destination_id must be different from origin_id.", field_name="destination_id")
+    @validates_schema
+    def validate_trip_times(self, data, **kwargs):
+        start = data.get("start_time")
+        stop = data.get("stop_time")
+        if start and stop and stop <= start:
+            raise ValidationError("stop_time must be later than start_time.", field_name="stop_time")
