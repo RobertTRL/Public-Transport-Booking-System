@@ -224,3 +224,15 @@ class UserSchema(BaseSchema):
         required=True,
         validate=validate.Length(min=1, max=ROLE_MAX_LEN, error="Role must be between 1 and {max} characters."),
     )
+
+# fleet and organizations
+class SaccoSchema(BaseSchema):
+    name = name_field()
+    contact = fields.String(
+        required=True,
+        validate=validate.Length(min=CONTACT_MIN_LEN, max=CONTACT_MAX_LEN, error="Contact must be between {min} and {max} characters."),
+    )
+    address = fields.String(
+        allow_none=True,
+        validate=validate.Length(max=ADDRESS_MAX_LEN, error="Address is too long."),
+    )
