@@ -1,6 +1,6 @@
 from flask import request, jsonify, make_response
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models import User, passenger
+from models import User, Passenger
 from flask_restful import Resource
 from config import db, api
 
@@ -13,7 +13,15 @@ POST	            /api/v1/auth/provider/login
 
 class PassengerLoginResource(Resource):
     def post(self):
-        pass
+        data = request.get_json()
+        email, password = data.get('email'), data.get('password')
+        passenger = Passenger.query.filter_by(email=email).first()
+
+        if passenger and passenger.authenticate(password):
+            access_token = create_access_token(identity=passenger.id)
+            return {'access_token': access_token}, 200
+
+        return {'error': 'Invalid credentials'}, 401
 
 class ProviderLoginResource(Resource):
     def post(self):
