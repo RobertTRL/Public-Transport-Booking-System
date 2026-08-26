@@ -14,6 +14,7 @@ from models import (
 )
 
 import passenger
+import IAM
 
 """
 # IAM endpoints for passengers and providers
