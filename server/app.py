@@ -63,6 +63,7 @@ GET	                /api/v1/provider/bookings?route_id=&trip_id=&from=&to=&statu
 GET                 /api/v1/provider/booking-statistics?from=&to=&group_by=day                              get_booking_statistics() ✓
 GET	                /api/v1/provider/trips/<int:trip_id>/bookings	                                        get_trip_bookings() ✓
 
+# 41 total routes
 """
 db.init_app(app)
 
