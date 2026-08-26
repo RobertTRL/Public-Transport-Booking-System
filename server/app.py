@@ -264,6 +264,23 @@ class ProviderRouteDetailResource(Resource):
             'total_stops': len(route.route_stops)
         }, 200
 
+    @jwt_required()
+    def delete(self, route_id):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        route = Route.query.get(route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        route_name = route.name
+        db.session.delete(route)
+        db.session.commit()
+
+        return {'message': f"Route '{route_name}' successfully deleted"}, 200
+
+
 
 
 
