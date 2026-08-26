@@ -362,6 +362,54 @@ class ProviderRouteStopsResource(Resource):
             'longitude': stop.longitude
         }, 201
 
+    @jwt_required()
+    def put(self, route_id):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        route = Route.query.get(route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        data = request.get_json() or {}
+        stops_input = data.get('stops')
+        if not isinstance(stops_input, list):
+            return {'error': "'stops' must be a list of stop objects"}, 400
+
+        parsed_stops = []
+        seen_stop_ids = set()
+        for idx, item in enumerate(stops_input, start=1):
+            stop_id = item.get('stop_id') if isinstance(item, dict) else item
+            sequence = item.get('sequence', idx) if isinstance(item, dict) else idx
+            if not stop_id:
+                return {'error': f"Missing stop_id at index {idx}"}, 400
+            if stop_id in seen_stop_ids:
+                return {'error': f"Duplicate stop_id '{stop_id}' provided in payload"}, 400
+            seen_stop_ids.add(stop_id)
+            stop = Stop.query.get(stop_id)
+            if not stop:
+                return {'error': f"Stop with id '{stop_id}' does not exist"}, 404
+            parsed_stops.append((stop, sequence))
+
+        RouteStop.query.filter_by(route_id=route.id).delete()
+
+        created_stops = []
+        for stop, sequence in parsed_stops:
+            new_rs = RouteStop(route_id=route.id, stop_id=stop.id, sequence=sequence)
+            db.session.add(new_rs)
+            created_stops.append({
+                'stop_id': stop.id,
+                'sequence': sequence,
+                'name': stop.name,
+                'latitude': stop.latitude,
+                'longitude': stop.longitude
+            })
+
+        db.session.commit()
+        return created_stops, 200
+
+
 
 
 
