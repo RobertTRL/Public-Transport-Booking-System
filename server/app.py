@@ -144,6 +144,32 @@ class ProviderRoutesResource(Resource):
 
         return result, 200
 
+    @jwt_required()
+    def post(self):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        data = request.get_json() or {}
+        name = data.get('name')
+        color = data.get('color')
+
+        if not name or not color:
+            return {'error': 'Route name and color are required'}, 400
+
+        new_route = Route(name=name.strip(), color=color.strip())
+        db.session.add(new_route)
+        db.session.commit()
+
+        return {
+            'id': new_route.id,
+            'name': new_route.name,
+            'color': new_route.color,
+            'total_stops': 0,
+            'stops': []
+        }, 201
+
+
 
 
 
