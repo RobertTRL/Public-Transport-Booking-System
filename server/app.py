@@ -33,7 +33,49 @@ class ProviderDashboardResource(Resource):
         if not sacco:
             return {'error': 'No SACCO associated with this provider'}, 404
 
-        return {'provider': {'id': user.id, 'name': user.name, 'role': user.role}}, 200
+        vehicles = Vehicle.query.filter_by(sacco_id=sacco.id).all()
+        vehicle_ids = [v.id for v in vehicles]
+        active_vehicles_count = sum(1 for v in vehicles if v.is_active)
+
+        trips = Trip.query.filter(Trip.vehicle_id.in_(vehicle_ids)).all() if vehicle_ids else []
+        trip_ids = [t.id for t in trips]
+
+        scheduled_trips = sum(1 for t in trips if t.status == 'scheduled')
+        in_progress_trips = sum(1 for t in trips if t.status == 'in_progress')
+        completed_trips = sum(1 for t in trips if t.status == 'completed')
+        cancelled_trips = sum(1 for t in trips if t.status == 'cancelled')
+
+        total_bookings = Booking.query.filter(Booking.trip_id.in_(trip_ids)).count() if trip_ids else 0
+        total_routes = Route.query.count()
+
+        metrics = {
+            'total_vehicles': len(vehicles),
+            'active_vehicles': active_vehicles_count,
+            'total_routes': total_routes,
+            'total_trips': len(trips),
+            'scheduled_trips': scheduled_trips,
+            'in_progress_trips': in_progress_trips,
+            'completed_trips': completed_trips,
+            'cancelled_trips': cancelled_trips,
+            'total_bookings': total_bookings
+        }
+
+        return {
+            'provider': {
+                'id': user.id,
+                'name': user.name,
+                'email': user.email,
+                'role': user.role,
+                'sacco': {
+                    'id': sacco.id,
+                    'name': sacco.name,
+                    'contact': sacco.contact,
+                    'address': sacco.address
+                }
+            },
+            'metrics': metrics
+        }, 200
+
 
 
 
