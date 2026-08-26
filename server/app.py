@@ -264,7 +264,9 @@ GET	                /api/v1/provider/trips/<int:trip_id>/bookings	              
 # 41 total routes
 """
 api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')
+api.add_resource(ProviderRoutesResource, '/api/v1/provider/routes')
 db.init_app(app)
+
 
 
 if __name__ == '__main__':
