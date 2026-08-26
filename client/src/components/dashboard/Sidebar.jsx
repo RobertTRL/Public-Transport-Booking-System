@@ -5,6 +5,8 @@ import {
   Route,
   CalendarCheck,
   MapPin,
+  Users,
+  User,
   LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +18,7 @@ const MIN_WIDTH = 200;
 const MAX_WIDTH = 420;
 const COLLAPSED_WIDTH = 90;
 
-function Sidebar() {
+function Sidebar({ isOpen = false, onClose }) {
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const sidebarRef = useRef(null);
@@ -76,7 +78,9 @@ function Sidebar() {
 
   return (
     <aside
-      className={`sidebar ${isCollapsed ? "collapsed" : ""}`}
+      className={`sidebar ${isCollapsed ? "collapsed" : ""} ${
+        isOpen ? "open" : ""
+      }`}
       ref={sidebarRef}
       style={{ width }}
     >
@@ -88,30 +92,49 @@ function Sidebar() {
           route="/dashboard"
           text="Overview"
           end
+          onClick={onClose}
         />
 
         <SidebarButton
           icon={<Bus size={18} />}
           route="/dashboard/vehicles"
           text="Vehicles"
+          onClick={onClose}
         />
 
         <SidebarButton
           icon={<Route size={18} />}
           route="/dashboard/routes"
           text="Routes"
+          onClick={onClose}
         />
 
         <SidebarButton
           icon={<CalendarCheck size={18} />}
           route="/dashboard/bookings"
           text="Bookings"
+          onClick={onClose}
         />
 
         <SidebarButton
           icon={<MapPin size={18} />}
           route="/dashboard/stops"
           text="Stops"
+          onClick={onClose}
+        />
+
+        <SidebarButton
+          icon={<Users size={18} />}
+          route="/dashboard/users"
+          text="Users"
+          onClick={onClose}
+        />
+
+        <SidebarButton
+          icon={<User size={18} />}
+          route="/dashboard/profile"
+          text="Profile"
+          onClick={onClose}
         />
       </nav>
 
