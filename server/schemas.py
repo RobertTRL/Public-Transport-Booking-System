@@ -4,9 +4,6 @@ from config import ma
 from marshmallow import fields, validate, validates_schema, ValidationError
 
 
-# ---------------------------------------------------------------------------
-# Validation constants
-# ---------------------------------------------------------------------------
 
 NAME_MIN_LEN, NAME_MAX_LEN = 1, 100
 PASSWORD_MIN_LEN, PASSWORD_MAX_LEN = 8, 128
@@ -25,19 +22,12 @@ TRIP_STATUSES = (
 )
 
 
-# ---------------------------------------------------------------------------
-# Error messages
-# ---------------------------------------------------------------------------
-
 EMAIL_ERROR_MESSAGES = {
     "required": "Email is required.",
     "invalid": "Not a valid email address.",
 }
 
 
-# ---------------------------------------------------------------------------
-# Reusable fields
-# ---------------------------------------------------------------------------
 
 def name_field(required=True):
     return fields.String(
@@ -91,9 +81,7 @@ def positive_fk_field(label, required=True, allow_none=False):
     )
 
 
-# ---------------------------------------------------------------------------
-# Base schema
-# ---------------------------------------------------------------------------
+
 
 class BaseSchema(ma.Schema):
     id = fields.Integer(dump_only=True)
@@ -101,10 +89,6 @@ class BaseSchema(ma.Schema):
     class Meta:
         ordered = True
 
-
-# ---------------------------------------------------------------------------
-# User / Passenger schemas
-# ---------------------------------------------------------------------------
 
 class PassengerSchema(BaseSchema):
     email = email_field()
@@ -135,9 +119,6 @@ class UserSchema(BaseSchema):
     )
 
 
-# ---------------------------------------------------------------------------
-# Operator schema
-# ---------------------------------------------------------------------------
 
 class OperatorSchema(BaseSchema):
     name = name_field()
@@ -161,10 +142,6 @@ class OperatorSchema(BaseSchema):
     )
 
 
-# ---------------------------------------------------------------------------
-# Manager schema
-# ---------------------------------------------------------------------------
-
 class ManagerSchema(BaseSchema):
     name = name_field()
     email = email_field()
@@ -173,9 +150,6 @@ class ManagerSchema(BaseSchema):
     operator_id = positive_fk_field("operator_id")
 
 
-# ---------------------------------------------------------------------------
-# SACCO schema
-# ---------------------------------------------------------------------------
 
 class SaccoSchema(BaseSchema):
     name = name_field()
@@ -197,10 +171,6 @@ class SaccoSchema(BaseSchema):
         ),
     )
 
-
-# ---------------------------------------------------------------------------
-# Vehicle schema
-# ---------------------------------------------------------------------------
 
 class VehicleSchema(BaseSchema):
     sacco_id = positive_fk_field(
@@ -231,11 +201,6 @@ class VehicleSchema(BaseSchema):
         load_default=True,
     )
 
-
-# ---------------------------------------------------------------------------
-# Stop schema
-# ---------------------------------------------------------------------------
-
 class StopSchema(BaseSchema):
     route_id = positive_fk_field("route_id")
 
@@ -260,9 +225,6 @@ class StopSchema(BaseSchema):
     )
 
 
-# ---------------------------------------------------------------------------
-# Route / RouteStop schemas
-# ---------------------------------------------------------------------------
 
 class RouteStopSchema(BaseSchema):
     route_id = positive_fk_field("route_id")
@@ -311,9 +273,6 @@ class RouteSchema(BaseSchema):
     )
 
 
-# ---------------------------------------------------------------------------
-# Booking schema
-# ---------------------------------------------------------------------------
 
 class BookingSchema(BaseSchema):
     user_id = positive_fk_field("user_id")
@@ -335,9 +294,6 @@ class BookingSchema(BaseSchema):
                 )
 
 
-# ---------------------------------------------------------------------------
-# Booking detail schema
-# ---------------------------------------------------------------------------
 
 class BookingDetailSchema(BookingSchema):
     user = fields.Nested(
@@ -356,9 +312,6 @@ class BookingDetailSchema(BookingSchema):
     )
 
 
-# ---------------------------------------------------------------------------
-# Trip schema
-# ---------------------------------------------------------------------------
 
 class TripSchema(BaseSchema):
     origin_routestop_id = positive_fk_field(
