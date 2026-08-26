@@ -1,9 +1,8 @@
-from flask import Flask
-from flask_migrate import Migrate
-
+from flask import request
+from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from config import db, app, api
 from models import (
-    db,
-    app,
     User,
     Passenger,
     Route,
@@ -14,6 +13,14 @@ from models import (
     Sacco,
     Trip
 )
+
+
+def get_current_provider_user():
+    identity = get_jwt_identity()
+    if not identity:
+        return None
+    return User.query.get(identity)
+
 
 """
 # IAM endpoints for passengers and providers
