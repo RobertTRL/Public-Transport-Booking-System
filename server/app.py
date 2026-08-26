@@ -274,9 +274,19 @@ class ProviderRouteDetailResource(Resource):
         if not route:
             return {'error': 'Route not found'}, 404
 
+        route_stop_ids = [rs.id for rs in route.route_stops]
+        if route_stop_ids:
+            active_trips = Trip.query.filter(
+                (Trip.origin_routestop_id.in_(route_stop_ids)) | (Trip.destination_routestop_id.in_(route_stop_ids)),
+                Trip.status.in_(['scheduled', 'in_progress'])
+            ).first()
+            if active_trips:
+                return {'error': 'Cannot delete route with active scheduled or in-progress trips'}, 409
+
         route_name = route.name
         db.session.delete(route)
         db.session.commit()
+
 
         return {'message': f"Route '{route_name}' successfully deleted"}, 200
 
