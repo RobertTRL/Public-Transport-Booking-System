@@ -5,19 +5,29 @@ function RouteSearch({ origin, destination, onSelectOrigin, onSelectDestination 
   return (
     <div className="route-search">
       <LocationDropdown
-        label="From"
         placeholder="Pick a starting point"
         options={allStops}
         value={origin}
-        onChange={onSelectOrigin}
+        onChange={(stop) => {
+          if (stop === null) {
+            onSelectOrigin(null);
+            return;
+          }
+          onSelectOrigin(stop);
+        }}
       />
 
       <LocationDropdown
-        label="To"
         placeholder="Pick a destination"
         options={allStops}
         value={destination}
-        onChange={onSelectDestination}
+        onChange={(stop) => {
+          if (stop === null) {
+            onSelectDestination(null);
+            return;
+          }
+          onSelectDestination(stop);
+        }}
       />
     </div>
   );

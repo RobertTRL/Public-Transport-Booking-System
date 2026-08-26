@@ -80,15 +80,6 @@ function Sidebar() {
       ref={sidebarRef}
       style={{ width }}
     >
-      <div className="sidebar-profile">
-        <div className="profile-placeholder">P</div>
-
-        <div className="sidebar-profile-info">
-          <h3>Provider</h3>
-          <p>Service Provider</p>
-        </div>
-      </div>
-
       <nav className="sidebar-navigation">
         <span className="sidebar-nav-label">Menu</span>
 

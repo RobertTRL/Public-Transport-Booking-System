@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-function LocationDropdown({ label, options, value, onChange, placeholder }) {
+function LocationDropdown({ options, value, onChange, placeholder }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -31,24 +31,22 @@ function LocationDropdown({ label, options, value, onChange, placeholder }) {
     setQuery("");
   }
 
-  // Closed: show the selected stop's name as real text.
-  // Open: show whatever the user is typing to search.
   const displayValue = open ? query : value ? value.name : "";
 
   return (
     <div className="location-dropdown" ref={containerRef}>
-      <label>{label}</label>
-
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={displayValue}
-        onChange={(event) => {
-          setQuery(event.target.value);
-          setOpen(true);
-        }}
-        onFocus={handleFocus}
-      />
+      <div className="location-dropdown-input-wrapper">
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={displayValue}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setOpen(true);
+          }}
+          onFocus={handleFocus}
+        />
+      </div>
 
       {open && (
         <ul className="location-dropdown-list">

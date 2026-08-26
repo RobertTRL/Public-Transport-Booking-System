@@ -1,13 +1,14 @@
 .hero-geometric {
   position: relative;
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 100svh;
   overflow: hidden;
-  color: black;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #000;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .hero-bg {
@@ -20,56 +21,72 @@
 .hero-geometric__content {
   position: relative;
   z-index: 10;
-  width: 100%;
-  flex: 1;
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  width: 100%;
+  padding: clamp(6rem, 16vw, 7.5rem) 0 clamp(3rem, 10vw, 5rem);
 }
 
 .hero-geometric__inner {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  min-width: 0;
+  padding-inline: clamp(1rem, 5vw, 1.5rem);
 }
 
 .hero-geometric__headline {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .hero-geometric__title-wrap {
+  max-width: 100%;
   overflow: hidden;
 }
 
 .hero-geometric__title--bold {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #000;
+  font-family: "Plus Jakarta Sans", sans-serif;
   font-weight: 800;
-  color: black;
+}
+
+.hero-geometric__title--subtitle {
+  margin-top: -0.25rem;
+  color: #525252;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(1.25rem, 2.8vw, 1.85rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 .hero-geometric__description-wrap {
-  max-width: 480px;
-  text-align: center;
+  width: min(100%, 480px);
+  min-width: 0;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .hero-geometric__description {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(1rem, 1.35rem, 1.5rem);
-  line-height: 1.625;
-  color: #737373;
-  font-weight: 400;
   margin: 0;
+  overflow-wrap: anywhere;
+  color: #737373;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(1rem, 1.35rem, 1.5rem);
+  font-weight: 400;
+  line-height: 1.625;
 }
 
 .hero-geometric__actions {
@@ -78,59 +95,63 @@
   align-items: center;
   justify-content: center;
   gap: clamp(0.75rem, 2vw, 1.5rem);
+  width: 100%;
   padding-top: clamp(0.5rem, 2vw, 1.5rem);
 }
 
 .hero-geometric__cta {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
-  text-decoration: none;
+  min-width: 0;
   padding: clamp(0.65rem, 1.5vw, 0.9rem) clamp(1.5rem, 4vw, 2.25rem);
   border-radius: 999px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-decoration: none;
   transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-}
-
-.hero-geometric__title--subtitle {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 500;
-  font-size: clamp(1.25rem, 2.8vw, 1.85rem);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: #525252;
-  margin-top: -0.25rem;
 }
 
 .hero-geometric__cta--primary {
   background: #131313;
-  color: #F0F9FF;
+  color: #f0f9ff;
 }
 
 .hero-geometric__cta--primary:hover {
+  background: #3b82f6;
   transform: translateY(-2px);
-  background: #3B82F6;
 }
 
 .hero-geometric__cta--secondary {
+  border: 1.5px solid #131313;
   background: transparent;
   color: #131313;
-  border: 1.5px solid #131313;
 }
 
 .hero-geometric__cta--secondary:hover {
-  transform: translateY(-2px);
   background: #131313;
-  color: #F0F9FF;
+  color: #f0f9ff;
+  transform: translateY(-2px);
 }
 
 @media (min-width: 768px) {
   .hero-geometric__content {
-    padding: 5rem 0;
+    padding: 8rem 0 5rem;
   }
 
   .hero-geometric__headline {
     gap: 1rem;
     margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-geometric__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-geometric__cta {
+    width: 100%;
   }
 }
