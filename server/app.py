@@ -109,7 +109,31 @@ class ProviderRoutesResource(Resource):
         user = get_current_provider_user()
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
-        return [], 200
+
+        routes = Route.query.all()
+        result = []
+        for r in routes:
+            ordered_stops = sorted(r.route_stops, key=lambda s: s.sequence)
+            result.append({
+                'id': r.id,
+                'name': r.name,
+                'color': r.color,
+                'total_stops': len(ordered_stops),
+                'stops': [
+                    {
+                        'id': rs.id,
+                        'stop_id': rs.stop_id,
+                        'sequence': rs.sequence,
+                        'name': rs.stop.name if rs.stop else None,
+                        'latitude': rs.stop.latitude if rs.stop else None,
+                        'longitude': rs.stop.longitude if rs.stop else None
+                    }
+                    for rs in ordered_stops
+                ]
+            })
+
+        return result, 200
+
 
 
 
