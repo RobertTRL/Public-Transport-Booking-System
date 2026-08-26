@@ -53,7 +53,19 @@ class PassengerRegisterResource(Resource):
 
 class ProviderRegisterResource(Resource):
     def post(self):
-        pass
+        data = request.get_json()
+        name, email, password, role, sacco_id = data.get('name'), data.get('email'), data.get('password'), data.get('role'), data.get('sacco_id')
+
+        if User.query.filter_by(email=email).first():
+            return {'error': 'Email already exists'}, 400
+
+        new_user = User(name=name, email=email, role=role, sacco_id=sacco_id)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        access_token = create_access_token(identity=new_user.id)
+        return {'access_token': access_token}, 201
 
 api.add_resource(PassengerLoginResource, '/api/v1/auth/passenger/login')
 api.add_resource(ProviderLoginResource, '/api/v1/auth/provider/login')
