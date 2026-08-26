@@ -25,7 +25,15 @@ class PassengerLoginResource(Resource):
 
 class ProviderLoginResource(Resource):
     def post(self):
-        pass
+        data = request.get_json()
+        email, password = data.get('email'), data.get('password')
+        user = User.query.filter_by(email=email).first()
+
+        if user and user.authenticate(password):
+            access_token = create_access_token(identity=user.id)
+            return {'access_token': access_token}, 200
+
+        return {'error': 'Invalid credentials'}, 401
 
 class PassengerRegisterResource(Resource):
     def post(self):
