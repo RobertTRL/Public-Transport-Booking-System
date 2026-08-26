@@ -241,11 +241,21 @@ class ProviderRouteDetailResource(Resource):
 
         data = request.get_json() or {}
         if 'name' in data and data['name']:
-            route.name = data['name'].strip()
+            new_name = data['name'].strip()
+            existing_name = Route.query.filter(Route.name == new_name, Route.id != route_id).first()
+            if existing_name:
+                return {'error': f"A route with name '{new_name}' already exists"}, 409
+            route.name = new_name
+
         if 'color' in data and data['color']:
-            route.color = data['color'].strip()
+            new_color = data['color'].strip()
+            existing_color = Route.query.filter(Route.color == new_color, Route.id != route_id).first()
+            if existing_color:
+                return {'error': f"A route with color '{new_color}' already exists"}, 409
+            route.color = new_color
 
         db.session.commit()
+
 
         return {
             'id': route.id,
