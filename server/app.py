@@ -315,6 +315,41 @@ class ProviderRouteStopsResource(Resource):
             for rs in route_stops
         ], 200
 
+    @jwt_required()
+    def post(self, route_id):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        route = Route.query.get(route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        data = request.get_json() or {}
+        stop_id = data.get('stop_id')
+        if not stop_id:
+            return {'error': 'stop_id is required'}, 400
+
+        stop = Stop.query.get(stop_id)
+        if not stop:
+            return {'error': 'Stop not found'}, 404
+
+        sequence = data.get('sequence', 1)
+        route_stop = RouteStop(route_id=route.id, stop_id=stop.id, sequence=sequence)
+        db.session.add(route_stop)
+        db.session.commit()
+
+        return {
+            'id': route_stop.id,
+            'route_id': route_stop.route_id,
+            'stop_id': route_stop.stop_id,
+            'sequence': route_stop.sequence,
+            'name': stop.name,
+            'latitude': stop.latitude,
+            'longitude': stop.longitude
+        }, 201
+
+
 
 
 
