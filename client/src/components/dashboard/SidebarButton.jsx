@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
 
-function SidebarButton({ icon, route, text, end = false }) {
+function SidebarButton({ icon, route, text, end = false, onClick }) {
   return (
     <NavLink
       to={route}
       end={end}
+      onClick={onClick}
       className={({ isActive }) =>
         `sidebar-button ${isActive ? "active" : ""}`
       }
