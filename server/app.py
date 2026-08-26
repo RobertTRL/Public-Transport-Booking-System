@@ -199,6 +199,38 @@ class ProviderRoutesResource(Resource):
         }, 201
 
 
+class ProviderRouteDetailResource(Resource):
+    @jwt_required()
+    def get(self, route_id):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        route = Route.query.get(route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        ordered_stops = sorted(route.route_stops, key=lambda s: s.sequence)
+        return {
+            'id': route.id,
+            'name': route.name,
+            'color': route.color,
+            'total_stops': len(ordered_stops),
+            'stops': [
+                {
+                    'id': rs.id,
+                    'stop_id': rs.stop_id,
+                    'sequence': rs.sequence,
+                    'name': rs.stop.name if rs.stop else None,
+                    'latitude': rs.stop.latitude if rs.stop else None,
+                    'longitude': rs.stop.longitude if rs.stop else None
+                }
+                for rs in ordered_stops
+            ]
+        }, 200
+
+
+
 
 
 
