@@ -8,9 +8,27 @@ class Route(db.Model):
     name = db.Column(db.String, nullable=False)
     color = db.Column(db.String, unique=True, nullable=False)
 
+    route_stops = db.relationship(
+        'RouteStop',
+        backref='route',
+        order_by='RouteStop.sequence',
+        cascade='all, delete-orphan'
+    )
+
 
 class Stop(db.Model):
     __tablename__ = 'stops'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+
+    route_stops = db.relationship('RouteStop', backref='stop')
+
+
+class RouteStop(db.Model):
+    __tablename__ = 'route_stops'
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -20,11 +38,24 @@ class Stop(db.Model):
         nullable=False
     )
 
-    name = db.Column(db.String, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    latitude = db.Column(db.Float, nullable=False)
+    stop_id = db.Column(
+        db.Integer,
+        db.ForeignKey('stops.id'),
+        nullable=False
+    )
 
-    route = db.relationship('Route', backref='stops')
+    sequence = db.Column(db.Integer, nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint(
+            'route_id', 'sequence',
+            name='uq_route_stops_route_sequence'
+        ),
+        db.UniqueConstraint(
+            'route_id', 'stop_id',
+            name='uq_route_stops_route_stop'
+        ),
+    )
 
 
 class Sacco(db.Model):
@@ -53,7 +84,8 @@ class Vehicle(db.Model):
         nullable=False
     )
 
-    capacity = db.Column(db.Integer)
+    capacity = db.Column(db.Integer, nullable=False)
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
 
     sacco = db.relationship('Sacco', backref='vehicles')
 
@@ -102,15 +134,15 @@ class Trip(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    origin_id = db.Column(
+    origin_routestop_id = db.Column(
         db.Integer,
-        db.ForeignKey('stops.id'),
+        db.ForeignKey('route_stops.id'),
         nullable=False
     )
 
-    destination_id = db.Column(
+    destination_routestop_id = db.Column(
         db.Integer,
-        db.ForeignKey('stops.id'),
+        db.ForeignKey('route_stops.id'),
         nullable=False
     )
 
@@ -128,15 +160,17 @@ class Trip(db.Model):
         nullable=False
     )
 
-    origin = db.relationship(
-        'Stop',
-        foreign_keys=[origin_id],
+    status = db.Column(db.String, nullable=False, default='scheduled')
+
+    origin_routestop = db.relationship(
+        'RouteStop',
+        foreign_keys=[origin_routestop_id],
         backref='origin_trips'
     )
 
-    destination = db.relationship(
-        'Stop',
-        foreign_keys=[destination_id],
+    destination_routestop = db.relationship(
+        'RouteStop',
+        foreign_keys=[destination_routestop_id],
         backref='destination_trips'
     )
 
@@ -160,18 +194,18 @@ class Booking(db.Model):
     trip_id = db.Column(
         db.Integer,
         db.ForeignKey('trips.id'),
+        nullable=True
+    )
+
+    origin_routestop_id = db.Column(
+        db.Integer,
+        db.ForeignKey('route_stops.id'),
         nullable=False
     )
 
-    origin_id = db.Column(
+    destination_routestop_id = db.Column(
         db.Integer,
-        db.ForeignKey('stops.id'),
-        nullable=False
-    )
-
-    destination_id = db.Column(
-        db.Integer,
-        db.ForeignKey('stops.id'),
+        db.ForeignKey('route_stops.id'),
         nullable=False
     )
 
@@ -191,14 +225,14 @@ class Booking(db.Model):
         backref='bookings'
     )
 
-    origin = db.relationship(
-        'Stop',
-        foreign_keys=[origin_id],
+    origin_routestop = db.relationship(
+        'RouteStop',
+        foreign_keys=[origin_routestop_id],
         backref='booking_origins'
     )
 
-    destination = db.relationship(
-        'Stop',
-        foreign_keys=[destination_id],
+    destination_routestop = db.relationship(
+        'RouteStop',
+        foreign_keys=[destination_routestop_id],
         backref='booking_destinations'
     )
