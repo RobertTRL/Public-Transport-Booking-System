@@ -18,7 +18,8 @@ from models import (
 """
 POST	            /api/v1/auth/passengers/register	                                    register_passenger()
 POST	            /api/v1/auth/providers/register	                                        register_provider()
-POST	            /api/v1/auth/login	                                                    login()
+POST	            /api/v1/auth/passenger/login	                                        login_passenger()
+POST	            /api/v1/auth/provider/login	                                            login_provider()
 GET	                /api/v1/stops	                                                        search_stops()
 GET	                /api/v1/routes/search?origin_id=&destination_id=	                    search_routes()
 GET	                /api/v1/routes/<int:route_id>	                                        get_route()
