@@ -1,3 +1,6 @@
+import RouteCard from "./RouteCard";
+import { routes } from "../../data/routesData";
+
 function Routes() {
   return (
     <>
@@ -6,11 +9,10 @@ function Routes() {
         <p>Select a route to view its vehicles.</p>
       </div>
 
-      <section className="dashboard-content">
-        <div className="dashboard-card">
-          <h2>Total Routes</h2>
-          <p>0</p>
-        </div>
+      <section className="routes-grid">
+        {routes.map((route) => (
+          <RouteCard key={route.name} route={route} />
+        ))}
       </section>
     </>
   );

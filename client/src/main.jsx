@@ -15,6 +15,7 @@ import Bookings from "./components/dashboard/Bookings.jsx";
 import RoutesPage from "./components/dashboard/Routes.jsx";
 import Stops from "./components/dashboard/Stops.jsx";
 import Vehicles from "./components/dashboard/Vehicles.jsx";
+import RouteDetail from "./components/dashboard/RouteDetail.jsx";
 import Users from "./components/dashboard/Users.jsx";
 import Profile from "./components/dashboard/Profile.jsx";
 
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<DashboardSummary />} />
             <Route path="vehicles" element={<Vehicles />} />
             <Route path="routes" element={<RoutesPage />} />
+            <Route path="routes/:routeName" element={<RouteDetail />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="stops" element={<Stops />} />
             <Route path="users" element={<Users />} />
