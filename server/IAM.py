@@ -18,7 +18,7 @@ class PassengerLoginResource(Resource):
         passenger = Passenger.query.filter_by(email=email).first()
 
         if passenger and passenger.authenticate(password):
-            access_token = create_access_token(identity=passenger.id)
+            access_token = create_access_token(identity=str(passenger.id))
             return {'access_token': access_token}, 200
 
         return {'error': 'Invalid credentials'}, 401
@@ -30,7 +30,7 @@ class ProviderLoginResource(Resource):
         user = User.query.filter_by(email=email).first()
 
         if user and user.authenticate(password):
-            access_token = create_access_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
             return {'access_token': access_token}, 200
 
         return {'error': 'Invalid credentials'}, 401
@@ -38,17 +38,17 @@ class ProviderLoginResource(Resource):
 class PassengerRegisterResource(Resource):
     def post(self):
         data = request.get_json()
-        name, email, password = data.get('name'), data.get('email'), data.get('password')
+        email, password = data.get('email'), data.get('password')
 
         if Passenger.query.filter_by(email=email).first():
             return {'error': 'Email already exists'}, 400
 
-        new_passenger = Passenger(name=name, email=email)
+        new_passenger = Passenger(email=email)
         new_passenger.set_password(password)
         db.session.add(new_passenger)
         db.session.commit()
 
-        access_token = create_access_token(identity=new_passenger.id)
+        access_token = create_access_token(identity=str(new_passenger.id))
         return {'access_token': access_token}, 201
 
 class ProviderRegisterResource(Resource):
@@ -64,7 +64,7 @@ class ProviderRegisterResource(Resource):
         db.session.add(new_user)
         db.session.commit()
 
-        access_token = create_access_token(identity=new_user.id)
+        access_token = create_access_token(identity=str(new_user.id))
         return {'access_token': access_token}, 201
 
 api.add_resource(PassengerLoginResource, '/api/v1/auth/passenger/login')
