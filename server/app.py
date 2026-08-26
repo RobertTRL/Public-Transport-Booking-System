@@ -22,6 +22,21 @@ def get_current_provider_user():
     return User.query.get(identity)
 
 
+class ProviderDashboardResource(Resource):
+    @jwt_required()
+    def get(self):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        sacco = Sacco.query.get(user.sacco_id) if user.sacco_id else None
+        if not sacco:
+            return {'error': 'No SACCO associated with this provider'}, 404
+
+        return {'provider': {'id': user.id, 'name': user.name, 'role': user.role}}, 200
+
+
+
 """
 # IAM endpoints for passengers and providers
 # Robert
