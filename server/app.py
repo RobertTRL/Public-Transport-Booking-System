@@ -60,6 +60,30 @@ class ProviderDashboardResource(Resource):
             'total_bookings': total_bookings
         }
 
+        recent_trips_data = [
+            {
+                'id': t.id,
+                'vehicle_id': t.vehicle_id,
+                'status': t.status,
+                'start_time': t.start_time.isoformat() if t.start_time else None,
+                'stop_time': t.stop_time.isoformat() if t.stop_time else None,
+                'origin_routestop_id': t.origin_routestop_id,
+                'destination_routestop_id': t.destination_routestop_id
+            }
+            for t in sorted(trips, key=lambda x: x.id, reverse=True)[:5]
+        ]
+
+        recent_bookings = Booking.query.filter(Booking.trip_id.in_(trip_ids)).order_by(Booking.id.desc()).limit(5).all() if trip_ids else []
+        recent_bookings_data = [
+            {
+                'id': b.id,
+                'user_id': b.user_id,
+                'trip_id': b.trip_id,
+                'made_at': b.made_at.isoformat() if b.made_at else None
+            }
+            for b in recent_bookings
+        ]
+
         return {
             'provider': {
                 'id': user.id,
@@ -73,8 +97,11 @@ class ProviderDashboardResource(Resource):
                     'address': sacco.address
                 }
             },
-            'metrics': metrics
+            'metrics': metrics,
+            'recent_trips': recent_trips_data,
+            'recent_bookings': recent_bookings_data
         }, 200
+
 
 
 
