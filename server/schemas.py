@@ -132,13 +132,25 @@ class RouteStopSchema(BaseSchema):
     stop_id = positive_fk_field("stop_id")
     sequence = fields.Integer(
         required=True,
-        validate=validate.Range(min=0, error="Sequence must be zero or a positive integer."),
+        validate=validate.Range(
+            min=0,
+            error="Sequence must be zero or a positive integer."
+        )
     )
 
 
 class RouteStopDetailSchema(RouteStopSchema):
     stop = fields.Nested(StopSchema, dump_only=True)
 
+
+class RouteStopUpdateSchema(ma.Schema):
+    sequence = fields.Integer(
+        required=True,
+        validate=validate.Range(
+            min=0,
+            error="Sequence must be zero or a positive integer."
+        )
+    )
 
 class RouteSchema(BaseSchema):
     name = name_field()
