@@ -360,7 +360,9 @@ GET	                /api/v1/provider/trips/<int:trip_id>/bookings	              
 """
 api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')
 api.add_resource(ProviderRoutesResource, '/api/v1/provider/routes')
+api.add_resource(ProviderRouteDetailResource, '/api/v1/provider/routes/<int:route_id>')
 db.init_app(app)
+
 
 
 
