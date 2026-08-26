@@ -1,9 +1,7 @@
 from flask import Flask
 from flask_migrate import Migrate
-
+from config import app, db
 from models import (
-    db,
-    app,
     User,
     Passenger,
     Route,
@@ -14,6 +12,8 @@ from models import (
     Sacco,
     Trip
 )
+
+import passenger
 
 """
 # IAM endpoints for passengers and providers
@@ -72,7 +72,6 @@ GET	                /api/v1/provider/trips/<int:trip_id>/bookings	              
 
 # 41 total routes
 """
-db.init_app(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
