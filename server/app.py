@@ -334,10 +334,23 @@ class ProviderRouteStopsResource(Resource):
         if not stop:
             return {'error': 'Stop not found'}, 404
 
-        sequence = data.get('sequence', 1)
+        existing_route_stop = RouteStop.query.filter_by(route_id=route.id, stop_id=stop.id).first()
+        if existing_route_stop:
+            return {'error': f"Stop '{stop.name}' is already attached to this route"}, 409
+
+        if 'sequence' in data and data['sequence'] is not None:
+            sequence = int(data['sequence'])
+            conflicting_stops = RouteStop.query.filter(RouteStop.route_id == route.id, RouteStop.sequence >= sequence).all()
+            for cs in conflicting_stops:
+                cs.sequence += 1
+        else:
+            max_seq = db.session.query(db.func.max(RouteStop.sequence)).filter_by(route_id=route.id).scalar()
+            sequence = (max_seq or 0) + 1
+
         route_stop = RouteStop(route_id=route.id, stop_id=stop.id, sequence=sequence)
         db.session.add(route_stop)
         db.session.commit()
+
 
         return {
             'id': route_stop.id,
