@@ -291,6 +291,32 @@ class ProviderRouteDetailResource(Resource):
         return {'message': f"Route '{route_name}' successfully deleted"}, 200
 
 
+class ProviderRouteStopsResource(Resource):
+    @jwt_required()
+    def get(self, route_id):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        route = Route.query.get(route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        route_stops = RouteStop.query.filter_by(route_id=route_id).order_by(RouteStop.sequence.asc()).all()
+        return [
+            {
+                'id': rs.id,
+                'stop_id': rs.stop_id,
+                'sequence': rs.sequence,
+                'name': rs.stop.name if rs.stop else None,
+                'latitude': rs.stop.latitude if rs.stop else None,
+                'longitude': rs.stop.longitude if rs.stop else None
+            }
+            for rs in route_stops
+        ], 200
+
+
+
 
 
 
