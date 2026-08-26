@@ -229,6 +229,32 @@ class ProviderRouteDetailResource(Resource):
             ]
         }, 200
 
+    @jwt_required()
+    def patch(self, route_id):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        route = Route.query.get(route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        data = request.get_json() or {}
+        if 'name' in data and data['name']:
+            route.name = data['name'].strip()
+        if 'color' in data and data['color']:
+            route.color = data['color'].strip()
+
+        db.session.commit()
+
+        return {
+            'id': route.id,
+            'name': route.name,
+            'color': route.color,
+            'total_stops': len(route.route_stops)
+        }, 200
+
+
 
 
 
