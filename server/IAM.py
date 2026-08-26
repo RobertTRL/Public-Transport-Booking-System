@@ -37,7 +37,19 @@ class ProviderLoginResource(Resource):
 
 class PassengerRegisterResource(Resource):
     def post(self):
-        pass
+        data = request.get_json()
+        name, email, password = data.get('name'), data.get('email'), data.get('password')
+
+        if Passenger.query.filter_by(email=email).first():
+            return {'error': 'Email already exists'}, 400
+
+        new_passenger = Passenger(name=name, email=email)
+        new_passenger.set_password(password)
+        db.session.add(new_passenger)
+        db.session.commit()
+
+        access_token = create_access_token(identity=new_passenger.id)
+        return {'access_token': access_token}, 201
 
 class ProviderRegisterResource(Resource):
     def post(self):
