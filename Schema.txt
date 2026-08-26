@@ -1,23 +1,23 @@
-// Operators
-// Managers
-// Users
-// Routes
-// Stops
-// Bookings
-// Vehicles
-// Seats
-// Occupations
-// Trips
-
 Table Routes {
   id integer [primary key]
   name varchar [not null]
   color varchar [unique, not null]
 }
 
-Table Stops {
+Table RouteStops {
   id integer [primary key]
   route_id integer [not null]
+  stop_id integer [not null]
+  sequence integer [not null]
+
+  indexes {
+    (route_id, sequence) [unique]
+    (route_id, stop_id) [unique]
+  }
+}
+
+Table Stops {
+  id integer [primary key]
   name varchar [not null]
   longitude float [not null]
   latitude float [not null]
@@ -27,7 +27,8 @@ Table Vehicles {
   id integer [primary key]
   sacco_id integer [not null]
   number_plate varchar [unique, not null]
-  capacity integer
+  capacity integer [not null]
+  is_active boolean [not null, default: true]
 }
 
 Table Users {
@@ -51,19 +52,20 @@ Table Bookings {
   id integer [primary key]
   user_id integer [not null]
   trip_id integer [not null]
-  origin_id integer [not null]
-  destination_id integer [not null]
+  origin_routestop_id integer [not null]
+  destination_routestop_id integer [not null]
   made_at timestamp [not null] // [default: time.now()]
 
 }
 
 Table Trips {
   id integer [primary key]
-  origin_id integer [not null]
-  destination_id integer [not null]
+  origin_routestop_id integer [not null]
+  destination_routestop_id integer [not null]
   start_time timestamp [not null] // [default: time.now()]
   stop_time timestamp
   vehicle_id integer [not null]
+  status varchar [not null, default: "scheduled"]
 }
 
 Table SACCOs {
@@ -72,19 +74,22 @@ Table SACCOs {
   contact varchar [not null]
   address varchar
 }
-Ref: "Routes"."id" < "Stops"."route_id"
+
+Ref: "Routes"."id" < "RouteStops"."route_id"
+
+Ref: "Stops"."id" < "RouteStops"."stop_id"
 
 Ref: "Passengers"."id" < "Bookings"."user_id"
 
-Ref: "Bookings"."origin_id" > "Stops"."id"
+Ref: "Bookings"."origin_routestop_id" > "RouteStops"."id"
 
-Ref: "Bookings"."destination_id" > "Stops"."id"
+Ref: "Bookings"."destination_routestop_id" > "RouteStops"."id"
 
 Ref: "Vehicles"."id" < "Trips"."vehicle_id"
 
-Ref: "Trips"."origin_id" > "Stops"."id"
+Ref: "Trips"."origin_routestop_id" > "RouteStops"."id"
 
-Ref: "Trips"."destination_id" > "Stops"."id"
+Ref: "Trips"."destination_routestop_id" > "RouteStops"."id"
 
 Ref: "Bookings"."trip_id" ?> "Trips"."id"
 
