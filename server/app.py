@@ -110,7 +110,17 @@ class ProviderRoutesResource(Resource):
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        routes = Route.query.all()
+        query = Route.query
+        search_term = request.args.get('q')
+        color_filter = request.args.get('color')
+
+        if search_term:
+            query = query.filter(Route.name.ilike(f"%{search_term}%"))
+        if color_filter:
+            query = query.filter_by(color=color_filter)
+
+        routes = query.all()
+
         result = []
         for r in routes:
             ordered_stops = sorted(r.route_stops, key=lambda s: s.sequence)
