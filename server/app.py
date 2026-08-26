@@ -103,6 +103,16 @@ class ProviderDashboardResource(Resource):
         }, 200
 
 
+class ProviderRoutesResource(Resource):
+    @jwt_required()
+    def get(self):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+        return [], 200
+
+
+
 
 
 
