@@ -157,17 +157,47 @@ class ProviderRoutesResource(Resource):
         if not name or not color:
             return {'error': 'Route name and color are required'}, 400
 
-        new_route = Route(name=name.strip(), color=color.strip())
+        name = name.strip()
+        color = color.strip()
+
+        if Route.query.filter_by(color=color).first():
+            return {'error': f"A route with color '{color}' already exists"}, 409
+
+        if Route.query.filter_by(name=name).first():
+            return {'error': f"A route with name '{name}' already exists"}, 409
+
+        new_route = Route(name=name, color=color)
         db.session.add(new_route)
+        db.session.flush()
+
+        stops_input = data.get('stops', [])
+        created_stops = []
+        if isinstance(stops_input, list) and stops_input:
+            for idx, item in enumerate(stops_input, start=1):
+                stop_id = item.get('stop_id') if isinstance(item, dict) else item
+                sequence = item.get('sequence', idx) if isinstance(item, dict) else idx
+                stop = Stop.query.get(stop_id)
+                if stop:
+                    route_stop = RouteStop(route_id=new_route.id, stop_id=stop.id, sequence=sequence)
+                    db.session.add(route_stop)
+                    created_stops.append({
+                        'stop_id': stop.id,
+                        'sequence': sequence,
+                        'name': stop.name,
+                        'latitude': stop.latitude,
+                        'longitude': stop.longitude
+                    })
+
         db.session.commit()
 
         return {
             'id': new_route.id,
             'name': new_route.name,
             'color': new_route.color,
-            'total_stops': 0,
-            'stops': []
+            'total_stops': len(created_stops),
+            'stops': created_stops
         }, 201
+
 
 
 
