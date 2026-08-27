@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import '../styles/auth.css'
 
 function DashLogin() {
@@ -53,11 +53,6 @@ function DashLogin() {
             Sign in
           </button>
         </form>
-
-        <p className="auth-footer">
-          Don't have an account?{' '}
-          <Link to="/dashsignup">Create an account</Link>
-        </p>
       </section>
     </main>
   )

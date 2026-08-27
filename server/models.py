@@ -1,4 +1,5 @@
 from config import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Route(db.Model):
@@ -10,7 +11,7 @@ class Route(db.Model):
 
     route_stops = db.relationship(
         'RouteStop',
-        backref='route',
+        back_populates='route',
         order_by='RouteStop.sequence',
         cascade='all, delete-orphan'
     )
@@ -24,7 +25,7 @@ class Stop(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
 
-    route_stops = db.relationship('RouteStop', backref='stop')
+    route_stops = db.relationship('RouteStop', back_populates='stop')
 
 
 class RouteStop(db.Model):
@@ -57,6 +58,33 @@ class RouteStop(db.Model):
         ),
     )
 
+    route = db.relationship('Route', back_populates='route_stops')
+    stop = db.relationship('Stop', back_populates='route_stops')
+
+    origin_trips = db.relationship(
+        'Trip',
+        foreign_keys='Trip.origin_routestop_id',
+        back_populates='origin_routestop'
+    )
+
+    destination_trips = db.relationship(
+        'Trip',
+        foreign_keys='Trip.destination_routestop_id',
+        back_populates='destination_routestop'
+    )
+
+    booking_origins = db.relationship(
+        'Booking',
+        foreign_keys='Booking.origin_routestop_id',
+        back_populates='origin_routestop'
+    )
+
+    booking_destinations = db.relationship(
+        'Booking',
+        foreign_keys='Booking.destination_routestop_id',
+        back_populates='destination_routestop'
+    )
+
 
 class Sacco(db.Model):
     __tablename__ = 'saccos'
@@ -65,6 +93,9 @@ class Sacco(db.Model):
     name = db.Column(db.String, nullable=False)
     contact = db.Column(db.String, nullable=False)
     address = db.Column(db.String)
+
+    vehicles = db.relationship('Vehicle', back_populates='sacco')
+    users = db.relationship('User', back_populates='sacco')
 
 
 class Vehicle(db.Model):
@@ -87,7 +118,8 @@ class Vehicle(db.Model):
     capacity = db.Column(db.Integer, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
-    sacco = db.relationship('Sacco', backref='vehicles')
+    sacco = db.relationship('Sacco', back_populates='vehicles')
+    trips = db.relationship('Trip', back_populates='vehicle')
 
 
 class User(db.Model):
@@ -107,7 +139,7 @@ class User(db.Model):
     phone_number = db.Column(db.String)
     role = db.Column(db.String, nullable=False)
 
-    sacco = db.relationship('Sacco', backref='users')
+    sacco = db.relationship('Sacco', back_populates='users')
 
 
 class Passenger(db.Model):
@@ -127,6 +159,14 @@ class Passenger(db.Model):
     )
 
     phone_number = db.Column(db.String)
+
+    bookings = db.relationship('Booking', back_populates='user')
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def authenticate(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Trip(db.Model):
@@ -165,19 +205,18 @@ class Trip(db.Model):
     origin_routestop = db.relationship(
         'RouteStop',
         foreign_keys=[origin_routestop_id],
-        backref='origin_trips'
+        back_populates='origin_trips'
     )
 
     destination_routestop = db.relationship(
         'RouteStop',
         foreign_keys=[destination_routestop_id],
-        backref='destination_trips'
+        back_populates='destination_trips'
     )
 
-    vehicle = db.relationship(
-        'Vehicle',
-        backref='trips'
-    )
+    vehicle = db.relationship('Vehicle', back_populates='trips')
+
+    bookings = db.relationship('Booking', back_populates='trip')
 
 
 class Booking(db.Model):
@@ -215,24 +254,18 @@ class Booking(db.Model):
         default=db.func.now()
     )
 
-    user = db.relationship(
-        'Passenger',
-        backref='bookings'
-    )
+    user = db.relationship('Passenger', back_populates='bookings')
 
-    trip = db.relationship(
-        'Trip',
-        backref='bookings'
-    )
+    trip = db.relationship('Trip', back_populates='bookings')
 
     origin_routestop = db.relationship(
         'RouteStop',
         foreign_keys=[origin_routestop_id],
-        backref='booking_origins'
+        back_populates='booking_origins'
     )
 
     destination_routestop = db.relationship(
         'RouteStop',
         foreign_keys=[destination_routestop_id],
-        backref='booking_destinations'
+        back_populates='booking_destinations'
     )

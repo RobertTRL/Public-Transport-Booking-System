@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from config import app, db
 from provider_routes import provider_bp
 
+import passenger
+import IAM
 from models import (
     User,
     Passenger,
@@ -15,6 +17,9 @@ from models import (
     Sacco,
     Trip
 )
+
+import passenger
+import IAM
 
 """
 # IAM endpoints for passengers and providers
