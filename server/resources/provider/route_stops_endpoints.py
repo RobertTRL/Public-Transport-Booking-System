@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from config import db
 from models import RouteStop
 from schemas import RouteStopDetailSchema, RouteStopUpdateSchema
@@ -13,6 +13,7 @@ route_stop_update_schema = RouteStopUpdateSchema()
 
 class UpdateRouteStopResource(Resource):
     """/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>"""
+    @jwt_required()
     def patch(self, route_id, stop_id):
         route_stop = RouteStop.query.filter_by(
             route_id=route_id,
@@ -52,6 +53,7 @@ class UpdateRouteStopResource(Resource):
 
 class DeleteRouteStopResource(Resource):
     """/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>"""
+    @jwt_required()
     def delete(self, route_id, stop_id):
         route_stop = RouteStop.query.filter_by(
             route_id=route_id,
