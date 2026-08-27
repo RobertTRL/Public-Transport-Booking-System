@@ -13,8 +13,8 @@ from models import (
     Trip
 )
 
-import resources.passenger
-import resources.IAM
+import server.resources.passenger_endpoints
+import server.resources.auth_endpoints
 
 """
 # IAM endpoints for passengers and providers
