@@ -3,10 +3,10 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from config import db
+from config import api, db
 from models import Stop
 from schemas import StopSchema
-
+from provider.helpers import get_current_provider_user
 
 stop_schema = StopSchema()
 stops_schema = StopSchema(many=True)
@@ -14,21 +14,21 @@ stops_schema = StopSchema(many=True)
 
 class CreateStopResource(Resource):
     """/api/v1/stops"""
+
     @jwt_required()
     def post(self):
-        data = request.get_json()
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
 
+        data = request.get_json()
         if not data:
-            return {
-                "error": "Request body is required."
-            }, 400
+            return {'error': 'Request body is required.'}, 400
 
         try:
             validated_data = stop_schema.load(data)
         except ValidationError as err:
-            return {
-                "errors": err.messages
-            }, 400
+            return {'errors': err.messages}, 400
 
         stop = Stop(**validated_data)
         db.session.add(stop)
@@ -37,37 +37,32 @@ class CreateStopResource(Resource):
             db.session.commit()
         except Exception:
             db.session.rollback()
-            return {
-                "error": "Unable to create stop."
-            }, 400
+            return {'error': 'Unable to create stop.'}, 400
 
         return stop_schema.dump(stop), 201
 
 
 class UpdateStopResource(Resource):
     """/api/v1/stops/<int:stop_id>"""
+
     @jwt_required()
     def patch(self, stop_id):
-        stop = Stop.query.get(stop_id)
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
 
+        stop = db.session.get(Stop, stop_id)
         if not stop:
-            return {
-                "error": "Stop not found."
-            }, 404
+            return {'error': 'Stop not found.'}, 404
 
         data = request.get_json()
-
         if not data:
-            return {
-                "error": "Request body is required."
-            }, 400
+            return {'error': 'Request body is required.'}, 400
 
         try:
             validated_data = stop_schema.load(data, partial=True)
         except ValidationError as err:
-            return {
-                "errors": err.messages
-            }, 400
+            return {'errors': err.messages}, 400
 
         for key, value in validated_data.items():
             setattr(stop, key, value)
@@ -76,33 +71,34 @@ class UpdateStopResource(Resource):
             db.session.commit()
         except Exception:
             db.session.rollback()
-            return {
-                "error": "Unable to update stop."
-            }, 400
+            return {'error': 'Unable to update stop.'}, 400
 
         return stop_schema.dump(stop), 200
 
 
 class DeleteStopResource(Resource):
     """/api/v1/stops/<int:stop_id>"""
+
     @jwt_required()
     def delete(self, stop_id):
-        stop = Stop.query.get(stop_id)
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
 
+        stop = db.session.get(Stop, stop_id)
         if not stop:
-            return {
-                "error": "Stop not found."
-            }, 404
+            return {'error': 'Stop not found.'}, 404
 
         try:
             db.session.delete(stop)
             db.session.commit()
         except Exception:
             db.session.rollback()
-            return {
-                "error": "Unable to delete stop. It may be referenced by a route."
-            }, 400
+            return {'error': 'Unable to delete stop. It may be referenced by a route.'}, 400
 
-        return {
-            "message": "Stop deleted successfully."
-        }, 200
+        return {'message': 'Stop deleted successfully.'}, 200
+
+
+api.add_resource(CreateStopResource, '/api/v1/stops')
+api.add_resource(UpdateStopResource, '/api/v1/stops/<int:stop_id>')
+api.add_resource(DeleteStopResource, '/api/v1/stops/<int:stop_id>')
