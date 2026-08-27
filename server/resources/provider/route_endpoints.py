@@ -1,27 +1,15 @@
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
-from marshmallow import ValidationError
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from config import db
-from schemas import RouteSchema
-from provider.dashboard_endpoints import get_current_provider_user
 
-from models import (
-    User,
-    Passenger,
-    Route,
-    Stop,
-    RouteStop,
-    Booking,
-    Vehicle,
-    Sacco,
-    Trip
-)
+from config import api, db
+from models import Route, RouteStop, Stop, Trip
+from provider.helpers import get_current_provider_user
 
-route_schema = RouteSchema()
-routes_schema = RouteSchema(many=True)
 
 class ProviderRoutesResource(Resource):
+    """/api/v1/provider/routes"""
+
     @jwt_required()
     def get(self):
         user = get_current_provider_user()
@@ -94,7 +82,7 @@ class ProviderRoutesResource(Resource):
             for idx, item in enumerate(stops_input, start=1):
                 stop_id = item.get('stop_id') if isinstance(item, dict) else item
                 sequence = item.get('sequence', idx) if isinstance(item, dict) else idx
-                stop = Stop.query.get(stop_id)
+                stop = db.session.get(Stop, stop_id)
                 if stop:
                     route_stop = RouteStop(route_id=new_route.id, stop_id=stop.id, sequence=sequence)
                     db.session.add(route_stop)
@@ -106,7 +94,11 @@ class ProviderRoutesResource(Resource):
                         'longitude': stop.longitude
                     })
 
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {'error': 'Unable to create route.'}, 400
 
         return {
             'id': new_route.id,
@@ -116,14 +108,17 @@ class ProviderRoutesResource(Resource):
             'stops': created_stops
         }, 201
 
+
 class ProviderRouteDetailResource(Resource):
+    """/api/v1/provider/routes/<int:route_id>"""
+
     @jwt_required()
     def get(self, route_id):
         user = get_current_provider_user()
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        route = Route.query.get(route_id)
+        route = db.session.get(Route, route_id)
         if not route:
             return {'error': 'Route not found'}, 404
 
@@ -152,7 +147,7 @@ class ProviderRouteDetailResource(Resource):
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        route = Route.query.get(route_id)
+        route = db.session.get(Route, route_id)
         if not route:
             return {'error': 'Route not found'}, 404
 
@@ -171,8 +166,11 @@ class ProviderRouteDetailResource(Resource):
                 return {'error': f"A route with color '{new_color}' already exists"}, 409
             route.color = new_color
 
-        db.session.commit()
-
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {'error': 'Unable to update route.'}, 400
 
         return {
             'id': route.id,
@@ -187,7 +185,7 @@ class ProviderRouteDetailResource(Resource):
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        route = Route.query.get(route_id)
+        route = db.session.get(Route, route_id)
         if not route:
             return {'error': 'Route not found'}, 404
 
@@ -201,106 +199,16 @@ class ProviderRouteDetailResource(Resource):
                 return {'error': 'Cannot delete route with active scheduled or in-progress trips'}, 409
 
         route_name = route.name
-        db.session.delete(route)
-        db.session.commit()
-
-
-        return {'message': f"Route '{route_name}' successfully deleted"}, 200
-    
-class ListCreateRouteResource(Resource):
-    @jwt_required()
-    def get(self):
-        routes = Route.query.all()
-        return routes_schema.dump(routes), 200
-
-    @jwt_required()
-    def post(self):
-        data = request.get_json()
-
-        if not data:
-            return {
-                "error": "Request body is required."
-            }, 400
-
-        try:
-            validated_data = route_schema.load(data)
-        except ValidationError as err:
-            return {
-                "errors": err.messages
-            }, 400
-
-        route = Route(**validated_data)
-        db.session.add(route)
-
-        try:
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-            return {
-                "error": "Unable to create route. Color may already be in use."
-            }, 400
-
-        return route_schema.dump(route), 201
-
-
-class UpdateRouteResource(Resource):
-    """/api/v1/provider/routes/<int:route_id>"""
-    @jwt_required()
-    def patch(self, route_id):
-        route = Route.query.get(route_id)
-
-        if not route:
-            return {
-                "error": "Route not found."
-            }, 404
-
-        data = request.get_json()
-
-        if not data:
-            return {
-                "error": "Request body is required."
-            }, 400
-
-        try:
-            validated_data = route_schema.load(data, partial=True)
-        except ValidationError as err:
-            return {
-                "errors": err.messages
-            }, 400
-
-        for key, value in validated_data.items():
-            setattr(route, key, value)
-
-        try:
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-            return {
-                "error": "Unable to update route."
-            }, 400
-
-        return route_schema.dump(route), 200
-
-class DeleteRouteResource(Resource):
-    """/api/v1/provider/routes/<int:route_id>"""
-    @jwt_required()
-    def delete(self, route_id):
-        route = Route.query.get(route_id)
-
-        if not route:
-            return {
-                "error": "Route not found."
-            }, 404
 
         try:
             db.session.delete(route)
             db.session.commit()
         except Exception:
             db.session.rollback()
-            return {
-                "error": "Unable to delete route."
-            }, 400
+            return {'error': 'Unable to delete route.'}, 400
 
-        return {
-            "message": "Route deleted successfully."
-        }, 200
+        return {'message': f"Route '{route_name}' successfully deleted"}, 200
+
+
+api.add_resource(ProviderRoutesResource, '/api/v1/provider/routes')
+api.add_resource(ProviderRouteDetailResource, '/api/v1/provider/routes/<int:route_id>')
