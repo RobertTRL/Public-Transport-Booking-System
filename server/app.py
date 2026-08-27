@@ -1,5 +1,6 @@
-from config import app, db, api
-
+from flask import Flask
+from flask_migrate import Migrate
+from config import app, db
 from models import (
     User,
     Passenger,
@@ -12,10 +13,16 @@ from models import (
     Trip
 )
 
-from resources.route_stops import (
-    UpdateRouteStopResource,
-    DeleteRouteStopResource
-)
+import passenger
+import IAM
+
+"""
+# IAM endpoints for passengers and providers
+# Robert
+POST	            /api/v1/auth/passenger/register	                                                        register_passenger() ✓
+POST	            /api/v1/auth/provider/register	                                                        register_provider() ✓
+POST	            /api/v1/auth/passenger/login	                                                        login_passenger() ✓
+POST	            /api/v1/auth/provider/login	                                                            login_provider() ✓
 
 
 api.add_resource(
@@ -34,15 +41,8 @@ from resources.stops import (
     DeleteStopResource
 )
 
-api.add_resource(
-    CreateStopResource,
-    '/api/v1/stops'
-)
-
-api.add_resource(
-    UpdateStopResource,
-    '/api/v1/stops/<int:stop_id>'
-)
+# 41 total routes
+"""
 
 api.add_resource(
     DeleteStopResource,
