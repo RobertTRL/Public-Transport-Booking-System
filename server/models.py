@@ -103,6 +103,11 @@ class Vehicle(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
+    # Matches the DBML Table definition (`sacco_id integer [not null]`).
+    # schemas.py previously treated this as optional based on a
+    # nonstandard "?" annotation on the DBML Ref line, which contradicted
+    # this column -- the schema has been fixed to match this constraint
+    # rather than the other way around.
     sacco_id = db.Column(
         db.Integer,
         db.ForeignKey('saccos.id'),
@@ -127,6 +132,8 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
+    # Matches the DBML Table definition (`sacco_id integer [not null]`) --
+    # see the note on Vehicle.sacco_id above.
     sacco_id = db.Column(
         db.Integer,
         db.ForeignKey('saccos.id'),
@@ -230,10 +237,16 @@ class Booking(db.Model):
         nullable=False
     )
 
+    # Back to not-null, matching the DBML Table definition
+    # (`trip_id integer [not null]`). Cancellation used to be modeled by
+    # setting this to None, which contradicted that constraint and threw
+    # away the booking's trip history. Cancellation is now tracked with
+    # `status` / `cancelled_at` below instead, so trip_id can stay a
+    # permanent, required reference.
     trip_id = db.Column(
         db.Integer,
         db.ForeignKey('trips.id'),
-        nullable=True
+        nullable=False
     )
 
     origin_routestop_id = db.Column(
@@ -248,11 +261,16 @@ class Booking(db.Model):
         nullable=False
     )
 
+    # "active" | "cancelled" (see schemas.BOOKING_STATUSES).
+    status = db.Column(db.String, nullable=False, default='active')
+
     made_at = db.Column(
         db.DateTime,
         nullable=False,
         default=db.func.now()
     )
+
+    cancelled_at = db.Column(db.DateTime, nullable=True)
 
     user = db.relationship('Passenger', back_populates='bookings')
 
