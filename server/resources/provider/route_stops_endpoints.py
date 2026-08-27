@@ -17,6 +17,7 @@ from models import (
     Sacco,
     Trip
 )
+
 from provider.dashboard_endpoints import get_current_provider_user
 
 route_stop_detail_schema = RouteStopDetailSchema()
