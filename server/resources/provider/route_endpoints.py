@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from config import db
 from models import Route
 from schemas import RouteSchema
@@ -12,10 +12,12 @@ routes_schema = RouteSchema(many=True)
 
 
 class ListCreateRouteResource(Resource):
+    @jwt_required()
     def get(self):
         routes = Route.query.all()
         return routes_schema.dump(routes), 200
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -46,6 +48,7 @@ class ListCreateRouteResource(Resource):
 
 
 class UpdateDeleteRouteResource(Resource):
+    @jwt_required()
     def patch(self, route_id):
         route = Route.query.get(route_id)
 
@@ -81,6 +84,7 @@ class UpdateDeleteRouteResource(Resource):
 
         return route_schema.dump(route), 200
 
+    @jwt_required()
     def delete(self, route_id):
         route = Route.query.get(route_id)
 
