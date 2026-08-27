@@ -1,4 +1,5 @@
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
@@ -13,6 +14,7 @@ vehicles_schema = VehicleSchema(many=True)
 
 class ListVehiclesResource(Resource):
     """/api/v1/provider/vehicles"""
+    @jwt_required()
     def get(self):
         route_id = request.args.get('route_id', type=int)
         q = request.args.get('q', type=str)
@@ -44,6 +46,7 @@ class ListVehiclesResource(Resource):
         return vehicles_schema.dump(vehicles), 200
 
     """/api/v1/provider/vehicles"""
+    @jwt_required()
     def post(self):
         print(">>> post() called", flush=True)
 
