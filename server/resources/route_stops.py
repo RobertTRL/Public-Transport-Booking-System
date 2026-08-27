@@ -12,6 +12,7 @@ route_stop_update_schema = RouteStopUpdateSchema()
 
 
 class UpdateRouteStopResource(Resource):
+    """/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>"""
     def patch(self, route_id, stop_id):
         route_stop = RouteStop.query.filter_by(
             route_id=route_id,
@@ -50,6 +51,7 @@ class UpdateRouteStopResource(Resource):
         return route_stop_detail_schema.dump(route_stop), 200
 
 class DeleteRouteStopResource(Resource):
+    """/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>"""
     def delete(self, route_id, stop_id):
         route_stop = RouteStop.query.filter_by(
             route_id=route_id,
