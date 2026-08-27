@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import Resource
+from marshmallow import ValidationError
 
 from config import db
 from models import Vehicle, Trip, RouteStop
@@ -41,7 +42,9 @@ class ListVehiclesResource(Resource):
         vehicles = query.all()
         return vehicles_schema.dump(vehicles), 200
 
-       def post(self):
+    def post(self):
+        print(">>> post() called", flush=True)
+
         data = request.get_json()
 
         if not data:
@@ -52,19 +55,27 @@ class ListVehiclesResource(Resource):
         try:
             validated_data = vehicle_schema.load(data)
         except ValidationError as err:
+            print(">>> VALIDATION ERROR:", err.messages, flush=True)
             return {
                 "errors": err.messages
             }, 400
+
+        print(">>> validated_data:", validated_data, flush=True)
 
         vehicle = Vehicle(**validated_data)
         db.session.add(vehicle)
 
         try:
             db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
+            import traceback
+            print(">>> VEHICLE CREATE ERROR:", flush=True)
+            traceback.print_exc()
             return {
                 "error": "Unable to create vehicle. Number plate may already be in use."
             }, 400
 
         return vehicle_schema.dump(vehicle), 201
+
+    
