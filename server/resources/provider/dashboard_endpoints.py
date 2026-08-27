@@ -1,34 +1,21 @@
-from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from config import db, app, api
-from models import (
-    User,
-    Passenger,
-    Route,
-    Stop,
-    RouteStop,
-    Booking,
-    Vehicle,
-    Sacco,
-    Trip
-)
 
-def get_current_provider_user():
-    identity = get_jwt_identity()
-    if not identity:
-        return None
-    return User.query.get(identity)
+from config import api, db
+from models import Booking, Route, Sacco, Trip, Vehicle
+from provider.helpers import get_current_provider_user
 
 
 class ProviderDashboardResource(Resource):
+    """/api/v1/provider/dashboard"""
+
     @jwt_required()
     def get(self):
         user = get_current_provider_user()
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        sacco = Sacco.query.get(user.sacco_id) if user.sacco_id else None
+        sacco = db.session.get(Sacco, user.sacco_id) if user.sacco_id else None
         if not sacco:
             return {'error': 'No SACCO associated with this provider'}, 404
 
@@ -72,7 +59,13 @@ class ProviderDashboardResource(Resource):
             for t in sorted(trips, key=lambda x: x.id, reverse=True)[:5]
         ]
 
-        recent_bookings = Booking.query.filter(Booking.trip_id.in_(trip_ids)).order_by(Booking.id.desc()).limit(5).all() if trip_ids else []
+        recent_bookings = (
+            Booking.query.filter(Booking.trip_id.in_(trip_ids))
+            .order_by(Booking.id.desc())
+            .limit(5)
+            .all()
+            if trip_ids else []
+        )
         recent_bookings_data = [
             {
                 'id': b.id,
@@ -100,3 +93,6 @@ class ProviderDashboardResource(Resource):
             'recent_trips': recent_trips_data,
             'recent_bookings': recent_bookings_data
         }, 200
+
+
+api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')
