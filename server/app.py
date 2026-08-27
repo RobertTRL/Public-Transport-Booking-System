@@ -76,7 +76,7 @@ GET     /api/v1/provider/trips/<int:trip_id>/bookings
 
 migrate = Migrate(app, db)
 
-# Register provider routes
+# Register Stephen's provider endpoints
 app.register_blueprint(provider_bp)
 
 
