@@ -12,6 +12,7 @@ stops_schema = StopSchema(many=True)
 
 
 class CreateStopResource(Resource):
+    """/api/v1/stops"""
     def post(self):
         data = request.get_json()
 
@@ -42,6 +43,7 @@ class CreateStopResource(Resource):
 
 
 class UpdateStopResource(Resource):
+    """/api/v1/stops/<int:stop_id>"""
     def patch(self, stop_id):
         stop = Stop.query.get(stop_id)
 
@@ -79,6 +81,7 @@ class UpdateStopResource(Resource):
 
 
 class DeleteStopResource(Resource):
+    """/api/v1/stops/<int:stop_id>"""
     def delete(self, stop_id):
         stop = Stop.query.get(stop_id)
 
