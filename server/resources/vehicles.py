@@ -12,6 +12,7 @@ vehicles_schema = VehicleSchema(many=True)
 
 
 class ListVehiclesResource(Resource):
+    """/api/v1/provider/vehicles"""
     def get(self):
         route_id = request.args.get('route_id', type=int)
         q = request.args.get('q', type=str)
