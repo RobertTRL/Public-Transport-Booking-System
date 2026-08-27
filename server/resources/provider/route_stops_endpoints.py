@@ -1,36 +1,27 @@
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from config import db
-from models import RouteStop
+
+from config import api, db
+from models import Route, RouteStop, Stop
 from schemas import RouteStopDetailSchema, RouteStopUpdateSchema
-
-from models import (
-    User,
-    Passenger,
-    Route,
-    Stop,
-    RouteStop,
-    Booking,
-    Vehicle,
-    Sacco,
-    Trip
-)
-
-from provider.dashboard_endpoints import get_current_provider_user
+from provider.helpers import get_current_provider_user
 
 route_stop_detail_schema = RouteStopDetailSchema()
 route_stop_update_schema = RouteStopUpdateSchema()
 
+
 class ProviderRouteStopsResource(Resource):
+    """/api/v1/provider/routes/<int:route_id>/stops"""
+
     @jwt_required()
     def get(self, route_id):
         user = get_current_provider_user()
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        route = Route.query.get(route_id)
+        route = db.session.get(Route, route_id)
         if not route:
             return {'error': 'Route not found'}, 404
 
@@ -53,7 +44,7 @@ class ProviderRouteStopsResource(Resource):
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        route = Route.query.get(route_id)
+        route = db.session.get(Route, route_id)
         if not route:
             return {'error': 'Route not found'}, 404
 
@@ -62,7 +53,7 @@ class ProviderRouteStopsResource(Resource):
         if not stop_id:
             return {'error': 'stop_id is required'}, 400
 
-        stop = Stop.query.get(stop_id)
+        stop = db.session.get(Stop, stop_id)
         if not stop:
             return {'error': 'Stop not found'}, 404
 
@@ -81,8 +72,12 @@ class ProviderRouteStopsResource(Resource):
 
         route_stop = RouteStop(route_id=route.id, stop_id=stop.id, sequence=sequence)
         db.session.add(route_stop)
-        db.session.commit()
 
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {'error': 'Unable to add stop to route.'}, 400
 
         return {
             'id': route_stop.id,
@@ -100,7 +95,7 @@ class ProviderRouteStopsResource(Resource):
         if not user:
             return {'error': 'Unauthorized provider access'}, 401
 
-        route = Route.query.get(route_id)
+        route = db.session.get(Route, route_id)
         if not route:
             return {'error': 'Route not found'}, 404
 
@@ -119,7 +114,7 @@ class ProviderRouteStopsResource(Resource):
             if stop_id in seen_stop_ids:
                 return {'error': f"Duplicate stop_id '{stop_id}' provided in payload"}, 400
             seen_stop_ids.add(stop_id)
-            stop = Stop.query.get(stop_id)
+            stop = db.session.get(Stop, stop_id)
             if not stop:
                 return {'error': f"Stop with id '{stop_id}' does not exist"}, 404
             parsed_stops.append((stop, sequence))
@@ -138,72 +133,71 @@ class ProviderRouteStopsResource(Resource):
                 'longitude': stop.longitude
             })
 
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {'error': 'Unable to replace route stops.'}, 400
+
         return created_stops, 200
+
 
 class UpdateRouteStopResource(Resource):
     """/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>"""
+
     @jwt_required()
     def patch(self, route_id, stop_id):
-        route_stop = RouteStop.query.filter_by(
-            route_id=route_id,
-            stop_id=stop_id
-        ).first()
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
 
+        route_stop = RouteStop.query.filter_by(route_id=route_id, stop_id=stop_id).first()
         if not route_stop:
-            return {
-                "error": "Route stop not found."
-            }, 404
+            return {'error': 'Route stop not found.'}, 404
 
         data = request.get_json()
-
         if not data:
-            return {
-                "error": "Request body is required."
-            }, 400
+            return {'error': 'Request body is required.'}, 400
 
         try:
             validated_data = route_stop_update_schema.load(data)
         except ValidationError as err:
-            return {
-                "errors": err.messages
-            }, 400
+            return {'errors': err.messages}, 400
 
-        route_stop.sequence = validated_data["sequence"]
+        route_stop.sequence = validated_data['sequence']
 
         try:
             db.session.commit()
         except Exception:
             db.session.rollback()
-            return {
-                "error": "Unable to update route stop."
-            }, 400
+            return {'error': 'Unable to update route stop.'}, 400
 
         return route_stop_detail_schema.dump(route_stop), 200
 
+
 class DeleteRouteStopResource(Resource):
     """/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>"""
+
     @jwt_required()
     def delete(self, route_id, stop_id):
-        route_stop = RouteStop.query.filter_by(
-            route_id=route_id,
-            stop_id=stop_id
-        ).first()
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
 
+        route_stop = RouteStop.query.filter_by(route_id=route_id, stop_id=stop_id).first()
         if not route_stop:
-            return {
-                "error": "Route stop not found."
-            }, 404
+            return {'error': 'Route stop not found.'}, 404
 
         try:
             db.session.delete(route_stop)
             db.session.commit()
         except Exception:
             db.session.rollback()
-            return {
-                "error": "Unable to delete route stop."
-            }, 400
+            return {'error': 'Unable to delete route stop.'}, 400
 
-        return {
-            "message": "Route stop deleted successfully."
-        }, 200
+        return {'message': 'Route stop deleted successfully.'}, 200
+
+
+api.add_resource(ProviderRouteStopsResource, '/api/v1/provider/routes/<int:route_id>/stops')
+api.add_resource(UpdateRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
+api.add_resource(DeleteRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
