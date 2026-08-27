@@ -1,4 +1,5 @@
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
@@ -13,6 +14,7 @@ stops_schema = StopSchema(many=True)
 
 class CreateStopResource(Resource):
     """/api/v1/stops"""
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -44,6 +46,7 @@ class CreateStopResource(Resource):
 
 class UpdateStopResource(Resource):
     """/api/v1/stops/<int:stop_id>"""
+    @jwt_required()
     def patch(self, stop_id):
         stop = Stop.query.get(stop_id)
 
@@ -82,6 +85,7 @@ class UpdateStopResource(Resource):
 
 class DeleteStopResource(Resource):
     """/api/v1/stops/<int:stop_id>"""
+    @jwt_required()
     def delete(self, stop_id):
         stop = Stop.query.get(stop_id)
 
