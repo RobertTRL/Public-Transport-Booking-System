@@ -1,0 +1,103 @@
+from flask import request
+from flask_restful import Resource
+from marshmallow import ValidationError
+
+from config import db
+from models import Route
+from schemas import RouteSchema
+
+
+route_schema = RouteSchema()
+routes_schema = RouteSchema(many=True)
+
+
+class ListCreateRouteResource(Resource):
+    def get(self):
+        routes = Route.query.all()
+        return routes_schema.dump(routes), 200
+
+    def post(self):
+        data = request.get_json()
+
+        if not data:
+            return {
+                "error": "Request body is required."
+            }, 400
+
+        try:
+            validated_data = route_schema.load(data)
+        except ValidationError as err:
+            return {
+                "errors": err.messages
+            }, 400
+
+        route = Route(**validated_data)
+        db.session.add(route)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {
+                "error": "Unable to create route. Color may already be in use."
+            }, 400
+
+        return route_schema.dump(route), 201
+
+
+class UpdateDeleteRouteResource(Resource):
+    def patch(self, route_id):
+        route = Route.query.get(route_id)
+
+        if not route:
+            return {
+                "error": "Route not found."
+            }, 404
+
+        data = request.get_json()
+
+        if not data:
+            return {
+                "error": "Request body is required."
+            }, 400
+
+        try:
+            validated_data = route_schema.load(data, partial=True)
+        except ValidationError as err:
+            return {
+                "errors": err.messages
+            }, 400
+
+        for key, value in validated_data.items():
+            setattr(route, key, value)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {
+                "error": "Unable to update route."
+            }, 400
+
+        return route_schema.dump(route), 200
+
+    def delete(self, route_id):
+        route = Route.query.get(route_id)
+
+        if not route:
+            return {
+                "error": "Route not found."
+            }, 404
+
+        try:
+            db.session.delete(route)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {
+                "error": "Unable to delete route."
+            }, 400
+
+        return {
+            "message": "Route deleted successfully."
+        }, 200
