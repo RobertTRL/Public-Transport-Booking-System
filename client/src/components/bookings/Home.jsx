@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Search, MapPin, Clock, ShieldCheck, ArrowRight } from "lucide-react";
 import RouteSearch from "../RouteSearch";
 import "../../styles/home.css";
 
@@ -29,6 +30,36 @@ const steps = [
   },
 ];
 
+const stats = [
+  { value: "120+", label: "Routes covered" },
+  { value: "500+", label: "Stops mapped" },
+  { value: "10k+", label: "Riders monthly" },
+  { value: "4.8★", label: "Avg. rating" },
+];
+
+const features = [
+  {
+    icon: Search,
+    title: "Smart route search",
+    text: "Type any two stops and we'll map the quickest matatu and bus connections across the city.",
+  },
+  {
+    icon: MapPin,
+    title: "Stop-by-stop guidance",
+    text: "See every stage on the way so you always know exactly where to hop on and off.",
+  },
+  {
+    icon: Clock,
+    title: "Live departures",
+    text: "Get realistic departure times and never miss the matatu that gets you there on time.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Safe & trusted",
+    text: "Verified operators and transparent fares, so your daily commute stays predictable.",
+  },
+];
+
 function Home() {
   const navigate = useNavigate();
   const [origin, setOrigin] = useState(null);
@@ -53,6 +84,15 @@ function Home() {
   return (
     <div className="home-page">
       <section className="home-hero">
+        <motion.span
+          className="home-hero__label"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          Nairobi's travel companion
+        </motion.span>
+
         <motion.h1
           className="home-hero__title"
           initial={{ opacity: 0, y: 20 }}
@@ -96,11 +136,55 @@ function Home() {
             Find Vehicles
           </button>
         </motion.form>
+
+        <motion.div
+          className="home-hero__stats"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+        >
+          {stats.map((stat) => (
+            <div className="home-stat" key={stat.label}>
+              <span className="home-stat__value">{stat.value}</span>
+              <span className="home-stat__label">{stat.label}</span>
+            </div>
+          ))}
+        </motion.div>
+      </section>
+
+      <section className="home-features" id="features">
+        <div className="home-section-head">
+          <p className="home-section-label">Why HopOn</p>
+          <h2>Everything you need for the ride</h2>
+          <p className="home-section-text">
+            Built for Nairobi commuters — from the first search to the final
+            stop.
+          </p>
+        </div>
+
+        <div className="home-features__grid">
+          {features.map((feature, index) => (
+            <motion.div
+              className="home-feature-card"
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.55, delay: index * 0.08, ease: "easeOut" }}
+            >
+              <span className="home-feature-card__icon">
+                <feature.icon size={22} />
+              </span>
+              <h3>{feature.title}</h3>
+              <p>{feature.text}</p>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       <section className="home-routes" id="routes">
         <div className="home-routes__intro">
-          <p className="home-section-label">EXPLORE</p>
+          <p className="home-section-label">Explore</p>
           <h2>Find your route</h2>
           <p className="home-section-text">
             Every highway on the map, colour-coded the same way you'll see it
@@ -125,11 +209,22 @@ function Home() {
             </motion.div>
           ))}
         </div>
+
+        <div className="home-routes__footer">
+          <button
+            type="button"
+            className="home-link-button"
+            onClick={() => navigate("/home/map")}
+          >
+            View live map
+            <ArrowRight size={16} />
+          </button>
+        </div>
       </section>
 
       <section className="home-steps">
         <div className="home-steps__intro">
-          <p className="home-section-label">HOW IT WORKS</p>
+          <p className="home-section-label">How it works</p>
           <h2>Three steps to your stop</h2>
         </div>
 
@@ -141,6 +236,21 @@ function Home() {
               <p>{step.text}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="home-cta">
+        <div className="home-cta__inner">
+          <h2>Ready to ride?</h2>
+          <p>Book your first trip in under a minute — no queues, no guesswork.</p>
+          <button
+            type="button"
+            className="home-cta__button"
+            onClick={() => navigate("/home/map")}
+          >
+            Open live map
+            <ArrowRight size={16} />
+          </button>
         </div>
       </section>
     </div>
