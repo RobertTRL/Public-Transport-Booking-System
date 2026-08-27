@@ -40,3 +40,31 @@ class ListVehiclesResource(Resource):
 
         vehicles = query.all()
         return vehicles_schema.dump(vehicles), 200
+
+       def post(self):
+        data = request.get_json()
+
+        if not data:
+            return {
+                "error": "Request body is required."
+            }, 400
+
+        try:
+            validated_data = vehicle_schema.load(data)
+        except ValidationError as err:
+            return {
+                "errors": err.messages
+            }, 400
+
+        vehicle = Vehicle(**validated_data)
+        db.session.add(vehicle)
+
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {
+                "error": "Unable to create vehicle. Number plate may already be in use."
+            }, 400
+
+        return vehicle_schema.dump(vehicle), 201
