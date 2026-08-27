@@ -14,7 +14,7 @@ from models import (
 )
 
 import passenger
-import IAM
+import server.resources.IAM as IAM
 
 """
 # IAM endpoints for passengers and providers
