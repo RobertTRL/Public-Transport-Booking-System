@@ -12,11 +12,19 @@ from models import (
     Trip
 )
 
-from resources.route_stops import UpdateRouteStopResource
+from resources.route_stops import (
+    UpdateRouteStopResource,
+    DeleteRouteStopResource
+)
 
 
 api.add_resource(
     UpdateRouteStopResource,
+    '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>'
+)
+
+api.add_resource(
+    DeleteRouteStopResource,
     '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>'
 )
 

@@ -48,3 +48,28 @@ class UpdateRouteStopResource(Resource):
             }, 400
 
         return route_stop_detail_schema.dump(route_stop), 200
+
+class DeleteRouteStopResource(Resource):
+    def delete(self, route_id, stop_id):
+        route_stop = RouteStop.query.filter_by(
+            route_id=route_id,
+            stop_id=stop_id
+        ).first()
+
+        if not route_stop:
+            return {
+                "error": "Route stop not found."
+            }, 404
+
+        try:
+            db.session.delete(route_stop)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return {
+                "error": "Unable to delete route stop."
+            }, 400
+
+        return {
+            "message": "Route stop deleted successfully."
+        }, 200
