@@ -1,11 +1,11 @@
 from datetime import date
 
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from sqlalchemy.orm import aliased
 
-from config import db, api
+from config import api, db
 from models import (
     Booking,
     Passenger,
@@ -23,12 +23,12 @@ from schemas import (
 )
 
 
-# ---------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------
+# =========================================================
+# Passenger helpers
+# =========================================================
 
 def get_current_passenger():
-    """Return the passenger associated with the JWT."""
+    """Return the passenger associated with the current JWT."""
     passenger_id = get_jwt_identity()
 
     try:
@@ -39,8 +39,12 @@ def get_current_passenger():
     return db.session.get(Passenger, passenger_id)
 
 
+# =========================================================
+# Route and trip helpers
+# =========================================================
+
 def get_route_stop_pair(origin_id, destination_id):
-    """Return two RouteStop records or None values."""
+    """Return the origin and destination RouteStop records."""
     origin = db.session.get(RouteStop, origin_id)
     destination = db.session.get(RouteStop, destination_id)
 
@@ -48,10 +52,7 @@ def get_route_stop_pair(origin_id, destination_id):
 
 
 def valid_route_segment(origin, destination):
-    """
-    Check that two route stops belong to the same route and that
-    origin comes before destination.
-    """
+    """Check that origin precedes destination on the same route."""
     if not origin or not destination:
         return False
 
@@ -62,10 +63,7 @@ def valid_route_segment(origin, destination):
 
 
 def trip_contains_segment(trip, origin, destination):
-    """
-    Check that the requested passenger segment is contained inside
-    the trip's scheduled segment.
-    """
+    """Check whether a requested segment fits within a trip."""
     if not trip or not valid_route_segment(origin, destination):
         return False
 
@@ -83,18 +81,20 @@ def trip_contains_segment(trip, origin, destination):
     )
 
 
+# =========================================================
+# Booking and availability helpers
+# =========================================================
+
 def count_booked_seats(trip, origin, destination):
     """
-    Count active bookings that overlap the requested route segment.
+    Count active bookings that overlap a requested route segment.
 
-    The current Booking model represents one passenger per booking
-    and does not contain a seat-number column, so each active booking
-    counts as one occupied seat.
+    Each active booking represents one passenger because the current
+    Booking model does not contain a seat-number field.
     """
     booked = 0
 
     for booking in trip.bookings:
-        # A cancelled booking has trip_id set to None.
         if booking.trip_id is None:
             continue
 
@@ -104,12 +104,14 @@ def count_booked_seats(trip, origin, destination):
         if not booking_origin or not booking_destination:
             continue
 
-        if (
+        overlaps = (
             booking_origin.route_id == origin.route_id
             and booking_destination.route_id == destination.route_id
             and booking_origin.sequence < destination.sequence
             and booking_destination.sequence > origin.sequence
-        ):
+        )
+
+        if overlaps:
             booked += 1
 
     return booked
@@ -128,24 +130,76 @@ def get_trip_availability(trip, origin, destination):
     }
 
 
-# ---------------------------------------------------------
-# GET /api/v1/stops
-# ---------------------------------------------------------
+def passenger_has_overlapping_booking(
+    passenger,
+    trip,
+    origin,
+    destination,
+):
+    """Check whether a passenger already booked an overlapping segment."""
+    bookings = Booking.query.filter_by(
+        user_id=passenger.id,
+        trip_id=trip.id,
+    ).all()
+
+    for booking in bookings:
+        booking_origin = booking.origin_routestop
+        booking_destination = booking.destination_routestop
+
+        if not booking_origin or not booking_destination:
+            continue
+
+        if (
+            booking_origin.route_id == origin.route_id
+            and booking_destination.route_id == destination.route_id
+            and booking_origin.sequence < destination.sequence
+            and booking_destination.sequence > origin.sequence
+        ):
+            return True
+
+    return False
+
+
+def create_booking(passenger, trip, origin, destination):
+    """Create and persist a booking for a passenger."""
+    booking = Booking(
+        user_id=passenger.id,
+        trip_id=trip.id,
+        origin_routestop_id=origin.id,
+        destination_routestop_id=destination.id,
+    )
+
+    db.session.add(booking)
+    db.session.commit()
+
+    return booking
+
+
+# =========================================================
+# Stop resources
+# =========================================================
 
 class StopsResource(Resource):
+    """List all available passenger boarding stops."""
+
     def get(self):
         stops = Stop.query.order_by(Stop.name.asc()).all()
 
         return StopSchema(many=True).dump(stops), 200
 
 
-# ---------------------------------------------------------
-# GET /api/v1/routes/search
-# ---------------------------------------------------------
+# =========================================================
+# Route resources
+# =========================================================
 
 class RouteSearchResource(Resource):
+    """Search for routes connecting two stops."""
+
     def get(self):
-        origin_stop_id = request.args.get("origin_stop_id", type=int)
+        origin_stop_id = request.args.get(
+            "origin_stop_id",
+            type=int,
+        )
         destination_stop_id = request.args.get(
             "destination_stop_id",
             type=int,
@@ -199,11 +253,27 @@ class RouteSearchResource(Resource):
         return RouteSchema(many=True).dump(routes), 200
 
 
-# ---------------------------------------------------------
-# GET /api/v1/trips
-# ---------------------------------------------------------
+class RouteResource(Resource):
+    """Return details for a single route."""
+
+    def get(self, route_id):
+        route = db.session.get(Route, route_id)
+
+        if not route:
+            return {
+                "error": "Route not found."
+            }, 404
+
+        return RouteSchema().dump(route), 200
+
+
+# =========================================================
+# Trip resources
+# =========================================================
 
 class AvailableTripsResource(Resource):
+    """Return trips available for a requested route segment and date."""
+
     def get(self):
         origin_routestop_id = request.args.get(
             "origin_routestop_id",
@@ -273,11 +343,9 @@ class AvailableTripsResource(Resource):
         return TripDetailSchema(many=True).dump(trips), 200
 
 
-# ---------------------------------------------------------
-# GET /api/v1/trips/<trip_id>
-# ---------------------------------------------------------
-
 class TripResource(Resource):
+    """Return details for a single trip."""
+
     def get(self, trip_id):
         trip = db.session.get(Trip, trip_id)
 
@@ -289,11 +357,9 @@ class TripResource(Resource):
         return TripDetailSchema().dump(trip), 200
 
 
-# ---------------------------------------------------------
-# GET /api/v1/trips/<trip_id>/availability
-# ---------------------------------------------------------
-
 class TripAvailabilityResource(Resource):
+    """Return seat availability for a trip segment."""
+
     def get(self, trip_id):
         origin_routestop_id = request.args.get(
             "origin_routestop_id",
@@ -343,11 +409,13 @@ class TripAvailabilityResource(Resource):
         ), 200
 
 
-# ---------------------------------------------------------
-# POST /api/v1/bookings
-# ---------------------------------------------------------
+# =========================================================
+# Booking resources
+# =========================================================
 
 class BookingResource(Resource):
+    """Create a booking for the authenticated passenger."""
+
     @jwt_required()
     def post(self):
         passenger = get_current_passenger()
@@ -437,48 +505,32 @@ class BookingResource(Resource):
                 "error": "No seats are available for this trip segment."
             }, 409
 
-        # Prevent a passenger from holding two active bookings on
-        # the same trip segment.
-        existing_bookings = Booking.query.filter_by(
-            user_id=passenger.id,
-            trip_id=trip.id,
-        ).all()
+        if passenger_has_overlapping_booking(
+            passenger,
+            trip,
+            origin,
+            destination,
+        ):
+            return {
+                "error": (
+                    "You already have an active booking that "
+                    "overlaps this trip segment."
+                )
+            }, 409
 
-        for existing in existing_bookings:
-            existing_origin = existing.origin_routestop
-            existing_destination = existing.destination_routestop
-
-            if (
-                existing_origin
-                and existing_destination
-                and existing_origin.sequence < destination.sequence
-                and existing_destination.sequence > origin.sequence
-            ):
-                return {
-                    "error": (
-                        "You already have an active booking that "
-                        "overlaps this trip segment."
-                    )
-                }, 409
-
-        booking = Booking(
-            user_id=passenger.id,
-            trip_id=trip.id,
-            origin_routestop_id=origin.id,
-            destination_routestop_id=destination.id,
+        booking = create_booking(
+            passenger,
+            trip,
+            origin,
+            destination,
         )
-
-        db.session.add(booking)
-        db.session.commit()
 
         return BookingDetailSchema().dump(booking), 201
 
 
-# ---------------------------------------------------------
-# GET /api/v1/me/bookings
-# ---------------------------------------------------------
-
 class MyBookingsResource(Resource):
+    """Return all bookings belonging to the authenticated passenger."""
+
     @jwt_required()
     def get(self):
         passenger = get_current_passenger()
@@ -498,11 +550,9 @@ class MyBookingsResource(Resource):
         return BookingDetailSchema(many=True).dump(bookings), 200
 
 
-# ---------------------------------------------------------
-# GET /api/v1/bookings/<booking_id>
-# ---------------------------------------------------------
-
 class BookingDetailResource(Resource):
+    """Return a specific booking belonging to the passenger."""
+
     @jwt_required()
     def get(self, booking_id):
         passenger = get_current_passenger()
@@ -527,11 +577,9 @@ class BookingDetailResource(Resource):
         return BookingDetailSchema().dump(booking), 200
 
 
-# ---------------------------------------------------------
-# PATCH /api/v1/bookings/<booking_id>/cancel
-# ---------------------------------------------------------
-
 class CancelBookingResource(Resource):
+    """Cancel an existing booking belonging to the passenger."""
+
     @jwt_required()
     def patch(self, booking_id):
         passenger = get_current_passenger()
@@ -558,9 +606,6 @@ class CancelBookingResource(Resource):
                 "error": "Booking has already been cancelled."
             }, 409
 
-        # The current Booking model has no status/cancelled_at column.
-        # Setting trip_id to None represents a cancelled booking while
-        # preserving the booking record for the passenger's history.
         booking.trip_id = None
 
         db.session.commit()
@@ -571,25 +616,9 @@ class CancelBookingResource(Resource):
         }, 200
 
 
-# ---------------------------------------------------------
-# GET /api/v1/routes/<route_id>
-# ---------------------------------------------------------
-
-class RouteResource(Resource):
-    def get(self, route_id):
-        route = db.session.get(Route, route_id)
-
-        if not route:
-            return {
-                "error": "Route not found."
-            }, 404
-
-        return RouteSchema().dump(route), 200
-
-
-# ---------------------------------------------------------
-# Register passenger routes
-# ---------------------------------------------------------
+# =========================================================
+# Route registration
+# =========================================================
 
 api.add_resource(
     StopsResource,
@@ -599,6 +628,11 @@ api.add_resource(
 api.add_resource(
     RouteSearchResource,
     "/api/v1/routes/search",
+)
+
+api.add_resource(
+    RouteResource,
+    "/api/v1/routes/<int:route_id>",
 )
 
 api.add_resource(
@@ -634,9 +668,4 @@ api.add_resource(
 api.add_resource(
     CancelBookingResource,
     "/api/v1/bookings/<int:booking_id>/cancel",
-)
-
-api.add_resource(
-    RouteResource,
-    "/api/v1/routes/<int:route_id>",
 )
