@@ -43,6 +43,7 @@ class ListVehiclesResource(Resource):
         vehicles = query.all()
         return vehicles_schema.dump(vehicles), 200
 
+    """/api/v1/provider/vehicles"""
     def post(self):
         print(">>> post() called", flush=True)
 
