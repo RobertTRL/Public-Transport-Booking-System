@@ -28,6 +28,11 @@ api.add_resource(
     '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>'
 )
 
+from resources.vehicles import ListVehiclesResource
 
+api.add_resource(
+    ListVehiclesResource,
+    '/api/v1/provider/vehicles'
+)
 if __name__ == '__main__':
     app.run(debug=True)
