@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, datetime, time
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, joinedload
 
 from config import api, db
 from models import (
@@ -95,7 +95,7 @@ def count_booked_seats(trip, origin, destination):
     booked = 0
 
     for booking in trip.bookings:
-        if booking.trip_id is None:
+        if booking.status != "active":
             continue
 
         booking_origin = booking.origin_routestop
@@ -140,6 +140,7 @@ def passenger_has_overlapping_booking(
     bookings = Booking.query.filter_by(
         user_id=passenger.id,
         trip_id=trip.id,
+        status="active",
     ).all()
 
     for booking in bookings:
@@ -205,7 +206,9 @@ class RouteSearchResource(Resource):
             type=int,
         )
 
-        if not origin_stop_id or not destination_stop_id:
+        # NOTE: use explicit `is None` checks rather than truthiness, so a
+        # (hypothetical) valid id of 0 isn't rejected as "missing".
+        if origin_stop_id is None or destination_stop_id is None:
             return {
                 "error": (
                     "origin_stop_id and destination_stop_id "
@@ -285,7 +288,7 @@ class AvailableTripsResource(Resource):
         )
         trip_date = request.args.get("date")
 
-        if not origin_routestop_id or not destination_routestop_id:
+        if origin_routestop_id is None or destination_routestop_id is None:
             return {
                 "error": (
                     "origin_routestop_id and destination_routestop_id "
@@ -323,22 +326,49 @@ class AvailableTripsResource(Resource):
                 )
             }, 400
 
+        # A trip covers a segment if the trip's own origin/destination
+        # bracket the requested stops on the same route -- the same rule
+        # `trip_contains_segment` uses for availability/booking. Matching
+        # on exact routestop-id equality (as before) would miss every
+        # trip that runs a longer stretch of the route than the segment
+        # being searched for.
+        trip_origin_rs = aliased(RouteStop)
+        trip_destination_rs = aliased(RouteStop)
+
+        day_start = datetime.combine(requested_date, time.min)
+        day_end = datetime.combine(requested_date, time.max)
+
         trips = (
             Trip.query
+            .join(
+                trip_origin_rs,
+                Trip.origin_routestop_id == trip_origin_rs.id,
+            )
+            .join(
+                trip_destination_rs,
+                Trip.destination_routestop_id == trip_destination_rs.id,
+            )
+            .options(
+                joinedload(Trip.origin_routestop).joinedload(RouteStop.stop),
+                joinedload(Trip.destination_routestop).joinedload(
+                    RouteStop.stop
+                ),
+                joinedload(Trip.vehicle),
+            )
             .filter(
-                Trip.origin_routestop_id == origin_routestop_id,
-                Trip.destination_routestop_id == destination_routestop_id,
-                Trip.status != "cancelled",
+                trip_origin_rs.route_id == origin.route_id,
+                trip_origin_rs.sequence <= origin.sequence,
+                trip_destination_rs.sequence >= destination.sequence,
+                # Only trips that can still actually be booked -- a trip
+                # that's in progress/completed but not "cancelled" used
+                # to show up here and then fail at booking time.
+                Trip.status == "scheduled",
+                Trip.start_time >= day_start,
+                Trip.start_time <= day_end,
             )
             .order_by(Trip.start_time.asc())
             .all()
         )
-
-        trips = [
-            trip
-            for trip in trips
-            if trip.start_time.date() == requested_date
-        ]
 
         return TripDetailSchema(many=True).dump(trips), 200
 
@@ -370,7 +400,7 @@ class TripAvailabilityResource(Resource):
             type=int,
         )
 
-        if not origin_routestop_id or not destination_routestop_id:
+        if origin_routestop_id is None or destination_routestop_id is None:
             return {
                 "error": (
                     "origin_routestop_id and destination_routestop_id "
@@ -431,12 +461,10 @@ class BookingResource(Resource):
         origin_routestop_id = data.get("origin_routestop_id")
         destination_routestop_id = data.get("destination_routestop_id")
 
-        if not all(
-            [
-                trip_id,
-                origin_routestop_id,
-                destination_routestop_id,
-            ]
+        if (
+            trip_id is None
+            or origin_routestop_id is None
+            or destination_routestop_id is None
         ):
             return {
                 "error": (
@@ -459,23 +487,6 @@ class BookingResource(Resource):
                 "error": str(error)
             }, 400
 
-        trip = db.session.get(Trip, booking_data["trip_id"])
-
-        if not trip:
-            return {
-                "error": "Trip not found."
-            }, 404
-
-        if trip.status != "scheduled":
-            return {
-                "error": "Only scheduled trips can be booked."
-            }, 409
-
-        if not trip.vehicle or not trip.vehicle.is_active:
-            return {
-                "error": "The vehicle assigned to this trip is not active."
-            }, 409
-
         origin, destination = get_route_stop_pair(
             booking_data["origin_routestop_id"],
             booking_data["destination_routestop_id"],
@@ -486,7 +497,38 @@ class BookingResource(Resource):
                 "error": "One or both route stops could not be found."
             }, 404
 
+        # Lock the trip row for the rest of this transaction so that two
+        # concurrent booking requests for the same trip are serialized
+        # instead of both reading "seats available" and both succeeding.
+        # This requires a database that honours row locks (PostgreSQL,
+        # MySQL); SQLite will accept the call but won't actually block.
+        trip = (
+            Trip.query
+            .filter_by(id=booking_data["trip_id"])
+            .with_for_update()
+            .first()
+        )
+
+        if not trip:
+            db.session.rollback()
+            return {
+                "error": "Trip not found."
+            }, 404
+
+        if trip.status != "scheduled":
+            db.session.rollback()
+            return {
+                "error": "Only scheduled trips can be booked."
+            }, 409
+
+        if not trip.vehicle or not trip.vehicle.is_active:
+            db.session.rollback()
+            return {
+                "error": "The vehicle assigned to this trip is not active."
+            }, 409
+
         if not trip_contains_segment(trip, origin, destination):
+            db.session.rollback()
             return {
                 "error": (
                     "The requested booking segment is not valid "
@@ -501,6 +543,7 @@ class BookingResource(Resource):
         )
 
         if availability["available_seats"] <= 0:
+            db.session.rollback()
             return {
                 "error": "No seats are available for this trip segment."
             }, 409
@@ -511,6 +554,7 @@ class BookingResource(Resource):
             origin,
             destination,
         ):
+            db.session.rollback()
             return {
                 "error": (
                     "You already have an active booking that "
@@ -601,12 +645,13 @@ class CancelBookingResource(Resource):
                 "error": "You are not authorized to cancel this booking."
             }, 403
 
-        if booking.trip_id is None:
+        if booking.status == "cancelled":
             return {
                 "error": "Booking has already been cancelled."
             }, 409
 
-        booking.trip_id = None
+        booking.status = "cancelled"
+        booking.cancelled_at = db.func.now()
 
         db.session.commit()
 
