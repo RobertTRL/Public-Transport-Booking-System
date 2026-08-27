@@ -47,7 +47,8 @@ class ListCreateRouteResource(Resource):
         return route_schema.dump(route), 201
 
 
-class UpdateDeleteRouteResource(Resource):
+class UpdateRouteResource(Resource):
+    """/api/v1/provider/routes/<int:route_id>"""
     @jwt_required()
     def patch(self, route_id):
         route = Route.query.get(route_id)
@@ -84,6 +85,8 @@ class UpdateDeleteRouteResource(Resource):
 
         return route_schema.dump(route), 200
 
+class DeleteRouteResource(Resource):
+    """/api/v1/provider/routes/<int:route_id>"""
     @jwt_required()
     def delete(self, route_id):
         route = Route.query.get(route_id)

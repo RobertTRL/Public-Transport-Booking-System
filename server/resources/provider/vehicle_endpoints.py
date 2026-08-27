@@ -45,6 +45,7 @@ class ListVehiclesResource(Resource):
         vehicles = query.all()
         return vehicles_schema.dump(vehicles), 200
 
+class CreateVehicleResource(Resource):
     """/api/v1/provider/vehicles"""
     @jwt_required()
     def post(self):
