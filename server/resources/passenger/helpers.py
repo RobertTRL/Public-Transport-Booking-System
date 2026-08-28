@@ -3,7 +3,7 @@
 from flask_jwt_extended import get_jwt_identity
 
 from config import db
-from models import Passenger, RouteStop
+from models import Booking, Passenger, RouteStop, Trip
 
 
 # =========================================================
@@ -111,3 +111,49 @@ def get_trip_availability(trip, origin, destination):
         "booked_seats": booked,
         "available_seats": max(capacity - booked, 0),
     }
+
+
+def passenger_has_overlapping_booking(
+    passenger,
+    trip,
+    origin,
+    destination,
+):
+    """Check whether a passenger already booked an overlapping segment."""
+    bookings = Booking.query.filter_by(
+        user_id=passenger.id,
+        trip_id=trip.id,
+        status="active",
+    ).all()
+
+    for booking in bookings:
+        booking_origin = booking.origin_routestop
+        booking_destination = booking.destination_routestop
+
+        if not booking_origin or not booking_destination:
+            continue
+
+        if (
+            booking_origin.route_id == origin.route_id
+            and booking_destination.route_id == destination.route_id
+            and booking_origin.sequence < destination.sequence
+            and booking_destination.sequence > origin.sequence
+        ):
+            return True
+
+    return False
+
+
+def create_booking(passenger, trip, origin, destination):
+    """Create and persist a booking for a passenger."""
+    booking = Booking(
+        user_id=passenger.id,
+        trip_id=trip.id,
+        origin_routestop_id=origin.id,
+        destination_routestop_id=destination.id,
+    )
+
+    db.session.add(booking)
+    db.session.commit()
+
+    return booking
