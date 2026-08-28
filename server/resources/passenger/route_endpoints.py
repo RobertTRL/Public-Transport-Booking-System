@@ -74,7 +74,26 @@ class RouteSearchResource(Resource):
         return RouteSchema(many=True).dump(routes), 200
 
 
+class RouteResource(Resource):
+    """Return details for a single route."""
+
+    def get(self, route_id):
+        route = db.session.get(Route, route_id)
+
+        if not route:
+            return {
+                "error": "Route not found."
+            }, 404
+
+        return RouteSchema().dump(route), 200
+
+
 api.add_resource(
     RouteSearchResource,
     "/api/v1/routes/search",
+)
+
+api.add_resource(
+    RouteResource,
+    "/api/v1/routes/<int:route_id>",
 )
