@@ -135,7 +135,83 @@ class AvailableTripsResource(Resource):
         return TripDetailSchema(many=True).dump(trips), 200
 
 
+class TripResource(Resource):
+    """Return details for a single trip."""
+
+    def get(self, trip_id):
+        trip = db.session.get(Trip, trip_id)
+
+        if not trip:
+            return {
+                "error": "Trip not found."
+            }, 404
+
+        return TripDetailSchema().dump(trip), 200
+
+
+class TripAvailabilityResource(Resource):
+    """Return seat availability for a trip segment."""
+
+    def get(self, trip_id):
+        origin_routestop_id = request.args.get(
+            "origin_routestop_id",
+            type=int,
+        )
+        destination_routestop_id = request.args.get(
+            "destination_routestop_id",
+            type=int,
+        )
+
+        if origin_routestop_id is None or destination_routestop_id is None:
+            return {
+                "error": (
+                    "origin_routestop_id and destination_routestop_id "
+                    "are required."
+                )
+            }, 400
+
+        trip = db.session.get(Trip, trip_id)
+
+        if not trip:
+            return {
+                "error": "Trip not found."
+            }, 404
+
+        origin, destination = get_route_stop_pair(
+            origin_routestop_id,
+            destination_routestop_id,
+        )
+
+        if not origin or not destination:
+            return {
+                "error": "One or both route stops could not be found."
+            }, 404
+
+        if not trip_contains_segment(trip, origin, destination):
+            return {
+                "error": (
+                    "The requested segment is not valid for this trip."
+                )
+            }, 400
+
+        return get_trip_availability(
+            trip,
+            origin,
+            destination,
+        ), 200
+
+
 api.add_resource(
     AvailableTripsResource,
     "/api/v1/trips",
+)
+
+api.add_resource(
+    TripResource,
+    "/api/v1/trips/<int:trip_id>",
+)
+
+api.add_resource(
+    TripAvailabilityResource,
+    "/api/v1/trips/<int:trip_id>/availability",
 )
