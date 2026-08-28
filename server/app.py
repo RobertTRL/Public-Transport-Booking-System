@@ -16,34 +16,6 @@ from models import (
 import server.resources.passenger
 import server.resources.auth_endpoints
 
-"""
-# IAM endpoints for passengers and providers
-# Robert
-POST	            /api/v1/auth/passenger/register	                                                        register_passenger() ✓
-POST	            /api/v1/auth/provider/register	                                                        register_provider() ✓
-POST	            /api/v1/auth/passenger/login	                                                        login_passenger() ✓
-POST	            /api/v1/auth/provider/login	                                                            login_provider() ✓
-
-
-api.add_resource(
-    UpdateRouteStopResource,
-    '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>'
-)
-
-api.add_resource(
-    DeleteRouteStopResource,
-    '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>'
-)
-
-from resources.stops import (
-    CreateStopResource,
-    UpdateStopResource,
-    DeleteStopResource
-)
-
-# 41 total routes
-"""
-
 # api.add_resource(
 #     DeleteStopResource,
 #     '/api/v1/stops/<int:stop_id>'

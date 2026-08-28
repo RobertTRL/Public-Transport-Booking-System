@@ -16,10 +16,11 @@ app = Flask(__name__)
 
 # Application Configurations
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-    "DATABASE_URI",
-    "postgresql://postgres:postgres@localhost:5432/transport_booking_db"
-)
+# app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+#     "DATABASE_URI",
+#     "postgresql://postgres:postgres@localhost:5432/transport_booking_db"
+# )
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///dev.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-key")
 app.json.compact = False
