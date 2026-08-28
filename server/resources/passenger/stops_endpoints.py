@@ -1,6 +1,5 @@
 from flask_restful import Resource
 
-from config import api
 from models import Stop
 from schemas import StopSchema
 

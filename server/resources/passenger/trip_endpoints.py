@@ -4,7 +4,7 @@ from flask import request
 from flask_restful import Resource
 from sqlalchemy.orm import aliased, joinedload
 
-from config import api, db
+from config import db
 from models import RouteStop, Trip
 from schemas import TripDetailSchema
 

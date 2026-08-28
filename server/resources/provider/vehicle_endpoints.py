@@ -4,7 +4,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from sqlalchemy.orm import aliased
 
-from config import api, db
+from config import db
 from models import RouteStop, Trip, Vehicle
 from schemas import VehicleSchema
 from provider.helpers import get_current_provider_user, vehicle_response

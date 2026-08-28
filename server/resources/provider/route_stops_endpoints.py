@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Stop
 from schemas import RouteStopDetailSchema, RouteStopUpdateSchema
 from provider.helpers import get_current_provider_user

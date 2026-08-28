@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 from sqlalchemy.orm import aliased
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Stop
 from schemas import RouteSchema
 
