@@ -221,6 +221,46 @@ class BookingDetailResource(Resource):
         return BookingDetailSchema().dump(booking), 200
 
 
+class CancelBookingResource(Resource):
+    """Cancel an existing booking belonging to the passenger."""
+
+    @jwt_required()
+    def patch(self, booking_id):
+        passenger = get_current_passenger()
+
+        if not passenger:
+            return {
+                "error": "Passenger account not found."
+            }, 404
+
+        booking = db.session.get(Booking, booking_id)
+
+        if not booking:
+            return {
+                "error": "Booking not found."
+            }, 404
+
+        if booking.user_id != passenger.id:
+            return {
+                "error": "You are not authorized to cancel this booking."
+            }, 403
+
+        if booking.status == "cancelled":
+            return {
+                "error": "Booking has already been cancelled."
+            }, 409
+
+        booking.status = "cancelled"
+        booking.cancelled_at = db.func.now()
+
+        db.session.commit()
+
+        return {
+            "message": "Booking cancelled successfully.",
+            "booking": BookingDetailSchema().dump(booking),
+        }, 200
+
+
 api.add_resource(
     BookingResource,
     "/api/v1/bookings",
@@ -234,4 +274,9 @@ api.add_resource(
 api.add_resource(
     BookingDetailResource,
     "/api/v1/bookings/<int:booking_id>",
+)
+
+api.add_resource(
+    CancelBookingResource,
+    "/api/v1/bookings/<int:booking_id>/cancel",
 )
