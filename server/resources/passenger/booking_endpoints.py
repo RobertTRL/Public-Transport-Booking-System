@@ -172,7 +172,66 @@ class BookingResource(Resource):
         return BookingDetailSchema().dump(booking), 201
 
 
+class MyBookingsResource(Resource):
+    """Return all bookings belonging to the authenticated passenger."""
+
+    @jwt_required()
+    def get(self):
+        passenger = get_current_passenger()
+
+        if not passenger:
+            return {
+                "error": "Passenger account not found."
+            }, 404
+
+        bookings = (
+            Booking.query
+            .filter_by(user_id=passenger.id)
+            .order_by(Booking.made_at.desc())
+            .all()
+        )
+
+        return BookingDetailSchema(many=True).dump(bookings), 200
+
+
+class BookingDetailResource(Resource):
+    """Return a specific booking belonging to the passenger."""
+
+    @jwt_required()
+    def get(self, booking_id):
+        passenger = get_current_passenger()
+
+        if not passenger:
+            return {
+                "error": "Passenger account not found."
+            }, 404
+
+        booking = db.session.get(Booking, booking_id)
+
+        if not booking:
+            return {
+                "error": "Booking not found."
+            }, 404
+
+        if booking.user_id != passenger.id:
+            return {
+                "error": "You are not authorized to view this booking."
+            }, 403
+
+        return BookingDetailSchema().dump(booking), 200
+
+
 api.add_resource(
     BookingResource,
     "/api/v1/bookings",
+)
+
+api.add_resource(
+    MyBookingsResource,
+    "/api/v1/me/bookings",
+)
+
+api.add_resource(
+    BookingDetailResource,
+    "/api/v1/bookings/<int:booking_id>",
 )
