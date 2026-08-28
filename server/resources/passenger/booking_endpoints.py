@@ -9,39 +9,15 @@ from schemas import (
     BookingSchema,
 )
 
-try:
-    from resources.passenger.helpers import (
-        create_booking,
-        get_current_passenger,
-        get_route_stop_pair,
-        get_trip_availability,
-        passenger_has_overlapping_booking,
-        trip_contains_segment,
-    )
-except ImportError:
-    try:
-        from passenger.helpers import (
-            create_booking,
-            get_current_passenger,
-            get_route_stop_pair,
-            get_trip_availability,
-            passenger_has_overlapping_booking,
-            trip_contains_segment,
-        )
-    except ImportError:
-        from server.resources.passenger.helpers import (
-            create_booking,
-            get_current_passenger,
-            get_route_stop_pair,
-            get_trip_availability,
-            passenger_has_overlapping_booking,
-            trip_contains_segment,
-        )
+from .helpers import (
+    create_booking,
+    get_current_passenger,
+    get_route_stop_pair,
+    get_trip_availability,
+    passenger_has_overlapping_booking,
+    trip_contains_segment,
+)
 
-
-# =========================================================
-# Booking resources
-# =========================================================
 
 class BookingResource(Resource):
     """Create a booking for the authenticated passenger."""
@@ -97,11 +73,6 @@ class BookingResource(Resource):
                 "error": "One or both route stops could not be found."
             }, 404
 
-        # Lock the trip row for the rest of this transaction so that two
-        # concurrent booking requests for the same trip are serialized
-        # instead of both reading "seats available" and both succeeding.
-        # This requires a database that honours row locks (PostgreSQL,
-        # MySQL); SQLite will accept the call but won't actually block.
         trip = (
             Trip.query
             .filter_by(id=booking_data["trip_id"])
@@ -173,7 +144,7 @@ class BookingResource(Resource):
 
 
 class MyBookingsResource(Resource):
-    """Return all bookings belonging to the authenticated passenger."""
+    """Return all bookings belonging to the authenticated passenger with pagination."""
 
     @jwt_required()
     def get(self):
@@ -184,14 +155,29 @@ class MyBookingsResource(Resource):
                 "error": "Passenger account not found."
             }, 404
 
-        bookings = (
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("per_page", 5, type=int)
+
+        pagination = (
             Booking.query
             .filter_by(user_id=passenger.id)
             .order_by(Booking.made_at.desc())
-            .all()
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False,
+            )
         )
 
-        return BookingDetailSchema(many=True).dump(bookings), 200
+        bookings = pagination.items
+
+        return {
+            "page": page,
+            "per_page": per_page,
+            "total": pagination.total,
+            "total_pages": pagination.pages,
+            "items": BookingDetailSchema(many=True).dump(bookings),
+        }, 200
 
 
 class BookingDetailResource(Resource):

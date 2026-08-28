@@ -25,7 +25,20 @@ class ProviderRoutesResource(Resource):
         if color_filter:
             query = query.filter_by(color=color_filter)
 
-        routes = query.all()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
+        pagination = (
+            query
+            .order_by(Route.name.asc())
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False,
+            )
+        )
+
+        routes = pagination.items
 
         result = []
         for r in routes:
@@ -48,7 +61,13 @@ class ProviderRoutesResource(Resource):
                 ]
             })
 
-        return result, 200
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': result
+        }, 200
 
     @jwt_required()
     def post(self):
@@ -84,7 +103,11 @@ class ProviderRoutesResource(Resource):
                 sequence = item.get('sequence', idx) if isinstance(item, dict) else idx
                 stop = db.session.get(Stop, stop_id)
                 if stop:
-                    route_stop = RouteStop(route_id=new_route.id, stop_id=stop.id, sequence=sequence)
+                    route_stop = RouteStop(
+                        route_id=new_route.id,
+                        stop_id=stop.id,
+                        sequence=sequence
+                    )
                     db.session.add(route_stop)
                     created_stops.append({
                         'stop_id': stop.id,
@@ -154,16 +177,26 @@ class ProviderRouteDetailResource(Resource):
         data = request.get_json() or {}
         if 'name' in data and data['name']:
             new_name = data['name'].strip()
-            existing_name = Route.query.filter(Route.name == new_name, Route.id != route_id).first()
+            existing_name = Route.query.filter(
+                Route.name == new_name,
+                Route.id != route_id
+            ).first()
             if existing_name:
-                return {'error': f"A route with name '{new_name}' already exists"}, 409
+                return {
+                    'error': f"A route with name '{new_name}' already exists"
+                }, 409
             route.name = new_name
 
         if 'color' in data and data['color']:
             new_color = data['color'].strip()
-            existing_color = Route.query.filter(Route.color == new_color, Route.id != route_id).first()
+            existing_color = Route.query.filter(
+                Route.color == new_color,
+                Route.id != route_id
+            ).first()
             if existing_color:
-                return {'error': f"A route with color '{new_color}' already exists"}, 409
+                return {
+                    'error': f"A route with color '{new_color}' already exists"
+                }, 409
             route.color = new_color
 
         try:
@@ -192,11 +225,14 @@ class ProviderRouteDetailResource(Resource):
         route_stop_ids = [rs.id for rs in route.route_stops]
         if route_stop_ids:
             active_trips = Trip.query.filter(
-                (Trip.origin_routestop_id.in_(route_stop_ids)) | (Trip.destination_routestop_id.in_(route_stop_ids)),
+                (Trip.origin_routestop_id.in_(route_stop_ids)) |
+                (Trip.destination_routestop_id.in_(route_stop_ids)),
                 Trip.status.in_(['scheduled', 'in_progress'])
             ).first()
             if active_trips:
-                return {'error': 'Cannot delete route with active scheduled or in-progress trips'}, 409
+                return {
+                    'error': 'Cannot delete route with active scheduled or in-progress trips'
+                }, 409
 
         route_name = route.name
 
