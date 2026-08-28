@@ -4,7 +4,7 @@ from flask_restful import Resource
 
 from config import db
 from models import Route, RouteStop, Trip, Vehicle
-from provider.helpers import get_current_provider_user, parse_datetime, trip_response
+from .helpers import get_current_provider_user, parse_datetime, trip_response
 
 ALLOWED_TRIP_STATUSES = {"scheduled", "in_progress", "completed", "cancelled"}
 

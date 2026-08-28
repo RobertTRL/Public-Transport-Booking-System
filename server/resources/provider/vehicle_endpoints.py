@@ -7,7 +7,7 @@ from sqlalchemy.orm import aliased
 from config import db
 from models import RouteStop, Trip, Vehicle
 from schemas import VehicleSchema
-from provider.helpers import get_current_provider_user, vehicle_response
+from .helpers import get_current_provider_user, vehicle_response
 
 vehicle_schema = VehicleSchema()
 vehicles_schema = VehicleSchema(many=True)

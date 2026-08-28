@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 from config import db
 from models import Stop
 from schemas import StopSchema
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 stop_schema = StopSchema()
 stops_schema = StopSchema(many=True)

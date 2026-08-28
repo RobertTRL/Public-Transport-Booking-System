@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 from config import db
 from models import Route, RouteStop, Stop
 from schemas import RouteStopDetailSchema, RouteStopUpdateSchema
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 route_stop_detail_schema = RouteStopDetailSchema()
 route_stop_update_schema = RouteStopUpdateSchema()

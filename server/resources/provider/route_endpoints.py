@@ -4,7 +4,7 @@ from flask_restful import Resource
 
 from config import db
 from models import Route, RouteStop, Stop, Trip
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 
 class ProviderRoutesResource(Resource):

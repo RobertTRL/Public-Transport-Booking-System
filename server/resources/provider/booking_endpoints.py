@@ -5,7 +5,7 @@ from sqlalchemy import func
 
 from config import db
 from models import Booking, RouteStop, Trip, Vehicle
-from provider.helpers import get_current_provider_user, parse_datetime, booking_response
+from .helpers import get_current_provider_user, parse_datetime, booking_response
 
 
 class ProviderBookingsResource(Resource):

@@ -3,7 +3,7 @@ from flask_restful import Resource
 
 from config import db
 from models import Booking, Route, Sacco, Trip, Vehicle
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 
 class ProviderDashboardResource(Resource):
