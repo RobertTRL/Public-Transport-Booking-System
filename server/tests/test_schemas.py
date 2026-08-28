@@ -2,6 +2,9 @@
 Tests for the current transport booking Marshmallow schemas.
 """
 
+from unittest.mock import MagicMock, patch
+
+from config import app
 from schemas import (
     BookingDetailSchema,
     BookingSchema,
@@ -14,7 +17,6 @@ from schemas import (
     UserSchema,
     VehicleSchema,
 )
-
 
 # ---------------------------------------------------------------------------
 # PassengerSchema
@@ -297,32 +299,38 @@ def test_route_schema_dumps_nested_route_stops():
 # ---------------------------------------------------------------------------
 
 def test_trip_schema_accepts_valid_data():
-    errors = TripSchema().validate({
-        "origin_routestop_id": 4,
-        "destination_routestop_id": 6,
-        "vehicle_id": 1,
-    })
+    mock_stop_1 = MagicMock(id=4, route_id=1, sequence=1)
+    mock_stop_2 = MagicMock(id=6, route_id=1, sequence=2)
+
+    with app.app_context():
+        with patch("schemas.db.session.get", side_effect=[mock_stop_1, mock_stop_2]):
+            errors = TripSchema().validate({
+                "origin_routestop_id": 4,
+                "destination_routestop_id": 6,
+                "vehicle_id": 1,
+            })
 
     assert errors == {}
 
-
 def test_trip_schema_rejects_same_origin_and_destination():
-    errors = TripSchema().validate({
-        "origin_routestop_id": 4,
-        "destination_routestop_id": 4,
-        "vehicle_id": 1,
-    })
+    with app.app_context():
+        errors = TripSchema().validate({
+            "origin_routestop_id": 4,
+            "destination_routestop_id": 4,
+            "vehicle_id": 1,
+        })
 
     assert "destination_routestop_id" in errors
 
 
 def test_trip_schema_rejects_invalid_status():
-    errors = TripSchema().validate({
-        "origin_routestop_id": 4,
-        "destination_routestop_id": 6,
-        "vehicle_id": 1,
-        "status": "invalid",
-    })
+    with app.app_context():
+        errors = TripSchema().validate({
+            "origin_routestop_id": 4,
+            "destination_routestop_id": 6,
+            "vehicle_id": 1,
+            "status": "invalid",
+        })
 
     assert "status" in errors
 
