@@ -62,3 +62,52 @@ def trip_contains_segment(trip, origin, destination):
         and trip_origin.sequence <= origin.sequence
         and destination.sequence <= trip_destination.sequence
     )
+
+
+# =========================================================
+# Booking and availability helpers
+# =========================================================
+
+def count_booked_seats(trip, origin, destination):
+    """
+    Count active bookings that overlap a requested route segment.
+
+    Each active booking represents one passenger because the current
+    Booking model does not contain a seat-number field.
+    """
+    booked = 0
+
+    for booking in trip.bookings:
+        if booking.status != "active":
+            continue
+
+        booking_origin = booking.origin_routestop
+        booking_destination = booking.destination_routestop
+
+        if not booking_origin or not booking_destination:
+            continue
+
+        overlaps = (
+            booking_origin.route_id == origin.route_id
+            and booking_destination.route_id == destination.route_id
+            and booking_origin.sequence < destination.sequence
+            and booking_destination.sequence > origin.sequence
+        )
+
+        if overlaps:
+            booked += 1
+
+    return booked
+
+
+def get_trip_availability(trip, origin, destination):
+    """Return capacity, booked seats and remaining seats."""
+    capacity = trip.vehicle.capacity
+    booked = count_booked_seats(trip, origin, destination)
+
+    return {
+        "trip_id": trip.id,
+        "capacity": capacity,
+        "booked_seats": booked,
+        "available_seats": max(capacity - booked, 0),
+    }
