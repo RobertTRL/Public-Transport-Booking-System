@@ -1,31 +1,19 @@
 from flask import request
 from flask_restful import Resource
-from sqlalchemy.orm import aliased
-
+from sqlalchemy.orm import aliased, joinedload
 from config import api, db
 from models import Route, RouteStop, Stop
 from schemas import RouteSchema
 
 
-# =========================================================
-# Route resources
-# =========================================================
-
 class RouteSearchResource(Resource):
-    """Search for routes connecting two stops."""
-
     def get(self):
-        origin_stop_id = request.args.get(
-            "origin_stop_id",
-            type=int,
-        )
+        origin_stop_id = request.args.get("origin_stop_id", type=int)
         destination_stop_id = request.args.get(
             "destination_stop_id",
             type=int,
         )
 
-        # NOTE: use explicit `is None` checks rather than truthiness, so a
-        # (hypothetical) valid id of 0 isn't rejected as "missing".
         if origin_stop_id is None or destination_stop_id is None:
             return {
                 "error": (
@@ -50,8 +38,8 @@ class RouteSearchResource(Resource):
         origin_route_stop = aliased(RouteStop)
         destination_route_stop = aliased(RouteStop)
 
-        routes = (
-            Route.query
+        matching_route_ids = (
+            db.session.query(Route.id)
             .join(
                 origin_route_stop,
                 Route.id == origin_route_stop.route_id,
@@ -67,6 +55,15 @@ class RouteSearchResource(Resource):
                 < destination_route_stop.sequence,
             )
             .distinct()
+            .subquery()
+        )
+
+        routes = (
+            Route.query
+            .filter(Route.id.in_(matching_route_ids))
+            .options(
+                joinedload(Route.route_stops).joinedload(RouteStop.stop)
+            )
             .order_by(Route.name.asc())
             .all()
         )
@@ -75,10 +72,15 @@ class RouteSearchResource(Resource):
 
 
 class RouteResource(Resource):
-    """Return details for a single route."""
-
     def get(self, route_id):
-        route = db.session.get(Route, route_id)
+        route = (
+            Route.query
+            .options(
+                joinedload(Route.route_stops).joinedload(RouteStop.stop)
+            )
+            .filter_by(id=route_id)
+            .first()
+        )
 
         if not route:
             return {
@@ -92,7 +94,6 @@ api.add_resource(
     RouteSearchResource,
     "/api/v1/routes/search",
 )
-
 api.add_resource(
     RouteResource,
     "/api/v1/routes/<int:route_id>",
