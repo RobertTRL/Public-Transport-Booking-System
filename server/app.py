@@ -13,7 +13,7 @@ from models import (
     Trip
 )
 
-import server.resources.passenger_endpoints
+import server.resources.passenger
 import server.resources.auth_endpoints
 
 """
