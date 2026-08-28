@@ -1,9 +1,9 @@
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
-from config import api, db
+from config import db
 from models import Booking, Route, Sacco, Trip, Vehicle
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 
 class ProviderDashboardResource(Resource):
@@ -93,6 +93,3 @@ class ProviderDashboardResource(Resource):
             'recent_trips': recent_trips_data,
             'recent_bookings': recent_bookings_data
         }, 200
-
-
-api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')

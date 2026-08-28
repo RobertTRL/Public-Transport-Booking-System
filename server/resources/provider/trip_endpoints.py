@@ -2,9 +2,9 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Trip, Vehicle
-from provider.helpers import get_current_provider_user, parse_datetime, trip_response
+from .helpers import get_current_provider_user, parse_datetime, trip_response
 
 ALLOWED_TRIP_STATUSES = {"scheduled", "in_progress", "completed", "cancelled"}
 
@@ -284,8 +284,3 @@ class CancelTripResource(Resource):
             return {"error": "Could not cancel trip"}, 400
 
         return trip_response(trip), 200
-
-
-api.add_resource(ProviderRouteTripsResource, '/api/v1/provider/routes/<int:route_id>/trips')
-api.add_resource(ProviderTripResource, '/api/v1/provider/trips/<int:trip_id>')
-api.add_resource(CancelTripResource, '/api/v1/provider/trips/<int:trip_id>/cancel')

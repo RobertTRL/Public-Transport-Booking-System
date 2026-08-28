@@ -2,9 +2,9 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Stop, Trip
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 
 class ProviderRoutesResource(Resource):
@@ -243,17 +243,4 @@ class ProviderRouteDetailResource(Resource):
             db.session.rollback()
             return {'error': 'Unable to delete route.'}, 400
 
-        return {
-            'message': f"Route '{route_name}' successfully deleted"
-        }, 200
-
-
-api.add_resource(
-    ProviderRoutesResource,
-    '/api/v1/provider/routes'
-)
-
-api.add_resource(
-    ProviderRouteDetailResource,
-    '/api/v1/provider/routes/<int:route_id>'
-)
+        return {'message': f"Route '{route_name}' successfully deleted"}, 200

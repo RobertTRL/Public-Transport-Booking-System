@@ -1,7 +1,8 @@
 from flask import request
 from flask_restful import Resource
-from sqlalchemy.orm import aliased, joinedload
-from config import api, db
+from sqlalchemy.orm import aliased
+
+from config import db
 from models import Route, RouteStop, Stop
 from schemas import RouteSchema
 
@@ -88,13 +89,3 @@ class RouteResource(Resource):
             }, 404
 
         return RouteSchema().dump(route), 200
-
-
-api.add_resource(
-    RouteSearchResource,
-    "/api/v1/routes/search",
-)
-api.add_resource(
-    RouteResource,
-    "/api/v1/routes/<int:route_id>",
-)

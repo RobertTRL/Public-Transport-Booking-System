@@ -3,10 +3,10 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Stop
 from schemas import RouteStopDetailSchema, RouteStopUpdateSchema
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 route_stop_detail_schema = RouteStopDetailSchema()
 route_stop_update_schema = RouteStopUpdateSchema()
@@ -196,8 +196,3 @@ class DeleteRouteStopResource(Resource):
             return {'error': 'Unable to delete route stop.'}, 400
 
         return {'message': 'Route stop deleted successfully.'}, 200
-
-
-api.add_resource(ProviderRouteStopsResource, '/api/v1/provider/routes/<int:route_id>/stops')
-api.add_resource(UpdateRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
-api.add_resource(DeleteRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')

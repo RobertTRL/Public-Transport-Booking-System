@@ -2,7 +2,7 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
-from config import api, db
+from config import db
 from models import Booking, Trip
 from schemas import (
     BookingDetailSchema,
@@ -245,24 +245,3 @@ class CancelBookingResource(Resource):
             "message": "Booking cancelled successfully.",
             "booking": BookingDetailSchema().dump(booking),
         }, 200
-
-
-api.add_resource(
-    BookingResource,
-    "/api/v1/bookings",
-)
-
-api.add_resource(
-    MyBookingsResource,
-    "/api/v1/me/bookings",
-)
-
-api.add_resource(
-    BookingDetailResource,
-    "/api/v1/bookings/<int:booking_id>",
-)
-
-api.add_resource(
-    CancelBookingResource,
-    "/api/v1/bookings/<int:booking_id>/cancel",
-)

@@ -1,4 +1,4 @@
-from . import booking_endpoints
-from . import route_endpoints
-from . import stops_endpoints
-from . import trip_endpoints
+from .booking_endpoints import MyBookingsResource, BookingResource, CancelBookingResource, BookingDetailResource
+from .route_endpoints import RouteSearchResource, RouteResource
+from .stops_endpoints import StopsResource
+from .trip_endpoints import AvailableTripsResource, TripResource, TripAvailabilityResource

@@ -4,7 +4,7 @@ from flask import request
 from flask_restful import Resource
 from sqlalchemy.orm import aliased, joinedload
 
-from config import api, db
+from config import db
 from models import RouteStop, Trip
 from schemas import TripDetailSchema
 
@@ -185,19 +185,3 @@ class TripAvailabilityResource(Resource):
             origin,
             destination,
         ), 200
-
-
-api.add_resource(
-    AvailableTripsResource,
-    "/api/v1/trips",
-)
-
-api.add_resource(
-    TripResource,
-    "/api/v1/trips/<int:trip_id>",
-)
-
-api.add_resource(
-    TripAvailabilityResource,
-    "/api/v1/trips/<int:trip_id>/availability",
-)

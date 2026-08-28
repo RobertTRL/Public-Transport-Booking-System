@@ -3,10 +3,10 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from config import api, db
+from config import db
 from models import Stop
 from schemas import StopSchema
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 stop_schema = StopSchema()
 stops_schema = StopSchema(many=True)
@@ -97,8 +97,3 @@ class DeleteStopResource(Resource):
             return {'error': 'Unable to delete stop. It may be referenced by a route.'}, 400
 
         return {'message': 'Stop deleted successfully.'}, 200
-
-
-api.add_resource(CreateStopResource, '/api/v1/stops')
-api.add_resource(UpdateStopResource, '/api/v1/stops/<int:stop_id>')
-api.add_resource(DeleteStopResource, '/api/v1/stops/<int:stop_id>')

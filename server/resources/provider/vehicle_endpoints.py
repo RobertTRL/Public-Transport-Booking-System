@@ -4,10 +4,10 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from sqlalchemy.orm import aliased
 
-from config import api, db
+from config import db
 from models import RouteStop, Trip, Vehicle
 from schemas import VehicleSchema
-from provider.helpers import get_current_provider_user, vehicle_response
+from .helpers import get_current_provider_user, vehicle_response
 
 vehicle_schema = VehicleSchema()
 vehicles_schema = VehicleSchema(many=True)
@@ -171,8 +171,3 @@ class ProviderVehicleResource(Resource):
             return {"error": "Vehicle cannot be deleted because it is in use"}, 409
 
         return {"message": "Vehicle deleted successfully"}, 200
-
-
-api.add_resource(ListVehiclesResource, '/api/v1/provider/vehicles')
-api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
-api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')

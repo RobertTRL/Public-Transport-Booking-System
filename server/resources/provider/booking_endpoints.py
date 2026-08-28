@@ -3,9 +3,9 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from sqlalchemy import func
 
-from config import api, db
+from config import db
 from models import Booking, RouteStop, Trip, Vehicle
-from provider.helpers import get_current_provider_user, parse_datetime, booking_response
+from .helpers import get_current_provider_user, parse_datetime, booking_response
 
 
 class ProviderBookingsResource(Resource):
@@ -145,8 +145,3 @@ class TripBookingsResource(Resource):
         bookings = Booking.query.filter_by(trip_id=trip_id).order_by(Booking.made_at.desc()).all()
 
         return [booking_response(booking) for booking in bookings], 200
-
-
-api.add_resource(ProviderBookingsResource, '/api/v1/provider/bookings')
-api.add_resource(BookingStatisticsResource, '/api/v1/provider/booking-statistics')
-api.add_resource(TripBookingsResource, '/api/v1/provider/trips/<int:trip_id>/bookings')

@@ -1,7 +1,6 @@
 from flask import request
 from flask_restful import Resource
 
-from config import api
 from models import Stop
 from schemas import StopSchema
 
@@ -27,9 +26,3 @@ class StopsResource(Resource):
             "total_pages": pagination.pages,
             "items": StopSchema(many=True).dump(stops),
         }, 200
-
-
-api.add_resource(
-    StopsResource,
-    "/api/v1/stops",
-)
