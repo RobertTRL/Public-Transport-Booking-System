@@ -97,8 +97,3 @@ class DeleteStopResource(Resource):
             return {'error': 'Unable to delete stop. It may be referenced by a route.'}, 400
 
         return {'message': 'Stop deleted successfully.'}, 200
-
-
-api.add_resource(CreateStopResource, '/api/v1/stops')
-api.add_resource(UpdateStopResource, '/api/v1/stops/<int:stop_id>')
-api.add_resource(DeleteStopResource, '/api/v1/stops/<int:stop_id>')

@@ -171,8 +171,3 @@ class ProviderVehicleResource(Resource):
             return {"error": "Vehicle cannot be deleted because it is in use"}, 409
 
         return {"message": "Vehicle deleted successfully"}, 200
-
-
-api.add_resource(ListVehiclesResource, '/api/v1/provider/vehicles')
-api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
-api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')

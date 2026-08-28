@@ -208,7 +208,3 @@ class ProviderRouteDetailResource(Resource):
             return {'error': 'Unable to delete route.'}, 400
 
         return {'message': f"Route '{route_name}' successfully deleted"}, 200
-
-
-api.add_resource(ProviderRoutesResource, '/api/v1/provider/routes')
-api.add_resource(ProviderRouteDetailResource, '/api/v1/provider/routes/<int:route_id>')

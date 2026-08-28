@@ -259,24 +259,3 @@ class CancelBookingResource(Resource):
             "message": "Booking cancelled successfully.",
             "booking": BookingDetailSchema().dump(booking),
         }, 200
-
-
-api.add_resource(
-    BookingResource,
-    "/api/v1/bookings",
-)
-
-api.add_resource(
-    MyBookingsResource,
-    "/api/v1/me/bookings",
-)
-
-api.add_resource(
-    BookingDetailResource,
-    "/api/v1/bookings/<int:booking_id>",
-)
-
-api.add_resource(
-    CancelBookingResource,
-    "/api/v1/bookings/<int:booking_id>/cancel",
-)

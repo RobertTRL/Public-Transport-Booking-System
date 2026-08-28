@@ -196,8 +196,3 @@ class DeleteRouteStopResource(Resource):
             return {'error': 'Unable to delete route stop.'}, 400
 
         return {'message': 'Route stop deleted successfully.'}, 200
-
-
-api.add_resource(ProviderRouteStopsResource, '/api/v1/provider/routes/<int:route_id>/stops')
-api.add_resource(UpdateRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
-api.add_resource(DeleteRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')

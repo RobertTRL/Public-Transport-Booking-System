@@ -93,6 +93,3 @@ class ProviderDashboardResource(Resource):
             'recent_trips': recent_trips_data,
             'recent_bookings': recent_bookings_data
         }, 200
-
-
-api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')

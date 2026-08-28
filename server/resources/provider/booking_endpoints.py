@@ -145,8 +145,3 @@ class TripBookingsResource(Resource):
         bookings = Booking.query.filter_by(trip_id=trip_id).order_by(Booking.made_at.desc()).all()
 
         return [booking_response(booking) for booking in bookings], 200
-
-
-api.add_resource(ProviderBookingsResource, '/api/v1/provider/bookings')
-api.add_resource(BookingStatisticsResource, '/api/v1/provider/booking-statistics')
-api.add_resource(TripBookingsResource, '/api/v1/provider/trips/<int:trip_id>/bookings')

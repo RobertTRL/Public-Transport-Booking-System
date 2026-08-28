@@ -16,9 +16,3 @@ class StopsResource(Resource):
         stops = Stop.query.order_by(Stop.name.asc()).all()
 
         return StopSchema(many=True).dump(stops), 200
-
-
-api.add_resource(
-    StopsResource,
-    "/api/v1/stops",
-)

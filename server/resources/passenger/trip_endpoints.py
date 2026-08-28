@@ -199,19 +199,3 @@ class TripAvailabilityResource(Resource):
             origin,
             destination,
         ), 200
-
-
-api.add_resource(
-    AvailableTripsResource,
-    "/api/v1/trips",
-)
-
-api.add_resource(
-    TripResource,
-    "/api/v1/trips/<int:trip_id>",
-)
-
-api.add_resource(
-    TripAvailabilityResource,
-    "/api/v1/trips/<int:trip_id>/availability",
-)
