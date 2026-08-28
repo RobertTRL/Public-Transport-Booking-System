@@ -67,9 +67,7 @@ class ProviderBookingsResource(Resource):
             query = query.filter(Booking.made_at <= to_date)
 
         if status:
-            return {
-                "error": "Booking status filtering is unavailable because Booking has no status field."
-            }, 400
+            query = query.filter(Booking.status == status)
 
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 5, type=int)
@@ -158,25 +156,25 @@ class TripBookingsResource(Resource):
             return {"error": "You are not authorized to view this trip's bookings."}, 403
 
         page = request.args.get('page', 1, type=int)
-per_page = request.args.get('per_page', 5, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
 
-pagination = (
-    Booking.query
-    .filter_by(trip_id=trip_id)
-    .order_by(Booking.made_at.desc())
-    .paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False
-    )
-)
+        pagination = (
+            Booking.query
+            .filter_by(trip_id=trip_id)
+            .order_by(Booking.made_at.desc())
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False
+            )
+        )
 
-bookings = pagination.items
+        bookings = pagination.items
 
-return {
-    'page': page,
-    'per_page': per_page,
-    'total': pagination.total,
-    'total_pages': pagination.pages,
-    'items': [booking_response(booking) for booking in bookings]
-}, 200
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [booking_response(booking) for booking in bookings]
+        }, 200
