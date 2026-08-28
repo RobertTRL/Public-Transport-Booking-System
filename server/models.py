@@ -270,8 +270,6 @@ class Booking(db.Model):
         default=db.func.now()
     )
 
-    cancelled_at = db.Column(db.DateTime, nullable=True)
-
     user = db.relationship('Passenger', back_populates='bookings')
 
     trip = db.relationship('Trip', back_populates='bookings')
