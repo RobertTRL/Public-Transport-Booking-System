@@ -4,6 +4,7 @@ import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
 import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
+import { bookVehicle } from "../../api/mockApi";
 import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
@@ -28,6 +29,17 @@ function FindVehicles() {
   );
   const suppressClickRef = useRef(false);
   const dragStartY = useRef(null);
+
+  const [booked, setBooked] = useState({});
+  const [loadingId, setLoadingId] = useState(null);
+
+  async function handleBook(vehicle) {
+    if (booked[vehicle.id] || loadingId === vehicle.id) return;
+    setLoadingId(vehicle.id);
+    await bookVehicle(vehicle);
+    setBooked((prev) => ({ ...prev, [vehicle.id]: true }));
+    setLoadingId(null);
+  }
 
   function handleSelectOrigin(stop) {
     setOrigin(stop);
@@ -145,6 +157,18 @@ function FindVehicles() {
                     <span>{vehicle.departsIn}</span>
                     <span className="find-vehicles__vehicle-fare">{vehicle.fare}</span>
                   </div>
+                  <button
+                    type="button"
+                    className={`find-vehicles__book${booked[vehicle.id] ? " is-booked" : ""}`}
+                    disabled={booked[vehicle.id] || loadingId === vehicle.id}
+                    onClick={() => handleBook(vehicle)}
+                  >
+                    {booked[vehicle.id]
+                      ? "Arriving"
+                      : loadingId === vehicle.id
+                      ? "Booking..."
+                      : "Book"}
+                  </button>
                 </li>
               ))}
             </ul>

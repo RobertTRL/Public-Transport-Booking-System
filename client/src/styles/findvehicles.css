@@ -218,4 +218,45 @@
     align-items: center;
     justify-content: space-between;
   }
+
+  .find-vehicles__book {
+    width: 100%;
+  }
+}
+
+.find-vehicles__book {
+  flex-shrink: 0;
+  align-self: center;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  background: #1a73e8;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.find-vehicles__book:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.find-vehicles__book.is-booked {
+  background: #16a34a;
+  cursor: default;
+}
+
+.find-vehicles__book:disabled {
+  cursor: default;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .find-vehicles__book {
+    width: 100%;
+  }
 }
