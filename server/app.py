@@ -17,6 +17,23 @@ from resources.provider import (
     ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
 )
 
+from resources.auth_endpoints import MeResource
+from resources.provider.user_endpoints import (
+    ListCreateUserResource,
+    UpdateDeleteUserResource
+)
+
+api.add_resource(MeResource, '/api/v1/me')
+
+api.add_resource(
+    ListCreateUserResource,
+    '/api/v1/users'
+)
+
+api.add_resource(
+    UpdateDeleteUserResource,
+    '/api/v1/users/<int:user_id>'
+)
 
 # Provider dashboard endpoint
 api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')
