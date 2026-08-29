@@ -6,3 +6,4 @@ from .route_stops_endpoints import ProviderRouteStopsResource, UpdateRouteStopRe
 from .stops_endpoints import CreateStopResource, UpdateStopResource, DeleteStopResource
 from .trip_endpoints import ProviderRouteTripsResource, ProviderTripResource, CancelTripResource
 from .vehicle_endpoints import ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
+from .user_endpoints import ListCreateUserResource, UpdateDeleteUserResource
