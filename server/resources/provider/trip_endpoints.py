@@ -50,9 +50,24 @@ class ProviderRouteTripsResource(Resource):
         if to_date:
             query = query.filter(Trip.start_time <= to_date)
 
-        trips = query.order_by(Trip.start_time.asc()).all()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
 
-        return [trip_response(trip) for trip in trips], 200
+        pagination = query.order_by(Trip.start_time.asc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+
+        trips = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [trip_response(trip) for trip in trips]
+        }, 200
 
     @jwt_required()
     def post(self, route_id):

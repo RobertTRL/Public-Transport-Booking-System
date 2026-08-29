@@ -51,8 +51,24 @@ class ListVehiclesResource(Resource):
         if q:
             query = query.filter(Vehicle.number_plate.ilike(f"%{q}%"))
 
-        vehicles = query.all()
-        return vehicles_schema.dump(vehicles), 200
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
+        pagination = query.order_by(Vehicle.id.asc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+
+        vehicles = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': vehicles_schema.dump(vehicles)
+        }, 200
 
 
 class CreateVehicleResource(Resource):
