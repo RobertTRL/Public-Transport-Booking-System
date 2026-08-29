@@ -16,19 +16,12 @@ from resources.provider import (
     ProviderRouteTripsResource, ProviderTripResource, CancelTripResource,
     ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
 )
-
-from resources.auth_endpoints import (
-    MeResource, PassengerLoginResource, ProviderLoginResource,
-    PassengerRegisterResource, ProviderRegisterResource
-)
-
+from resources.auth_endpoints import (MeResource, RegisterResource, LoginResource)
 from resources.provider.user_endpoints import (ListCreateUserResource, UpdateDeleteUserResource)
 
 # Provider and Passenger authentication endpoints
-api.add_resource(PassengerLoginResource, '/api/v1/auth/passenger/login')
-api.add_resource(ProviderLoginResource, '/api/v1/auth/provider/login')
-api.add_resource(PassengerRegisterResource, '/api/v1/auth/passenger/register')
-api.add_resource(ProviderRegisterResource, '/api/v1/auth/provider/register')
+api.add_resource(LoginResource, '/api/v1/auth/login')
+api.add_resource(RegisterResource, '/api/v1/auth/register')
 api.add_resource(MeResource, '/api/v1/me')
 
 # Provider user management endpoints
