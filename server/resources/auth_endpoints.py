@@ -1,73 +1,36 @@
-from flask import request, jsonify, make_response
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models import User, Passenger
+from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
-from config import db, api
 
-"""
-POST	            /api/v1/auth/passenger/register	                                                        register_passenger() ✓
-POST	            /api/v1/auth/provider/register	                                                        register_provider() ✓
-POST	            /api/v1/auth/passenger/login	                                                        login_passenger() ✓
-POST	            /api/v1/auth/provider/login
-"""
+from models import User, Passenger
+from schemas import UserSchema, PassengerSchema
 
-class PassengerLoginResource(Resource):
-    def post(self):
-        data = request.get_json()
-        email, password = data.get('email'), data.get('password')
-        passenger = Passenger.query.filter_by(email=email).first()
 
-        if passenger and passenger.authenticate(password):
-            access_token = create_access_token(identity=str(passenger.id))
-            return {'access_token': access_token}, 200
+user_schema = UserSchema()
+passenger_schema = PassengerSchema()
 
-        return {'error': 'Invalid credentials'}, 401
+VALID_USER_TYPES = ("passenger", "user")
 
-class ProviderLoginResource(Resource):
-    def post(self):
-        data = request.get_json()
-        email, password = data.get('email'), data.get('password')
-        user = User.query.filter_by(email=email).first()
 
-        if user and user.authenticate(password):
-            access_token = create_access_token(identity=str(user.id))
-            return {'access_token': access_token}, 200
+class MeResource(Resource):
+    @jwt_required()
+    def get(self):
+        user_type = request.args.get('user_type')
 
-        return {'error': 'Invalid credentials'}, 401
+        if user_type not in VALID_USER_TYPES:
+            return {
+                "error": f"user_type query param is required and must be one of: {', '.join(VALID_USER_TYPES)}."
+            }, 400
 
-class PassengerRegisterResource(Resource):
-    def post(self):
-        data = request.get_json()
-        email, password = data.get('email'), data.get('password')
+        current_id = get_jwt_identity()
 
-        if Passenger.query.filter_by(email=email).first():
-            return {'error': 'Email already exists'}, 400
+        if user_type == "passenger":
+            passenger = Passenger.query.get(current_id)
+            if not passenger:
+                return {"error": "Passenger not found."}, 404
+            return passenger_schema.dump(passenger), 200
 
-        new_passenger = Passenger(email=email)
-        new_passenger.set_password(password)
-        db.session.add(new_passenger)
-        db.session.commit()
-
-        access_token = create_access_token(identity=str(new_passenger.id))
-        return {'access_token': access_token}, 201
-
-class ProviderRegisterResource(Resource):
-    def post(self):
-        data = request.get_json()
-        name, email, password, role, sacco_id = data.get('name'), data.get('email'), data.get('password'), data.get('role'), data.get('sacco_id')
-
-        if User.query.filter_by(email=email).first():
-            return {'error': 'Email already exists'}, 400
-
-        new_user = User(name=name, email=email, role=role, sacco_id=sacco_id)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        access_token = create_access_token(identity=str(new_user.id))
-        return {'access_token': access_token}, 201
-
-api.add_resource(PassengerLoginResource, '/api/v1/auth/passenger/login')
-api.add_resource(ProviderLoginResource, '/api/v1/auth/provider/login')
-api.add_resource(PassengerRegisterResource, '/api/v1/auth/passenger/register')
-api.add_resource(ProviderRegisterResource, '/api/v1/auth/provider/register')
+        user = User.query.get(current_id)
+        if not user:
+            return {"error": "User not found."}, 404
+        return user_schema.dump(user), 200
