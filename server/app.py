@@ -55,7 +55,7 @@ api.add_resource(ProviderRouteTripsResource, '/api/v1/provider/routes/<int:route
 api.add_resource(ProviderTripResource, '/api/v1/provider/trips/<int:trip_id>')
 api.add_resource(CancelTripResource, '/api/v1/provider/trips/<int:trip_id>/cancel')
 
-# Provider vehicle endpoints
+# Provider vehicle endpoints - All are ok
 api.add_resource(ListVehiclesResource, '/api/v1/provider/vehicles')
 api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
 api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')
