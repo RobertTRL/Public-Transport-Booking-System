@@ -83,6 +83,24 @@ class ListCreateUserResource(Resource):
 
 class UpdateDeleteUserResource(Resource):
     @jwt_required()
+    def get(self, user_id):
+        requester, error = get_requesting_user_or_error()
+        if error:
+            return error
+
+        target_user = User.query.filter_by(
+            id=user_id,
+            sacco_id=requester.sacco_id
+        ).first()
+
+        if not target_user:
+            return {
+                "error": "User not found."
+            }, 404
+
+        return user_schema.dump(target_user), 200
+
+    @jwt_required()
     def patch(self, user_id):
         requester, error = get_requesting_user_or_error()
         if error:
@@ -155,4 +173,45 @@ class UpdateDeleteUserResource(Resource):
 
         return {
             "message": "User deleted successfully."
+        }, 200
+
+
+class SearchUsersResource(Resource):
+    @jwt_required()
+    def get(self):
+        requester, error = get_requesting_user_or_error()
+        if error:
+            return error
+
+        name = request.args.get('name')
+        email = request.args.get('email')
+
+        if not name and not email:
+            return {
+                "error": "At least one of 'name' or 'email' query params is required."
+            }, 400
+
+        # Always scoped to the requester's own sacco — same tenancy rule
+        # as every other endpoint in this file.
+        query = User.query.filter_by(sacco_id=requester.sacco_id)
+
+        # Partial, case-insensitive matches. If both are given, results
+        # must match both (AND), not either (OR) — narrows the search
+        # rather than broadening it.
+        if name:
+            query = query.filter(User.name.ilike(f"%{name}%"))
+        if email:
+            query = query.filter(User.email.ilike(f"%{email}%"))
+
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+
+        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+        return {
+            "users": users_schema.dump(pagination.items),
+            "page": pagination.page,
+            "per_page": pagination.per_page,
+            "total": pagination.total,
+            "pages": pagination.pages
         }, 200
