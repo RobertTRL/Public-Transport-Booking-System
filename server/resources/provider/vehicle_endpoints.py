@@ -85,7 +85,12 @@ class CreateVehicleResource(Resource):
             return {'error': 'Request body is required.'}, 400
 
         try:
-            validated_data = vehicle_schema.load(data)
+            # sacco_id is normally required by VehicleSchema, but it's
+            # always derived from the requester below — the client
+            # shouldn't have to send one just to pass validation, and any
+            # value they do send is discarded regardless. Same fix as
+            # ListCreateUserResource.post.
+            validated_data = vehicle_schema.load(data, partial=("sacco_id",))
         except ValidationError as err:
             return {'errors': err.messages}, 400
 
@@ -147,7 +152,10 @@ class ProviderVehicleResource(Resource):
             vehicle.number_plate = data["number_plate"]
 
         if "capacity" in data:
-            if not isinstance(data["capacity"], int):
+            # bool is a subclass of int in Python, so isinstance(True, int)
+            # is True — without the extra bool check, {"capacity": true}
+            # would silently pass as capacity=1.
+            if not isinstance(data["capacity"], int) or isinstance(data["capacity"], bool):
                 return {"error": "capacity must be an integer"}, 400
             if data["capacity"] < 1:
                 return {"error": "capacity must be at least 1"}, 400
