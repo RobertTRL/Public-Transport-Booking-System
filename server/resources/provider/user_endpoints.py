@@ -58,7 +58,7 @@ class ListCreateUserResource(Resource):
             }, 400
 
         try:
-            validated_data = user_schema.load(data)
+            validated_data = user_schema.load(data, partial=("sacco_id",))
         except ValidationError as err:
             return {
                 "errors": err.messages
@@ -67,9 +67,12 @@ class ListCreateUserResource(Resource):
         # sacco_id always comes from the requester, never trusted from the client
         validated_data["sacco_id"] = requester.sacco_id
 
+        password = validated_data.pop("password")
+ 
         new_user = User(**validated_data)
+        new_user.set_password(password)
         db.session.add(new_user)
-
+ 
         try:
             db.session.commit()
         except Exception:
@@ -77,7 +80,7 @@ class ListCreateUserResource(Resource):
             return {
                 "error": "Unable to create user. Name or email may already be in use."
             }, 400
-
+ 
         return user_schema.dump(new_user), 201
 
 
@@ -129,13 +132,17 @@ class UpdateDeleteUserResource(Resource):
             return {
                 "errors": err.messages
             }, 400
-
+ 
         # sacco_id is never editable through this endpoint
         validated_data.pop("sacco_id", None)
-
+ 
+        password = validated_data.pop("password", None)
+        if password:
+            target_user.set_password(password)
+ 
         for key, value in validated_data.items():
             setattr(target_user, key, value)
-
+ 
         try:
             db.session.commit()
         except Exception:
@@ -143,7 +150,7 @@ class UpdateDeleteUserResource(Resource):
             return {
                 "error": "Unable to update user."
             }, 400
-
+ 
         return user_schema.dump(target_user), 200
 
     @jwt_required()

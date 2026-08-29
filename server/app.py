@@ -24,7 +24,7 @@ api.add_resource(LoginResource, '/api/v1/auth/login')
 api.add_resource(RegisterResource, '/api/v1/auth/register')
 api.add_resource(MeResource, '/api/v1/me')
 
-# Provider user management endpoints
+# Provider user management endpoints - All are ok
 api.add_resource(ListCreateUserResource, '/api/v1/users')
 api.add_resource(UpdateDeleteUserResource, '/api/v1/users/<int:user_id>')
 api.add_resource(SearchUsersResource, '/api/v1/users/search')
