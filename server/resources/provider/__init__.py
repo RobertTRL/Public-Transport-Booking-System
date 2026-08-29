@@ -3,7 +3,7 @@ from .booking_endpoints import ProviderBookingsResource, BookingStatisticsResour
 from .dashboard_endpoints import ProviderDashboardResource
 from .route_endpoints import ProviderRoutesResource, ProviderRouteDetailResource
 from .route_stops_endpoints import ProviderRouteStopsResource, UpdateRouteStopResource, DeleteRouteStopResource
-from .stops_endpoints import CreateStopResource, UpdateStopResource, DeleteStopResource
+from .stops_endpoints import ProviderStopsResource, ProviderStopResource
 from .trip_endpoints import ProviderRouteTripsResource, ProviderTripResource, CancelTripResource
 from .vehicle_endpoints import ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
 from .user_endpoints import ListCreateUserResource, UpdateDeleteUserResource, SearchUsersResource

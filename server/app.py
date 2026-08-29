@@ -12,7 +12,7 @@ from resources.provider import (
     ProviderBookingsResource, BookingStatisticsResource, TripBookingsResource,
     ProviderDashboardResource, ProviderRoutesResource, ProviderRouteDetailResource,
     ProviderRouteStopsResource, UpdateRouteStopResource, DeleteRouteStopResource,
-    CreateStopResource, UpdateStopResource, DeleteStopResource,
+    ProviderStopsResource, ProviderStopResource,
     ProviderRouteTripsResource, ProviderTripResource, CancelTripResource,
     ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
 )
@@ -29,27 +29,26 @@ api.add_resource(ListCreateUserResource, '/api/v1/users')
 api.add_resource(UpdateDeleteUserResource, '/api/v1/users/<int:user_id>')
 api.add_resource(SearchUsersResource, '/api/v1/users/search')
 
-# Provider dashboard endpoint
+# Provider dashboard endpoint - Is ok
 api.add_resource(ProviderDashboardResource, '/api/v1/provider/dashboard')
 
-# Provider booking endpoints
+# Provider booking endpoints - All are ok
 api.add_resource(ProviderBookingsResource, '/api/v1/provider/bookings')
 api.add_resource(BookingStatisticsResource, '/api/v1/provider/booking-statistics')
 api.add_resource(TripBookingsResource, '/api/v1/provider/trips/<int:trip_id>/bookings')
 
-# Provider route endpoints
+# Provider route endpoints - All are ok
 api.add_resource(ProviderRoutesResource, '/api/v1/provider/routes')
 api.add_resource(ProviderRouteDetailResource, '/api/v1/provider/routes/<int:route_id>')
 
-# Provider route-stops endpoints
+# Provider route-stops endpoints - All are ok
 api.add_resource(ProviderRouteStopsResource, '/api/v1/provider/routes/<int:route_id>/stops')
 api.add_resource(UpdateRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
 api.add_resource(DeleteRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
 
-# Provider stop endpoints
-api.add_resource(CreateStopResource, '/api/v1/stops')
-api.add_resource(UpdateStopResource, '/api/v1/stops/<int:stop_id>')
-api.add_resource(DeleteStopResource, '/api/v1/stops/<int:stop_id>')
+# Provider stop endpoints - All are ok
+api.add_resource(ProviderStopsResource, '/api/v1/provider/stops')
+api.add_resource(ProviderStopResource, '/api/v1/provider/stops/<int:stop_id>')
 
 # Provider trip endpoints
 api.add_resource(ProviderRouteTripsResource, '/api/v1/provider/routes/<int:route_id>/trips')

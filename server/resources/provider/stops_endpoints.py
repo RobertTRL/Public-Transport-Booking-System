@@ -12,8 +12,17 @@ stop_schema = StopSchema()
 stops_schema = StopSchema(many=True)
 
 
-class CreateStopResource(Resource):
-    """/api/v1/stops"""
+class ProviderStopsResource(Resource):
+    """/api/v1/provider/stops"""
+
+    @jwt_required()
+    def get(self):
+        user = get_current_provider_user()
+        if not user:
+            return {'error': 'Unauthorized provider access'}, 401
+
+        stops = Stop.query.all()
+        return stops_schema.dump(stops), 200
 
     @jwt_required()
     def post(self):
@@ -42,8 +51,8 @@ class CreateStopResource(Resource):
         return stop_schema.dump(stop), 201
 
 
-class UpdateStopResource(Resource):
-    """/api/v1/stops/<int:stop_id>"""
+class ProviderStopResource(Resource):
+    """/api/v1/provider/stops/<int:stop_id>"""
 
     @jwt_required()
     def patch(self, stop_id):
@@ -74,10 +83,6 @@ class UpdateStopResource(Resource):
             return {'error': 'Unable to update stop.'}, 400
 
         return stop_schema.dump(stop), 200
-
-
-class DeleteStopResource(Resource):
-    """/api/v1/stops/<int:stop_id>"""
 
     @jwt_required()
     def delete(self, stop_id):
