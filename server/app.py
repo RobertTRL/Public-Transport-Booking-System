@@ -50,7 +50,7 @@ api.add_resource(DeleteRouteStopResource, '/api/v1/provider/routes/<int:route_id
 api.add_resource(ProviderStopsResource, '/api/v1/provider/stops')
 api.add_resource(ProviderStopResource, '/api/v1/provider/stops/<int:stop_id>')
 
-# Provider trip endpoints
+# Provider trip endpoints - All are ok
 api.add_resource(ProviderRouteTripsResource, '/api/v1/provider/routes/<int:route_id>/trips')
 api.add_resource(ProviderTripResource, '/api/v1/provider/trips/<int:trip_id>')
 api.add_resource(CancelTripResource, '/api/v1/provider/trips/<int:trip_id>/cancel')
