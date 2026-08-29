@@ -276,7 +276,6 @@ class BookingSchema(BaseSchema):
     # Always starts "active" on creation and is only ever changed by the
     # dedicated cancel action -- never accepted directly from client input.
     status = fields.String(dump_only=True)
-    cancelled_at = fields.DateTime(dump_only=True, allow_none=True)
     made_at = fields.DateTime(dump_only=True)
 
     @validates_schema

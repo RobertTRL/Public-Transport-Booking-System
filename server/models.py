@@ -148,6 +148,12 @@ class User(db.Model):
 
     sacco = db.relationship('Sacco', back_populates='users')
 
+    def set_password(self, password):
+            self.password_hash = generate_password_hash(password)
+    
+    def authenticate(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 class Passenger(db.Model):
     __tablename__ = 'passengers'
