@@ -68,7 +68,7 @@ api.add_resource(RouteResource, "/api/v1/routes/<int:route_id>")
 # Passenger stops endpoint - Is ok
 api.add_resource(StopsResource, "/api/v1/stops")
 
-# Passenger trip endpoints
+# Passenger trip endpoints - All are ok
 api.add_resource(AvailableTripsResource, "/api/v1/trips")
 api.add_resource(TripResource, "/api/v1/trips/<int:trip_id>")
 api.add_resource(TripAvailabilityResource, "/api/v1/trips/<int:trip_id>/availability")
