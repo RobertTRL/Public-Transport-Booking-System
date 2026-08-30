@@ -1,5 +1,5 @@
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 from flask_restful import Resource
 from config import db
 from models import User, Passenger
@@ -45,7 +45,8 @@ class LoginResource(Resource):
 
         if account and account.authenticate(password):
             access_token = create_access_token(identity=str(account.id))
-            return {'access_token': access_token}, 200
+            refresh_token = create_refresh_token(identity=str(account.id))
+            return {'access_token': access_token, 'refresh_token': refresh_token}, 200
 
         return {'error': 'Invalid credentials'}, 401
 
@@ -75,7 +76,8 @@ class RegisterResource(Resource):
         db.session.commit()
 
         access_token = create_access_token(identity=str(new_account.id))
-        return {'access_token': access_token}, 201
+        refresh_token = create_refresh_token(identity=str(new_account.id))
+        return {'access_token': access_token, 'refresh_token': refresh_token}, 201
 
 
 class MeResource(Resource):
@@ -100,3 +102,11 @@ class MeResource(Resource):
         if not user:
             return {"error": "User not found."}, 404
         return user_schema.dump(user), 200
+
+
+class RefreshTokenResource(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        current_identity = get_jwt_identity()
+        new_access_token = create_access_token(identity=str(current_identity))
+        return {'access_token': new_access_token}, 200

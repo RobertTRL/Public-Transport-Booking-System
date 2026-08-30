@@ -1,3 +1,5 @@
+"""Public Transport Booking API main application entry point."""
+
 from flask import Flask
 from flask_migrate import Migrate
 from config import app, api
@@ -16,12 +18,13 @@ from resources.provider import (
     ProviderRouteTripsResource, ProviderTripResource, CancelTripResource,
     ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
 )
-from resources.auth_endpoints import (MeResource, RegisterResource, LoginResource)
+from resources.auth_endpoints import (MeResource, RegisterResource, LoginResource, RefreshTokenResource)
 from resources.provider.user_endpoints import (ListCreateUserResource, UpdateDeleteUserResource, SearchUsersResource)
 
 # Provider and Passenger authentication endpoints - All are ok
 api.add_resource(LoginResource, '/api/v1/auth/login')
 api.add_resource(RegisterResource, '/api/v1/auth/register')
+api.add_resource(RefreshTokenResource, '/api/v1/auth/refresh')
 api.add_resource(MeResource, '/api/v1/me')
 
 # Provider user management endpoints - All are ok
@@ -60,19 +63,19 @@ api.add_resource(ListVehiclesResource, '/api/v1/provider/vehicles')
 api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
 api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')
 
-# Passenger route endpoints
+# Passenger route endpoints - All are ok
 api.add_resource(RouteSearchResource, "/api/v1/routes/search")
 api.add_resource(RouteResource, "/api/v1/routes/<int:route_id>")
 
-# Passenger stops endpoint
+# Passenger stops endpoint - Is ok
 api.add_resource(StopsResource, "/api/v1/stops")
 
-# Passenger trip endpoints
+# Passenger trip endpoints - All are ok
 api.add_resource(AvailableTripsResource, "/api/v1/trips")
 api.add_resource(TripResource, "/api/v1/trips/<int:trip_id>")
 api.add_resource(TripAvailabilityResource, "/api/v1/trips/<int:trip_id>/availability")
 
-# Passenger booking endpoints 
+# Passenger booking endpoints - All are ok
 api.add_resource(BookingResource, "/api/v1/bookings")
 api.add_resource(MyBookingsResource, "/api/v1/me/bookings")
 api.add_resource(BookingDetailResource, "/api/v1/bookings/<int:booking_id>")

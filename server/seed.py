@@ -33,6 +33,7 @@ def clear_data():
 
 
 def seed():
+    db.create_all()
     clear_data()
 
     # ---- SACCOs ----
