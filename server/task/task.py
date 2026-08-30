@@ -11,7 +11,7 @@ POST	            /api/v1/auth/provider/login	                                   
 GET	                /api/v1/stops	                                                                        get_stops() ✓
 GET	                /api/v1/routes/search?origin_stop_id=&destination_stop_id=	                            search_routes() ✓
 GET	                /api/v1/trips?origin_routestop_id=&destination_routestop_id=&date=	                    search_available_trips() ✓
-GET	                /api/v1/trips/<int:trip_id>	                                                            get_trip()
+GET	                /api/v1/trips/<int:trip_id>	                                                            get_trip() ✓
 GET	                /api/v1/trips/<int:trip_id>/availability?origin_routestop_id=&destination_routestop_id=	get_trip_availability() ✓
 POST	            /api/v1/bookings	                                                                    create_booking() 
 GET	                /api/v1/me/bookings	                                                                    get_my_bookings() ✓
