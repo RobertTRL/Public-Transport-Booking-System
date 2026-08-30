@@ -76,7 +76,8 @@ class RegisterResource(Resource):
         db.session.commit()
 
         access_token = create_access_token(identity=str(new_account.id))
-        return {'access_token': access_token}, 201
+        refresh_token = create_refresh_token(identity=str(new_account.id))
+        return {'access_token': access_token, 'refresh_token': refresh_token}, 201
 
 
 class MeResource(Resource):
