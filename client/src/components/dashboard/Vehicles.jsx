@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Plus, Search } from "lucide-react";
-import { vehicles } from "../../data/routesData";
+import { vehicles as seedVehicles } from "../../data/routesData";
+import AddVehicleModal from "./AddVehicleModal";
 import "../../styles/Vehicle.css";
 
 function Vehicles() {
+  const [vehicles, setVehicles] = useState(seedVehicles);
   const [searchField, setSearchField] = useState("numberPlate");
   const [searchTerm, setSearchTerm] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const availableCount = vehicles.filter(
     (vehicle) => vehicle.availability === "Available"
@@ -17,6 +20,13 @@ function Vehicles() {
       .includes(searchTerm.toLowerCase())
   );
 
+  const handleAddVehicle = (vehicle) => {
+    setVehicles((list) => [
+      { id: `vehicle-${Date.now()}`, ...vehicle },
+      ...list,
+    ]);
+  };
+
   return (
     <>
       <div className="dashboard-header vehicles-header">
@@ -25,7 +35,11 @@ function Vehicles() {
           <p>View and manage service provider vehicles.</p>
         </div>
 
-        <button type="button" className="add-vehicle-button">
+        <button
+          type="button"
+          className="add-vehicle-button"
+          onClick={() => setModalOpen(true)}
+        >
           <Plus size={16} />
           Add Vehicle
         </button>
@@ -110,6 +124,13 @@ function Vehicles() {
           </table>
         </div>
       </section>
+
+      {modalOpen && (
+        <AddVehicleModal
+          onClose={() => setModalOpen(false)}
+          onCreated={handleAddVehicle}
+        />
+      )}
     </>
   );
 }
