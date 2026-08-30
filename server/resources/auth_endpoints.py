@@ -102,3 +102,11 @@ class MeResource(Resource):
         if not user:
             return {"error": "User not found."}, 404
         return user_schema.dump(user), 200
+
+
+class RefreshTokenResource(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        current_identity = get_jwt_identity()
+        new_access_token = create_access_token(identity=str(current_identity))
+        return {'access_token': new_access_token}, 200
