@@ -73,7 +73,7 @@ api.add_resource(AvailableTripsResource, "/api/v1/trips")
 api.add_resource(TripResource, "/api/v1/trips/<int:trip_id>")
 api.add_resource(TripAvailabilityResource, "/api/v1/trips/<int:trip_id>/availability")
 
-# Passenger booking endpoints 
+# Passenger booking endpoints - All are ok
 api.add_resource(BookingResource, "/api/v1/bookings")
 api.add_resource(MyBookingsResource, "/api/v1/me/bookings")
 api.add_resource(BookingDetailResource, "/api/v1/bookings/<int:booking_id>")
