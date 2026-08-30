@@ -65,7 +65,7 @@ api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicl
 api.add_resource(RouteSearchResource, "/api/v1/routes/search")
 api.add_resource(RouteResource, "/api/v1/routes/<int:route_id>")
 
-# Passenger stops endpoint
+# Passenger stops endpoint - Is ok
 api.add_resource(StopsResource, "/api/v1/stops")
 
 # Passenger trip endpoints
