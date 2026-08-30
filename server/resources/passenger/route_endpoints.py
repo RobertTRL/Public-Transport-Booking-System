@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, joinedload
 
 from config import db
 from models import Route, RouteStop, Stop
@@ -56,7 +56,6 @@ class RouteSearchResource(Resource):
                 < destination_route_stop.sequence,
             )
             .distinct()
-            .subquery()
         )
 
         routes = (
