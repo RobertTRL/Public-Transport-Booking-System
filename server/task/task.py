@@ -5,6 +5,7 @@ POST	            /api/v1/auth/passenger/register	                               
 POST	            /api/v1/auth/provider/register	                                                        register_provider() 
 POST	            /api/v1/auth/passenger/login	                                                        login_passenger() 
 POST	            /api/v1/auth/provider/login	                                                            login_provider() 
+POST	            /api/v1/auth/refresh	                                                                refresh_token() ✓ 
 
 # Passenger endpoints
 # Norman
