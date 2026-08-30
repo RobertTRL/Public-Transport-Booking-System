@@ -33,3 +33,10 @@ export async function createVehicle(vehicle) {
   await delay();
   return { ok: true, vehicle };
 }
+
+export async function createRoute(route) {
+  // TODO: POST /api/routes
+  console.log("Creating route:", route);
+  await delay();
+  return { ok: true, route };
+}
