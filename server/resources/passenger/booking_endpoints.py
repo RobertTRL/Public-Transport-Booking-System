@@ -237,7 +237,6 @@ class CancelBookingResource(Resource):
             }, 409
 
         booking.status = "cancelled"
-        booking.cancelled_at = db.func.now()
 
         db.session.commit()
 
