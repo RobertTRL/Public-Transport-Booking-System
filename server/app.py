@@ -61,7 +61,7 @@ api.add_resource(ListVehiclesResource, '/api/v1/provider/vehicles')
 api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
 api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')
 
-# Passenger route endpoints
+# Passenger route endpoints - All are ok
 api.add_resource(RouteSearchResource, "/api/v1/routes/search")
 api.add_resource(RouteResource, "/api/v1/routes/<int:route_id>")
 
