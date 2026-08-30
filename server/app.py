@@ -1,3 +1,5 @@
+"""Public Transport Booking API main application entry point."""
+
 from flask import Flask
 from flask_migrate import Migrate
 from config import app, api
