@@ -45,7 +45,8 @@ class LoginResource(Resource):
 
         if account and account.authenticate(password):
             access_token = create_access_token(identity=str(account.id))
-            return {'access_token': access_token}, 200
+            refresh_token = create_refresh_token(identity=str(account.id))
+            return {'access_token': access_token, 'refresh_token': refresh_token}, 200
 
         return {'error': 'Invalid credentials'}, 401
 
