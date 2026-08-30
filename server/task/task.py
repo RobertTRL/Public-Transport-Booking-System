@@ -15,9 +15,9 @@ GET	                /api/v1/trips/<int:trip_id>	                                
 GET	                /api/v1/trips/<int:trip_id>/availability?origin_routestop_id=&destination_routestop_id=	get_trip_availability() ✓
 POST	            /api/v1/bookings	                                                                    create_booking() ✓ 
 GET	                /api/v1/me/bookings	                                                                    get_my_bookings() ✓
-GET	                /api/v1/bookings/<int:booking_id>	                                                    get_booking()
-PATCH	            /api/v1/bookings/<int:booking_id>/cancel	                                            cancel_booking() 
-GET	                /api/v1/routes/<int:route_id>	                                                        get_route() 
+GET	                /api/v1/bookings/<int:booking_id>	                                                    get_booking() ✓
+PATCH	            /api/v1/bookings/<int:booking_id>/cancel	                                            cancel_booking() ✓
+GET	                /api/v1/routes/<int:route_id>	                                                        get_route() ✓ 
 
 # Provider endpoints
 # Vincent
