@@ -16,12 +16,13 @@ from resources.provider import (
     ProviderRouteTripsResource, ProviderTripResource, CancelTripResource,
     ListVehiclesResource, CreateVehicleResource, ProviderVehicleResource
 )
-from resources.auth_endpoints import (MeResource, RegisterResource, LoginResource)
+from resources.auth_endpoints import (MeResource, RegisterResource, LoginResource, RefreshTokenResource)
 from resources.provider.user_endpoints import (ListCreateUserResource, UpdateDeleteUserResource, SearchUsersResource)
 
 # Provider and Passenger authentication endpoints - All are ok
 api.add_resource(LoginResource, '/api/v1/auth/login')
 api.add_resource(RegisterResource, '/api/v1/auth/register')
+api.add_resource(RefreshTokenResource, '/api/v1/auth/refresh')
 api.add_resource(MeResource, '/api/v1/me')
 
 # Provider user management endpoints - All are ok
