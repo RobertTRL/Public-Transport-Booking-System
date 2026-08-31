@@ -60,7 +60,7 @@ function Home() {
     const fetchStops = async () => {
       setLoadingStops(true);
       try {
-        const response = await fetch(`/api/v1/routes/${route.id}/stops`);
+        const response = await fetch(`/api/v1/routes/${route.id}/stops?per_page=100`);
         if (response.ok) {
           const data = await response.json();
           setStops(data.items || []);

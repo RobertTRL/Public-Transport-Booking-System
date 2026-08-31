@@ -28,7 +28,10 @@ async function getStopByIdFromAPI(routeId, routeStopId) {
         return {
           id: routeStop.id,
           stop_id: routeStop.stop_id,
-          name: routeStop.name,
+          name: routeStop.stop?.name || routeStop.name,
+          position: routeStop.stop?.latitude && routeStop.stop?.longitude
+            ? [routeStop.stop.latitude, routeStop.stop.longitude]
+            : undefined,
           routeId: routeId
         };
       }
