@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { getAccessToken, setAccessToken } from "../../utils/auth";
+import { getAccessToken, setAccessToken } from "../utils/auth";
 import "../styles/auth.css";
 
 const USER_TYPES = [
