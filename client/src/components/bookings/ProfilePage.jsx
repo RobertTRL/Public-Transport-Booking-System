@@ -1,8 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useBookings } from '../../hooks/useBookings'
-import BookingCard from './BookingCard'
-import Pagination from './Pagination'
 import { clearAccessToken } from '../../utils/auth'
 import '../../styles/user.css'
 
@@ -19,17 +16,6 @@ function ProfilePage() {
   })
 
   const [savedProfile, setSavedProfile] = useState(profile)
-
-  const {
-    data: bookings,
-    loading,
-    error,
-    page,
-    setPage,
-    perPage,
-    setPerPage,
-    totalPages,
-  } = useBookings()
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -185,45 +171,6 @@ function ProfilePage() {
 
           </div>
 
-        </div>
-
-        <div className="profile-bookings">
-          <h2 className="profile-bookings__title">My Bookings</h2>
-
-          {loading && (
-            <p className="profile-bookings__meta">Loading your bookings…</p>
-          )}
-
-          {error && (
-            <p className="profile-bookings__meta profile-bookings__meta--error">
-              Something went wrong while loading your bookings.
-            </p>
-          )}
-
-          {!loading && !error && !bookings.length && (
-            <p className="profile-bookings__meta">
-              No bookings yet. Find a route and book your first trip.
-            </p>
-          )}
-
-          <div className="profile-bookings__list">
-            {bookings.map((booking) => (
-              <BookingCard
-                key={booking.id ?? `${booking.origin}-${booking.destination}`}
-                booking={booking}
-              />
-            ))}
-          </div>
-
-          {!!bookings.length && (
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              setPage={setPage}
-              perPage={perPage}
-              setPerPage={setPerPage}
-            />
-          )}
         </div>
 
       </section>
