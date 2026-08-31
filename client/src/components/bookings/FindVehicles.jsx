@@ -19,7 +19,7 @@ const DUMMY_VEHICLES = [
 // Helper function to fetch stop data from API
 async function getStopByIdFromAPI(routeId, routeStopId) {
   try {
-    const response = await fetch(`/api/v1/routes/${routeId}`);
+    const response = await fetch(`http://localhost:5000/api/v1/routes/${routeId}`);
     if (response.ok) {
       const route = await response.json();
       // Find the route stop with the given ID

@@ -31,7 +31,7 @@ function Home() {
     const fetchRoutes = async () => {
       setLoadingRoutes(true);
       try {
-        const response = await fetch("/api/v1/routes/generalinfo");
+        const response = await fetch("http://localhost:5000/api/v1/routes/generalinfo");
         if (response.ok) {
           const data = await response.json();
           setRoutes(data.items || []);
@@ -60,7 +60,7 @@ function Home() {
     const fetchStops = async () => {
       setLoadingStops(true);
       try {
-        const response = await fetch(`/api/v1/routes/${route.id}/stops?per_page=100`);
+        const response = await fetch(`http://localhost:5000/api/v1/routes/${route.id}/stops?per_page=100`);
         if (response.ok) {
           const data = await response.json();
           setStops(data.items || []);
