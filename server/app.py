@@ -8,7 +8,8 @@ import models
 from resources.passenger import (
     MyBookingsResource, BookingResource, CancelBookingResource, 
     BookingDetailResource, RouteSearchResource, RouteResource,
-    StopsResource, AvailableTripsResource, TripResource, TripAvailabilityResource
+    StopsResource, AvailableTripsResource, TripResource, TripAvailabilityResource,
+    GeneralRouteInfoResource, PassengerRouteStopsResource
 )
 from resources.provider import (
     ProviderBookingsResource, BookingStatisticsResource, TripBookingsResource,
@@ -64,8 +65,10 @@ api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
 api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')
 
 # Passenger route endpoints - All are ok
+api.add_resource(GeneralRouteInfoResource, "/api/v1/routes/generalinfo")
 api.add_resource(RouteSearchResource, "/api/v1/routes/search")
 api.add_resource(RouteResource, "/api/v1/routes/<int:route_id>")
+api.add_resource(PassengerRouteStopsResource, "/api/v1/routes/<int:route_id>/stops")
 
 # Passenger stops endpoint - Is ok
 api.add_resource(StopsResource, "/api/v1/stops")

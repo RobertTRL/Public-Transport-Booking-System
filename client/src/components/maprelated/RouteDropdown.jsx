@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-function RouteDropdown({ options, value, onChange, placeholder }) {
+function RouteDropdown({ options, value, onChange, placeholder, disabled = false }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
@@ -27,8 +27,10 @@ function RouteDropdown({ options, value, onChange, placeholder }) {
   }
 
   function handleFocus() {
-    setOpen(true);
-    setQuery("");
+    if (!disabled) {
+      setOpen(true);
+      setQuery("");
+    }
   }
 
   const displayValue = open ? query : value ? value.name : "";
@@ -45,10 +47,11 @@ function RouteDropdown({ options, value, onChange, placeholder }) {
             setOpen(true);
           }}
           onFocus={handleFocus}
+          disabled={disabled}
         />
       </div>
 
-      {open && (
+      {open && !disabled && (
         <ul className="location-dropdown-list">
           {filteredOptions.length === 0 && (
             <li className="location-dropdown-empty">No matches</li>

@@ -1,0 +1,59 @@
+{
+  "steps": [
+    {
+      "number": "01",
+      "title": "Search your route",
+      "text": "Tell us where you're headed and we'll show the highways and stops that get you there."
+    },
+    {
+      "number": "02",
+      "title": "Pick your stop",
+      "text": "Choose the pickup and drop-off points closest to you on the route."
+    },
+    {
+      "number": "03",
+      "title": "Book & go",
+      "text": "Confirm your trip and you're set — no queuing at the stage."
+    }
+  ],
+  "stats": [
+    {
+      "value": "120+",
+      "label": "Routes covered"
+    },
+    {
+      "value": "500+",
+      "label": "Stops mapped"
+    },
+    {
+      "value": "10k+",
+      "label": "Riders monthly"
+    },
+    {
+      "value": "4.8★",
+      "label": "Avg. rating"
+    }
+  ],
+  "features": [
+    {
+      "icon": "Search",
+      "title": "Smart route search",
+      "text": "Type any two stops and we'll map the quickest matatu and bus connections across the city."
+    },
+    {
+      "icon": "MapPin",
+      "title": "Stop-by-stop guidance",
+      "text": "See every stage on the way so you always know exactly where to hop on and off."
+    },
+    {
+      "icon": "Clock",
+      "title": "Live departures",
+      "text": "Get realistic departure times and never miss the matatu that gets you there on time."
+    },
+    {
+      "icon": "ShieldCheck",
+      "title": "Safe & trusted",
+      "text": "Verified operators and transparent fares, so your daily commute stays predictable."
+    }
+  ]
+}

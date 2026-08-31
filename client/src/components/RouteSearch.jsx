@@ -6,22 +6,33 @@ function RouteSearch({
   route,
   origin,
   destination,
+  routes = [],
+  stops = [],
   onSelectRoute,
   onSelectOrigin,
   onSelectDestination,
+  loadingRoutes = false,
+  loadingStops = false,
 }) {
+  // Use API-fetched routes if available, fallback to local data
+  const routeOptions = routes.length > 0 ? routes : allRoutes;
+  
+  // Use API-fetched stops if available, fallback to all stops
+  const stopOptions = stops.length > 0 ? stops : allStops;
+
   return (
     <div className="route-search">
       <RouteDropdown
         placeholder="Pick a route"
-        options={allRoutes}
+        options={routeOptions}
         value={route}
         onChange={onSelectRoute}
+        disabled={loadingRoutes}
       />
 
       <LocationDropdown
         placeholder="Pick a starting point"
-        options={allStops}
+        options={stopOptions}
         value={origin}
         onChange={(stop) => {
           if (stop === null) {
@@ -30,11 +41,12 @@ function RouteSearch({
           }
           onSelectOrigin(stop);
         }}
+        disabled={!route || loadingStops}
       />
 
       <LocationDropdown
         placeholder="Pick a destination"
-        options={allStops}
+        options={stopOptions}
         value={destination}
         onChange={(stop) => {
           if (stop === null) {
@@ -43,6 +55,7 @@ function RouteSearch({
           }
           onSelectDestination(stop);
         }}
+        disabled={!route || loadingStops}
       />
     </div>
   );

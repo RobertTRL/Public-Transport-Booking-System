@@ -1,4 +1,4 @@
 from .booking_endpoints import MyBookingsResource, BookingResource, CancelBookingResource, BookingDetailResource
-from .route_endpoints import RouteSearchResource, RouteResource
+from .route_endpoints import RouteSearchResource, RouteResource, GeneralRouteInfoResource, PassengerRouteStopsResource
 from .stops_endpoints import StopsResource
 from .trip_endpoints import AvailableTripsResource, TripResource, TripAvailabilityResource
