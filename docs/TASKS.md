@@ -2,26 +2,11 @@
 
 a) Home.jsx 
 
-- Retrieve data from /api/v1/stops . The endpoint retrieves data in the following format.
-
-```
-{
-    { id: "1", name: "Nyayo Stadium", position: [-1.3096, 36.8226] },
-    { id: "2", name: "South B", position: [-1.3182, 36.8324] },
-    { id: "3", name: "Airport North Road", position: [-1.3220, 36.8843] },      
-    { id: "4", name: "JKIA", position: [-1.3192, 36.9278] },
-    { id: "5", name: "Syokimau", position: [-1.3766, 36.9436] },
-    { id: "6", name: "Athi River", position: [-1.4557, 36.9770] },
-}
-```
-
-- Implement a search route endpoint. This endpoint should be triggered when after search, no matches are made amongst the default values. The locationdropdown should show a loading state, meanwhile. if they are truly no matches, it then shows the text 'No matches'. Else, it retrieves all similar stops. See SearchUsersResource for guidance on search implementation. 
-
 - Implement a general route information route, /api/v1/routes/generalinfo, which retrieves only the id, name and color of all routes, no stops info
 
 - Implement a passenger route-stop route, similar to ProviderRouteStopsResource.get() implementation, to get both the route-stop and the stop information, no longitude and latitude
 
-- Add a useEffect hook, which fetches from /api/v1/routes/generalinfo, only once, on page load. On route selection, an API call to /api/v1/routes/<int:route_id>/stops to get the specific info on that route. 
+- Add a useEffect hook, which fetches from /api/v1/routes/generalinfo, only once, on page load. On route selection, an API call to /api/v1/routes/<int:route_id>/stops to get the specific stops on that route. 
     
 - Add the following functionality for handleFindVehicles function:
 	a) Retrieve the origin_routestop_id and destination_routestop_id from the selected origin and destination's route_ids

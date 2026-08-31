@@ -1,9 +1,24 @@
+import RouteDropdown from "./maprelated/RouteDropdown";
 import LocationDropdown from "./maprelated/LocationDropdown";
-import { allStops } from "../data/nairobiRoutes";
+import { allStops, allRoutes } from "../data/nairobiRoutes";
 
-function RouteSearch({ origin, destination, onSelectOrigin, onSelectDestination }) {
+function RouteSearch({
+  route,
+  origin,
+  destination,
+  onSelectRoute,
+  onSelectOrigin,
+  onSelectDestination,
+}) {
   return (
     <div className="route-search">
+      <RouteDropdown
+        placeholder="Pick a route"
+        options={allRoutes}
+        value={route}
+        onChange={onSelectRoute}
+      />
+
       <LocationDropdown
         placeholder="Pick a starting point"
         options={allStops}

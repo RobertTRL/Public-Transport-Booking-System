@@ -64,8 +64,15 @@ function Home() {
   const navigate = useNavigate();
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [route, setRoute] = useState(null);
 
-  function handleSelectOrigin(stop) {
+  const handleSelectRoute = (selectedRoute) => {
+    setRoute(selectedRoute);
+    setOrigin(null);
+    setDestination(null);
+  };
+
+  const handleSelectOrigin = (stop) => {
     setOrigin(stop);
     setDestination(null);
   }
@@ -122,8 +129,10 @@ function Home() {
           transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
         >
           <RouteSearch
+            route={route}
             origin={origin}
             destination={destination}
+            onSelectRoute={handleSelectRoute}
             onSelectOrigin={handleSelectOrigin}
             onSelectDestination={handleSelectDestination}
           />
