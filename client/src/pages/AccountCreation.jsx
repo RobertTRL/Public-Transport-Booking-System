@@ -1,13 +1,47 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import '../styles/auth.css'
 
 function AccountCreation() {
-  const handleSubmit = (event) => {
-    event.preventDefault()
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-    // Account creation will be connected to the backend later.
-    console.log('Account creation form submitted')
-  }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    const form = event.target;
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const confirmPassword = form.confirmPassword.value;
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const url = new URL("/api/v1/auth/register", window.location.origin);
+      url.searchParams.set("name", name);
+      url.searchParams.set("email", email);
+      url.searchParams.set("password", password);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        throw new Error(text || `Registration failed (${response.status})`);
+      }
+
+      navigate("/login", { state: { error: null } });
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <main className="auth-page">
@@ -65,6 +99,8 @@ function AccountCreation() {
               required
             />
           </div>
+
+          {error && <p className="auth-error">{error}</p>}
 
           <button type="submit" className="auth-button">
             Create account

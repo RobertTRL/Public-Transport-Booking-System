@@ -73,7 +73,7 @@ function DashAccountCreation() {
 
         <p className="auth-footer">
           Already have an account?{' '}
-          <Link to="/dashlogin">Sign in</Link>
+          <Link to="/login">Sign in</Link>
         </p>
       </section>
     </main>

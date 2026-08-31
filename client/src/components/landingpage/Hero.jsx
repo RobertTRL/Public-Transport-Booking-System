@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { fetchWithAuth, getAccessToken } from "../../utils/auth";
 import "../../styles/hero.css";
-import { NavLink } from "react-router-dom"
 
 export default function HeroGeometric({
     title1,
@@ -8,6 +10,53 @@ export default function HeroGeometric({
     description,
     className = "",
 }) {
+    const navigate = useNavigate();
+    const [authError, setAuthError] = useState("");
+
+    async function handleBookRide() {
+        setAuthError("");
+        const token = getAccessToken();
+
+        if (!token) {
+            navigate("/login", { state: { error: "Please sign in to book a ride." } });
+            return;
+        }
+
+        try {
+          const response = await fetchWithAuth("/api/v1/me");
+
+          if (response.ok) {
+            navigate("/home");
+          } else {
+            navigate("/login", { state: { error: "Your session expired. Please sign in again." } });
+          }
+        } catch {
+          navigate("/login", { state: { error: "Unable to verify your session. Please try again." } });
+        }
+    }
+
+    async function handleGoToDashboard() {
+        setAuthError("");
+        const token = getAccessToken();
+
+        if (!token) {
+            navigate("/login", { state: { error: "Please sign in to access the dashboard." } });
+            return;
+        }
+
+        try {
+          const response = await fetchWithAuth("/api/v1/me");
+
+          if (response.ok) {
+            navigate("/dashboard");
+          } else {
+            navigate("/login", { state: { error: "Your session expired. Please sign in again." } });
+          }
+        } catch {
+          navigate("/login", { state: { error: "Unable to verify your session. Please try again." } });
+        }
+    }
+
     return (
         <div className={`hero-geometric ${className}`}>
             {(title1 || title2 || description) && (
@@ -53,18 +102,36 @@ export default function HeroGeometric({
                             </div>
                         )}
 
+                        {authError && (
+                            <motion.p
+                                className="hero-geometric__error"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                {authError}
+                            </motion.p>
+                        )}
+
                         <motion.div
                             className="hero-geometric__actions"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}
                         >
-                            <NavLink to="/login" className="hero-geometric__cta hero-geometric__cta--primary">
+                            <button
+                                type="button"
+                                className="hero-geometric__cta hero-geometric__cta--primary"
+                                onClick={handleBookRide}
+                            >
                                 Book a Ride
-                            </NavLink>
-                            <NavLink to="/dashlogin" className="hero-geometric__cta hero-geometric__cta--secondary">
-                                Login to Dashboard
-                            </NavLink>
+                            </button>
+                            <button
+                                type="button"
+                                className="hero-geometric__cta hero-geometric__cta--secondary"
+                                onClick={handleGoToDashboard}
+                            >
+                                Go To Dashboard
+                            </button>
                         </motion.div>
                     </div>
                 </div>
