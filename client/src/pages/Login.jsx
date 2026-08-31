@@ -38,10 +38,14 @@ function Login() {
     const password = form.password.value;
 
     try {
-      const response = await fetch("/api/v1/auth/login", {
+      const response = await fetch("http://localhost:5000/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ 
+          "user_type": userType,
+          "email": email,
+          "password": password
+        }),
       });
 
       if (!response.ok) {
