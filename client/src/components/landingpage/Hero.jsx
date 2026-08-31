@@ -57,6 +57,12 @@ export default function HeroGeometric({
         }
     }
 
+    const handleScrollToDemo = () => {
+        document
+            .querySelector(".how-it-works-page")
+            ?.scrollIntoView({ behavior: "smooth" });
+    };
+
     return (
         <div className={`hero-geometric ${className}`}>
             {(title1 || title2 || description) && (
@@ -127,10 +133,10 @@ export default function HeroGeometric({
                             </button>
                             <button
                                 type="button"
+                                onClick={handleScrollToDemo}
                                 className="hero-geometric__cta hero-geometric__cta--secondary"
-                                onClick={handleGoToDashboard}
                             >
-                                Go To Dashboard
+                                Try a Live Demo
                             </button>
                         </motion.div>
                     </div>
