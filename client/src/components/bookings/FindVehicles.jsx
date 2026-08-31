@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
@@ -32,6 +32,38 @@ function FindVehicles() {
 
   const [booked, setBooked] = useState({});
   const [loadingId, setLoadingId] = useState(null);
+
+  const [sidebarWidth, setSidebarWidth] = useState(360);
+  const isResizing = useRef(false);
+
+  useEffect(() => {
+    function onMouseMove(event) {
+      if (!isResizing.current) return;
+      const next = Math.min(600, Math.max(360, event.clientX));
+      setSidebarWidth(next);
+    }
+
+    function onMouseUp() {
+      if (!isResizing.current) return;
+      isResizing.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
+
+  function startResizing(event) {
+    event.preventDefault();
+    isResizing.current = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  }
 
   async function handleBook(vehicle) {
     if (booked[vehicle.id] || loadingId === vehicle.id) return;
@@ -114,7 +146,15 @@ function FindVehicles() {
         />
       </div>
 
-      <aside className={`find-vehicles__sidebar find-vehicles__sidebar--${sheetState}`}>
+      <aside
+        className={`find-vehicles__sidebar find-vehicles__sidebar--${sheetState}`}
+        style={{ width: sidebarWidth }}
+      >
+        <div
+          className="find-vehicles__resize-handle"
+          onMouseDown={startResizing}
+          aria-hidden="true"
+        />
         {hasRoute && (
           <button
             type="button"

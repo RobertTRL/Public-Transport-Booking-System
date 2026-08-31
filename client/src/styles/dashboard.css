@@ -1338,3 +1338,33 @@
 .remove-stop-button:hover {
   background: #fef2f2;
 }
+
+.add-route-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 9px;
+  padding: 0.7rem 1.1rem;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.add-route-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(37, 99, 235, 0.25);
+}
+
+.add-route-button:active {
+  transform: translateY(0);
+}

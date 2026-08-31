@@ -143,3 +143,29 @@
 .modal-cancel:hover {
   background: #f4f4f5;
 }
+
+.modal-color-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.modal-color-swatch:hover {
+  transform: scale(1.08);
+}
+
+.modal-color-swatch.is-selected {
+  border-color: #18181b;
+}
