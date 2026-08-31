@@ -7,6 +7,24 @@ from models import Route, RouteStop, Stop
 from schemas import RouteSchema
 
 
+class GeneralRouteInfoResource(Resource):
+    """GET /api/v1/routes/generalinfo - Return all routes with id, name, and color only (no stops)."""
+    
+    def get(self):
+        routes = Route.query.order_by(Route.name.asc()).all()
+        
+        return {
+            'items': [
+                {
+                    'id': route.id,
+                    'name': route.name,
+                    'color': route.color
+                }
+                for route in routes
+            ]
+        }, 200
+
+
 class RouteSearchResource(Resource):
     def get(self):
         origin_stop_id = request.args.get("origin_stop_id", type=int)
@@ -69,6 +87,47 @@ class RouteSearchResource(Resource):
         )
 
         return RouteSchema(many=True).dump(routes), 200
+
+
+class PassengerRouteStopsResource(Resource):
+    """GET /api/v1/routes/<int:route_id>/stops - Return route stops with stop info (no latitude/longitude)."""
+    
+    def get(self, route_id):
+        route = db.session.get(Route, route_id)
+        if not route:
+            return {'error': 'Route not found'}, 404
+
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
+        pagination = (
+            RouteStop.query
+            .filter_by(route_id=route_id)
+            .order_by(RouteStop.sequence.asc())
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False
+            )
+        )
+
+        route_stops = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [
+                {
+                    'id': rs.id,
+                    'stop_id': rs.stop_id,
+                    'sequence': rs.sequence,
+                    'name': rs.stop.name if rs.stop else None
+                }
+                for rs in route_stops
+            ]
+        }, 200
 
 
 class RouteResource(Resource):
