@@ -1,14 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams, Link, useOutletContext } from "react-router-dom";
-import { createPortal } from "react-dom";
-import defaultApiClient from "../../api/axios"; // adjust path if your axios/api instance is located elsewhere
+import { useParams, Link } from "react-router-dom";
+import { createPortal } from "react-dom";  
 
-const RouteDetail = ({ apiClient: propApiClient }) => {
+const RouteDetail = ({ apiClient }) => {
   const { routeId } = useParams();
-  const outletContext = useOutletContext();
-
-  // Resolution order for apiClient: explicit prop -> outlet context -> default import
-  const apiClient = propApiClient || outletContext?.apiClient || defaultApiClient;
 
   const [route, setRoute] = useState(null);
   const [stops, setStops] = useState([]);
