@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, apiGet } from "../../api/client";
+import { getCurrentUser } from "../../api/client";
 import { clearTokens } from "../../utils/auth";
 
 function getInitials(name = "") {
@@ -25,15 +25,18 @@ function Profile() {
 
     async function loadProfile() {
       try {
-        const [profile, dashboard] = await Promise.all([
-          getCurrentUser(),
-          apiGet("/api/v1/provider/dashboard"),
-        ]);
+        const profile = await getCurrentUser();
 
         if (!mounted) return;
 
         setUser(profile);
-        setSaccoName(dashboard.provider?.sacco?.name || "—");
+
+        const sacco =
+          profile?.sacco?.name ||
+          profile?.sacco_name ||
+          "—";
+
+        setSaccoName(sacco);
       } catch (err) {
         if (!mounted) return;
 
