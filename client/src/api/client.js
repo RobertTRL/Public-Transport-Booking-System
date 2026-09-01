@@ -135,6 +135,6 @@ export async function apiDelete(path) {
 }
 
 export async function getCurrentUser() {
-  return apiGet("/api/v1/me?user_type=user");
+  return apiGet("/api/v1/me");
 }
 
