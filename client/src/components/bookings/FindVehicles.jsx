@@ -48,18 +48,24 @@ function FindVehicles() {
   const fromId = searchParams.get("from");
   const toId = searchParams.get("to");
 
-  // Try to get from API first, fallback to local data
-  const [initialOrigin, setInitialOrigin] = useState(null);
-  const [initialDestination, setInitialDestination] = useState(null);
   const [loadingInitialData, setLoadingInitialData] = useState(!!routeId);
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
+  const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
 
-  // Fetch initial origin and destination from API if route ID is available
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!routeId || !fromId || !toId) {
-        // Fallback to local data if no route ID
-        setInitialOrigin(getStopById(fromId));
-        setInitialDestination(getStopById(toId));
+        const fallbackOrigin = getStopById(fromId);
+        const fallbackDestination = getStopById(toId);
+
+        setOrigin(fallbackOrigin);
+        setDestination(fallbackDestination);
+        setSheetState(
+          fallbackOrigin && fallbackDestination
+            ? SHEET_EXPANDED
+            : SHEET_COLLAPSED
+        );
         setLoadingInitialData(false);
         return;
       }
@@ -67,14 +73,30 @@ function FindVehicles() {
       try {
         const originData = await getStopByIdFromAPI(routeId, fromId);
         const destinationData = await getStopByIdFromAPI(routeId, toId);
-        
-        setInitialOrigin(originData);
-        setInitialDestination(destinationData);
+
+        const finalOrigin = originData || getStopById(fromId);
+        const finalDestination = destinationData || getStopById(toId);
+
+        setOrigin(finalOrigin);
+        setDestination(finalDestination);
+        setSheetState(
+          finalOrigin && finalDestination
+            ? SHEET_EXPANDED
+            : SHEET_COLLAPSED
+        );
       } catch (error) {
         console.error("Error fetching initial data:", error);
-        // Fallback to local data
-        setInitialOrigin(getStopById(fromId));
-        setInitialDestination(getStopById(toId));
+
+        const fallbackOrigin = getStopById(fromId);
+        const fallbackDestination = getStopById(toId);
+
+        setOrigin(fallbackOrigin);
+        setDestination(fallbackDestination);
+        setSheetState(
+          fallbackOrigin && fallbackDestination
+            ? SHEET_EXPANDED
+            : SHEET_COLLAPSED
+        );
       } finally {
         setLoadingInitialData(false);
       }
@@ -83,22 +105,8 @@ function FindVehicles() {
     fetchInitialData();
   }, [routeId, fromId, toId]);
 
-  const [origin, setOrigin] = useState(null);
-  const [destination, setDestination] = useState(null);
-  const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
   const suppressClickRef = useRef(false);
   const dragStartY = useRef(null);
-
-  // Update origin and destination when initial data is loaded
-  useEffect(() => {
-    if (!loadingInitialData) {
-      setOrigin(initialOrigin);
-      setDestination(initialDestination);
-      setSheetState(
-        initialOrigin && initialDestination ? SHEET_EXPANDED : SHEET_COLLAPSED
-      );
-    }
-  }, [loadingInitialData, initialOrigin, initialDestination]);
 
   const [booked, setBooked] = useState({});
   const [loadingId, setLoadingId] = useState(null);
@@ -169,7 +177,7 @@ function FindVehicles() {
   const hasRoute = Boolean(selection);
   const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
   
-  const showResults = hasRoute && sheetState === SHEET_EXPANDED
+  const showResults = hasRoute && sheetState === SHEET_EXPANDED;
 
   function toggleSheet() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));

@@ -3,7 +3,7 @@ import { MapPin, Pencil, Trash2, Plus } from "lucide-react";
 import "../../styles/dashboard.css";
 import AddStopModal from "./AddStopModal";
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+const API_BASE_URL = "http://localhost:5000";
 
 function Stops() {
 const [stopList, setStopList] = useState([]);
@@ -14,12 +14,9 @@ const [editingStop, setEditingStop] = useState(null);
 const [busyId, setBusyId] = useState(null);
 
 const loadStops = useCallback(async () => {
-setLoading(true);
-setError("");
-
-
 try {
-  const token = localStorage.getItem("access_token");
+const token = localStorage.getItem("access_token");
+
 
   const response = await fetch(
     `${API_BASE_URL}/api/v1/provider/stops`,
@@ -34,7 +31,13 @@ try {
     }
   );
 
-  const data = await response.json();
+  let data = {};
+
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -44,32 +47,66 @@ try {
     );
   }
 
-  setStopList(
-    Array.isArray(data)
+  return {
+    stops: Array.isArray(data)
       ? data
-      : data.items || data.stops || []
-  );
+      : data.items || data.stops || [],
+    error: "",
+  };
 } catch (err) {
-  setError(err.message || "Failed to fetch stops.");
-} finally {
-  setLoading(false);
+  return {
+    stops: [],
+    error: err.message || "Failed to fetch stops.",
+  };
 }
 
 
 }, []);
 
 useEffect(() => {
-loadStops();
+let cancelled = false;
+
+
+const fetchStops = async () => {
+  const result = await loadStops();
+
+  if (cancelled) return;
+
+  setStopList(result.stops);
+  setError(result.error);
+  setLoading(false);
+};
+
+fetchStops();
+
+return () => {
+  cancelled = true;
+};
+
+
 }, [loadStops]);
 
-const handleSaved = () => {
+const handleSaved = async () => {
 setModalOpen(false);
 setEditingStop(null);
-loadStops();
+
+
+setLoading(true);
+setError("");
+
+const result = await loadStops();
+
+setStopList(result.stops);
+setError(result.error);
+setLoading(false);
+
+
 };
 
 const handleRemove = async (stop) => {
-if (!window.confirm(`Remove ${stop.name}?`)) return;
+if (!window.confirm(`Remove ${stop.name}?`)) {
+return;
+}
 
 
 setBusyId(stop.id);
@@ -91,7 +128,13 @@ try {
     }
   );
 
-  const data = await response.json();
+  let data = {};
+
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -161,6 +204,7 @@ return (
                 <span className="stop-detail-label">
                   Latitude
                 </span>
+
                 <span className="stop-detail-value">
                   {stop.latitude}
                 </span>
@@ -170,6 +214,7 @@ return (
                 <span className="stop-detail-label">
                   Longitude
                 </span>
+
                 <span className="stop-detail-value">
                   {stop.longitude}
                 </span>
@@ -194,9 +239,7 @@ return (
                 type="button"
                 className="remove-stop-button"
                 disabled={busyId === stop.id}
-                onClick={() =>
-                  handleRemove(stop)
-                }
+                onClick={() => handleRemove(stop)}
               >
                 <Trash2 size={14} />
                 Remove
@@ -219,6 +262,7 @@ return (
     />
   )}
 </>
+
 
 );
 }
