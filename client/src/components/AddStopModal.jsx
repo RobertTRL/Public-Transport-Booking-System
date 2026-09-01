@@ -1,105 +1,212 @@
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 
-const AddStopModal = ({ apiClient, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const API_BASE_URL = "http://127.0.0.1:5000";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+function AddStopModal({ stop, onClose, onCreated }) {
+  const [name, setName] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
-    if (!name || !latitude || !longitude) {
-      alert('Please complete all required fields.');
+  const isEditing = Boolean(stop);
+
+  useEffect(() => {
+    if (stop) {
+      setName(stop.name || "");
+      setLatitude(stop.latitude ?? "");
+      setLongitude(stop.longitude ?? "");
+    } else {
+      setName("");
+      setLatitude("");
+      setLongitude("");
+    }
+
+    setError("");
+  }, [stop]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    if (!name.trim() || latitude === "" || longitude === "") {
+      setError("Please complete all fields.");
+      return;
+    }
+
+    const latitudeNumber = Number(latitude);
+    const longitudeNumber = Number(longitude);
+
+    if (
+      Number.isNaN(latitudeNumber) ||
+      latitudeNumber < -90 ||
+      latitudeNumber > 90
+    ) {
+      setError("Latitude must be between -90 and 90.");
+      return;
+    }
+
+    if (
+      Number.isNaN(longitudeNumber) ||
+      longitudeNumber < -180 ||
+      longitudeNumber > 180
+    ) {
+      setError("Longitude must be between -180 and 180.");
+      return;
+    }
+
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      setError("You are not authenticated. Please log in again.");
       return;
     }
 
     const payload = {
       name: name.trim(),
-      latitude: Number(latitude),
-      longitude: Number(longitude),
+      latitude: latitudeNumber,
+      longitude: longitudeNumber,
     };
 
-    setIsSubmitting(true);
+    setSaving(true);
+
     try {
-      await apiClient.post('/api/v1/provider/stops', payload);
-      alert('Stop created successfully.');
-      onSuccess();
+      const url = isEditing
+        ? `${API_BASE_URL}/api/v1/provider/stops/${stop.id}`
+        : `${API_BASE_URL}/api/v1/provider/stops`;
+
+      const response = await fetch(url, {
+        method: isEditing ? "PATCH" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            data.error ||
+            `Failed to ${isEditing ? "update" : "create"} stop.`
+        );
+      }
+
+      onCreated();
+      onClose();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create stop.');
+      setError(err.message || "Failed to save stop.");
     } finally {
-      setIsSubmitting(false);
+      setSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-gray-800">Add New Bus Stop</h2>
-          <button onClick={onClose} className="text-gray-500 text-xl">✕</button>
+    <div
+      className="modal-overlay"
+      onClick={() => {
+        if (!saving) onClose();
+      }}
+    >
+      <div
+        className="modal-content"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="modal-header">
+          <div>
+            <h2>{isEditing ? "Edit Stop" : "Add New Stop"}</h2>
+            <p>
+              {isEditing
+                ? "Update the stop details."
+                : "Add a new public transport stop."}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            disabled={saving}
+          >
+            ×
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Stop Name</label>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-group">
+            <label htmlFor="stop-name">Stop Name</label>
             <input
+              id="stop-name"
               type="text"
-              required
-              placeholder="e.g. CBD Stage"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border rounded p-2"
+              onChange={(event) => setName(event.target.value)}
+              placeholder="e.g. CBD Stage"
+              required
             />
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Latitude</label>
+          <div className="form-group">
+            <label htmlFor="stop-latitude">Latitude</label>
             <input
+              id="stop-latitude"
               type="number"
               step="any"
-              required
-              placeholder="e.g. -1.286389"
               value={latitude}
-              onChange={(e) => setLatitude(e.target.value)}
-              className="w-full border rounded p-2"
+              onChange={(event) => setLatitude(event.target.value)}
+              placeholder="e.g. -1.286389"
+              required
             />
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Longitude</label>
+          <div className="form-group">
+            <label htmlFor="stop-longitude">Longitude</label>
             <input
+              id="stop-longitude"
               type="number"
               step="any"
-              required
-              placeholder="e.g. 36.817223"
               value={longitude}
-              onChange={(e) => setLongitude(e.target.value)}
-              className="w-full border rounded p-2"
+              onChange={(event) => setLongitude(event.target.value)}
+              placeholder="e.g. 36.817223"
+              required
             />
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4 border-t">
+          {error && <p className="modal-error">{error}</p>}
+
+          <div className="modal-actions">
             <button
               type="button"
+              className="modal-cancel-button"
               onClick={onClose}
-              className="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100"
-              disabled={isSubmitting}
+              disabled={saving}
             >
               Cancel
             </button>
+
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
+              className="modal-submit-button"
+              disabled={saving}
             >
-              {isSubmitting ? 'Saving...' : 'Add Stop'}
+              {saving
+                ? "Saving..."
+                : isEditing
+                ? "Save Changes"
+                : "Add Stop"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
+}
 
 export default AddStopModal;

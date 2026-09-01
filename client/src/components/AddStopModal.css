@@ -1,0 +1,113 @@
+
+.add-stop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.add-stop-modal {
+  width: 100%;
+  max-width: 448px;
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.add-stop-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.add-stop-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.add-stop-close {
+  border: none;
+  background: none;
+  color: #6b7280;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.add-stop-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.add-stop-form label {
+  display: block;
+  margin-bottom: 6px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.add-stop-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.add-stop-form input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.add-stop-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.add-stop-cancel,
+.add-stop-submit {
+  padding: 9px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.add-stop-cancel {
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #4b5563;
+}
+
+.add-stop-cancel:hover {
+  background: #f3f4f6;
+}
+
+.add-stop-submit {
+  border: none;
+  background: #2563eb;
+  color: white;
+}
+
+.add-stop-submit:hover {
+  background: #1d4ed8;
+}
+
+.add-stop-submit:disabled,
+.add-stop-cancel:disabled,
+.add-stop-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+

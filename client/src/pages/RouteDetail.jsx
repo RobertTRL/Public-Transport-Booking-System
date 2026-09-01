@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { createPortal } from "react-dom";  
+import { createPortal } from "react-dom";
 
 const RouteDetail = ({ apiClient }) => {
   const { routeId } = useParams();
@@ -10,14 +10,12 @@ const RouteDetail = ({ apiClient }) => {
   const [vehicles, setVehicles] = useState([]);
   const [trips, setTrips] = useState([]);
 
-  // Modals state
   const [showTripModal, setShowTripModal] = useState(false);
   const [isCreatingTrip, setIsCreatingTrip] = useState(false);
 
   const [selectedTripBookings, setSelectedTripBookings] = useState(null);
   const [isBookingsLoading, setIsBookingsLoading] = useState(false);
 
-  // Form State
   const [newTrip, setNewTrip] = useState({
     origin_routestop_id: "",
     destination_routestop_id: "",
@@ -32,9 +30,17 @@ const RouteDetail = ({ apiClient }) => {
 
   const fetchTrips = useCallback(async () => {
     try {
-      const response = await apiClient.get(`/api/v1/provider/routes/${routeId}/trips`);
+      const response = await apiClient.get(
+        `/api/v1/provider/routes/${routeId}/trips`
+      );
+
       const data = response.data;
-      setTrips(Array.isArray(data) ? data : data.trips || data.items || []);
+
+      setTrips(
+        Array.isArray(data)
+          ? data
+          : data.trips || data.items || []
+      );
     } catch (err) {
       console.error("Failed to fetch trips", err);
     }
@@ -45,6 +51,7 @@ const RouteDetail = ({ apiClient }) => {
 
     async function loadData() {
       setError(null);
+
       try {
         const [routeRes, vehiclesRes, tripsRes] = await Promise.all([
           apiClient.get(`/api/v1/provider/routes/${routeId}`),
@@ -55,24 +62,47 @@ const RouteDetail = ({ apiClient }) => {
         if (ignore) return;
 
         const routeData = routeRes.data;
+
         setRoute(routeData);
-        setStops(routeData.stops || routeData.route_stops || routeData.items || []);
+
+        setStops(
+          routeData.stops ||
+            routeData.route_stops ||
+            routeData.items ||
+            []
+        );
 
         const vData = vehiclesRes.data;
-        setVehicles(vData.items || vData.vehicles || (Array.isArray(vData) ? vData : []));
+
+        setVehicles(
+          vData.items ||
+            vData.vehicles ||
+            (Array.isArray(vData) ? vData : [])
+        );
 
         const tData = tripsRes.data;
-        setTrips(Array.isArray(tData) ? tData : tData.trips || tData.items || []);
+
+        setTrips(
+          Array.isArray(tData)
+            ? tData
+            : tData.trips || tData.items || []
+        );
       } catch (err) {
         if (!ignore) {
-          setError(err.response?.data?.message || "Failed to load route details.");
+          setError(
+            err.response?.data?.message ||
+              "Failed to load route details."
+          );
         }
       } finally {
-        if (!ignore) setIsLoading(false);
+        if (!ignore) {
+          setIsLoading(false);
+        }
       }
     }
 
     loadData();
+
     return () => {
       ignore = true;
     };
@@ -96,7 +126,13 @@ const RouteDetail = ({ apiClient }) => {
     const destStopId = Number(newTrip.destination_routestop_id);
     const vehicleId = Number(newTrip.vehicle_id);
 
-    if (!originStopId || !destStopId || !vehicleId || !newTrip.start_time || !newTrip.stop_time) {
+    if (
+      !originStopId ||
+      !destStopId ||
+      !vehicleId ||
+      !newTrip.start_time ||
+      !newTrip.stop_time
+    ) {
       alert("Please fill in all fields.");
       return;
     }
@@ -109,7 +145,10 @@ const RouteDetail = ({ apiClient }) => {
     const startDate = new Date(newTrip.start_time);
     const stopDate = new Date(newTrip.stop_time);
 
-    if (isNaN(startDate.getTime()) || isNaN(stopDate.getTime())) {
+    if (
+      Number.isNaN(startDate.getTime()) ||
+      Number.isNaN(stopDate.getTime())
+    ) {
       alert("Please enter valid dates.");
       return;
     }
@@ -131,53 +170,148 @@ const RouteDetail = ({ apiClient }) => {
     setIsCreatingTrip(true);
 
     try {
-      await apiClient.post(`/api/v1/provider/routes/${routeId}/trips`, payload);
+      await apiClient.post(
+        `/api/v1/provider/routes/${routeId}/trips`,
+        payload
+      );
+
       alert("Trip created successfully!");
+
       setShowTripModal(false);
       resetTripForm();
+
       await fetchTrips();
     } catch (err) {
-      alert(err.response?.data?.message || err.response?.data?.error || "Failed to create trip.");
+      alert(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Failed to create trip."
+      );
     } finally {
       setIsCreatingTrip(false);
     }
   };
 
   const handleCancelTrip = async (tripId) => {
-    if (!window.confirm("Are you sure you want to cancel this trip?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to cancel this trip?"
+      )
+    ) {
+      return;
+    }
 
     try {
-      await apiClient.patch(`/api/v1/provider/trips/${tripId}/cancel`);
+      await apiClient.patch(
+        `/api/v1/provider/trips/${tripId}/cancel`
+      );
+
       await fetchTrips();
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to cancel trip.");
+      alert(
+        err.response?.data?.message ||
+          "Failed to cancel trip."
+      );
     }
   };
 
   const handleViewBookings = async (tripId) => {
     setIsBookingsLoading(true);
+
     try {
-      const res = await apiClient.get(`/api/v1/provider/trips/${tripId}/bookings`);
+      const res = await apiClient.get(
+        `/api/v1/provider/trips/${tripId}/bookings`
+      );
+
       setSelectedTripBookings({
         tripId,
-        bookings: res.data.bookings || res.data.items || (Array.isArray(res.data) ? res.data : []),
+        bookings:
+          res.data.bookings ||
+          res.data.items ||
+          (Array.isArray(res.data) ? res.data : []),
       });
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to load bookings for this trip.");
+      alert(
+        err.response?.data?.message ||
+          "Failed to load bookings for this trip."
+      );
     } finally {
       setIsBookingsLoading(false);
     }
   };
 
+  const getRouteName = () => {
+    return (
+      route?.name ||
+      route?.route_name ||
+      `Route #${routeId}`
+    );
+  };
+
+  const getStopName = (stop) => {
+    return (
+      stop?.name ||
+      stop?.stop?.name ||
+      stop?.stop_name ||
+      `Stop #${stop?.id || stop?.route_stop_id}`
+    );
+  };
+
+  const formatDateTime = (value) => {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return date.toLocaleString();
+  };
+
+  const getTripId = (trip) => {
+    return trip?.id || trip?.trip_id;
+  };
+
+  const getVehicleName = (trip) => {
+    if (trip?.vehicle?.number_plate) {
+      return trip.vehicle.number_plate;
+    }
+
+    if (trip?.vehicle?.plate_number) {
+      return trip.vehicle.plate_number;
+    }
+
+    if (trip?.number_plate) {
+      return trip.number_plate;
+    }
+
+    if (trip?.vehicle_id) {
+      return `Vehicle #${trip.vehicle_id}`;
+    }
+
+    return "Vehicle not assigned";
+  };
+
   const tripModal = showTripModal
     ? createPortal(
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 pointer-events-auto">
+        <div
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60"
+          onClick={() => {
+            if (!isCreatingTrip) {
+              setShowTripModal(false);
+              resetTripForm();
+            }
+          }}
+        >
           <div
             className="relative z-[100000] bg-white rounded-lg p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold">Create New Trip</h2>
+              <h2 className="text-lg font-bold">
+                Create New Trip
+              </h2>
 
               <button
                 type="button"
@@ -185,13 +319,17 @@ const RouteDetail = ({ apiClient }) => {
                   setShowTripModal(false);
                   resetTripForm();
                 }}
-                className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
+                disabled={isCreatingTrip}
+                className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer disabled:cursor-not-allowed"
               >
-                ✕
+                ×
               </button>
             </div>
 
-            <form onSubmit={handleCreateTrip} className="space-y-4 text-sm">
+            <form
+              onSubmit={handleCreateTrip}
+              className="space-y-4 text-sm"
+            >
               <div>
                 <label className="block text-gray-700 font-medium mb-1">
                   Origin Route Stop
@@ -208,14 +346,16 @@ const RouteDetail = ({ apiClient }) => {
                   }
                   className="w-full border rounded p-2 bg-white text-gray-900 cursor-pointer"
                 >
-                  <option value="">Select Origin Stop</option>
+                  <option value="">
+                    Select Origin Stop
+                  </option>
 
                   {stops.map((st) => {
                     const id = st.id || st.route_stop_id;
 
                     return (
                       <option key={id} value={id}>
-                        {st.name || st.stop?.name || `Stop #${id}`}
+                        {getStopName(st)}
                       </option>
                     );
                   })}
@@ -238,14 +378,16 @@ const RouteDetail = ({ apiClient }) => {
                   }
                   className="w-full border rounded p-2 bg-white text-gray-900 cursor-pointer"
                 >
-                  <option value="">Select Destination Stop</option>
+                  <option value="">
+                    Select Destination Stop
+                  </option>
 
                   {stops.map((st) => {
                     const id = st.id || st.route_stop_id;
 
                     return (
                       <option key={id} value={id}>
-                        {st.name || st.stop?.name || `Stop #${id}`}
+                        {getStopName(st)}
                       </option>
                     );
                   })}
@@ -265,11 +407,15 @@ const RouteDetail = ({ apiClient }) => {
                   <div className="space-y-2">
                     {vehicles.map((v) => {
                       const id = v.id ?? v.vehicle_id;
+
                       const plate =
-                        v.number_plate || v.plate_number || `Vehicle #${id}`;
+                        v.number_plate ||
+                        v.plate_number ||
+                        `Vehicle #${id}`;
 
                       const isSelected =
-                        String(newTrip.vehicle_id) === String(id);
+                        String(newTrip.vehicle_id) ===
+                        String(id);
 
                       return (
                         <button
@@ -294,7 +440,7 @@ const RouteDetail = ({ apiClient }) => {
                               </p>
 
                               <p className="text-xs text-gray-500 mt-1">
-                                {v.capacity} Seats
+                                {v.capacity ?? "—"} Seats
                               </p>
                             </div>
 
@@ -305,7 +451,9 @@ const RouteDetail = ({ apiClient }) => {
                                   : "bg-gray-100 text-gray-600"
                               }`}
                             >
-                              {isSelected ? "Selected" : "Choose"}
+                              {isSelected
+                                ? "Selected"
+                                : "Choose"}
                             </span>
                           </div>
                         </button>
@@ -378,7 +526,9 @@ const RouteDetail = ({ apiClient }) => {
                   }
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  {isCreatingTrip ? "Creating..." : "Create Trip"}
+                  {isCreatingTrip
+                    ? "Creating..."
+                    : "Create Trip"}
                 </button>
               </div>
             </form>
@@ -388,192 +538,442 @@ const RouteDetail = ({ apiClient }) => {
       )
     : null;
 
-  if (isLoading) return <div className="p-8 text-center text-gray-500">Loading details...</div>;
-  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
+  if (isLoading) {
+    return (
+      <div className="p-8 text-center text-gray-500">
+        Loading details...
+      </div>
+    );
+  }
 
-  return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center space-x-2 text-sm text-gray-500 mb-2">
-        <Link to="/dashboard/routes" className="hover:underline">
+  if (error) {
+    return (
+      <div className="p-8 text-center text-red-600">
+        {error}
+      </div>
+    );
+  }
+
+  if (!route) {
+    return (
+      <div className="route-not-found">
+        <h1>Route Not Found</h1>
+        <p>
+          The requested route could not be found.
+        </p>
+
+        <Link
+          to="/dashboard/routes"
+          className="route-back-button"
+        >
           ← Back to Routes
         </Link>
       </div>
+    );
+  }
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-lg border shadow-sm">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">{route?.name}</h1>
-          <p className="text-sm text-gray-600 mt-1">{route?.description}</p>
+  return (
+    <>
+      <div className="p-6 space-y-6">
+        <div className="flex items-center space-x-2 text-sm text-gray-500">
+          <Link
+            to="/dashboard/routes"
+            className="hover:underline"
+          >
+            ← Routes
+          </Link>
+
+          <span>/</span>
+
+          <span>{getRouteName()}</span>
         </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            resetTripForm();
-            setShowTripModal(true);
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm font-medium cursor-pointer"
-        >
-          + Create Trip
-        </button>
-      </div>
+        <div className="route-detail-header">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {getRouteName()}
+            </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Route Stops */}
-        <div className="bg-white p-5 rounded-lg border shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-gray-800 border-b pb-2">Route Stops</h2>
+            <p className="text-gray-500 mt-1">
+              Manage route stops, vehicles and trips.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowTripModal(true)}
+            className="add-stop-button"
+          >
+            + Create Trip
+          </button>
+        </div>
+
+        <div className="dashboard-content route-stats">
+          <div className="dashboard-card">
+            <h2>Stops</h2>
+            <p>{stops.length}</p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>Vehicles</h2>
+            <p>{vehicles.length}</p>
+          </div>
+
+          <div className="dashboard-card">
+            <h2>Trips</h2>
+            <p>{trips.length}</p>
+          </div>
+        </div>
+
+        <section className="stops-section">
+          <div className="stops-header">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Route Stops
+              </h2>
+
+              <p className="text-sm text-gray-500 mt-1">
+                Stops included on this route.
+              </p>
+            </div>
+          </div>
+
           {stops.length === 0 ? (
-            <p className="text-sm text-gray-500">No stops configured.</p>
+            <div className="dashboard-card mt-4">
+              <p className="text-gray-500">
+                No stops found for this route.
+              </p>
+            </div>
           ) : (
-            <ol className="relative border-l border-gray-200 ml-3 space-y-4">
-              {stops.map((st, index) => {
-                const stopId = st.id || st.route_stop_id || index;
-                return (
-                  <li key={stopId} className="mb-4 ml-4">
-                    <div className="absolute w-3 h-3 bg-blue-600 rounded-full -left-1.5 border border-white" />
-                    <h3 className="text-sm font-semibold text-gray-800">
-                      {st.name || st.stop?.name || `Stop #${stopId}`}
-                    </h3>
-                    <p className="text-xs text-gray-500">Stop Order #{index + 1}</p>
-                  </li>
-                );
-              })}
-            </ol>
-          )}
-        </div>
+            <div className="stops-grid mt-4">
+              {stops.map((stop, index) => {
+                const id =
+                  stop.id ||
+                  stop.route_stop_id ||
+                  index + 1;
 
-        {/* Assigned Vehicles */}
-        <div className="bg-white p-5 rounded-lg border shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-gray-800 border-b pb-2">Assigned Vehicles</h2>
-          {vehicles.length === 0 ? (
-            <p className="text-sm text-gray-500">No vehicles assigned to this route.</p>
-          ) : (
-            <div className="space-y-2">
-              {vehicles.map((v) => {
-                const id = v.id ?? v.vehicle_id;
-                const plate = v.number_plate || v.plate_number || `Vehicle #${id}`;
                 return (
-                  <div key={id} className="p-3 border rounded-md flex justify-between items-center text-sm">
-                    <span className="font-semibold text-gray-800">{plate}</span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                      {v.capacity} Seats
-                    </span>
+                  <div className="stop-card" key={id}>
+                    <div className="stop-card-top">
+                      <div className="stop-icon">
+                        {index + 1}
+                      </div>
+
+                      <span className="stop-status">
+                        Active
+                      </span>
+                    </div>
+
+                    <h2>{getStopName(stop)}</h2>
+
+                    <p className="stop-description">
+                      Route stop #{id}
+                    </p>
                   </div>
                 );
               })}
             </div>
           )}
-        </div>
+        </section>
 
-        {/* Route Trips */}
-        <div className="bg-white p-5 rounded-lg border shadow-sm space-y-4 lg:col-span-3">
-          <h2 className="text-lg font-bold text-gray-800 border-b pb-2">Route Trips</h2>
-          {trips.length === 0 ? (
-            <p className="text-sm text-gray-500">No scheduled trips found.</p>
+        <section className="vehicles-panel">
+          <div className="vehicles-toolbar">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Assigned Vehicles
+              </h2>
+
+              <p className="text-sm text-gray-500 mt-1">
+                Vehicles available for trips on this route.
+              </p>
+            </div>
+          </div>
+
+          {vehicles.length === 0 ? (
+            <p className="vehicle-table-empty">
+              No vehicles assigned to this route.
+            </p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-sm">
+            <div className="vehicle-table-container">
+              <table className="vehicle-table">
                 <thead>
-                  <tr className="bg-gray-50 border-b text-xs text-gray-500 font-semibold">
-                    <th className="p-3">Trip ID</th>
-                    <th className="p-3">Vehicle</th>
-                    <th className="p-3">Start Time</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3 text-right">Actions</th>
+                  <tr>
+                    <th>Vehicle</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
-                  {trips.map((t) => (
-                    <tr key={t.id} className="hover:bg-gray-50">
-                      <td className="p-3 font-medium">#{t.id}</td>
-                      <td className="p-3">
-                        {t.vehicle_number_plate || t.vehicle?.number_plate || `Vehicle #${t.vehicle_id}`}
-                      </td>
-                      <td className="p-3">
-                        {t.start_time ? new Date(t.start_time).toLocaleString() : "N/A"}
-                      </td>
-                      <td className="p-3">
-                        <span
-                          className={`px-2 py-0.5 rounded text-xs font-medium ${
-                            t.status === "cancelled"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-green-100 text-green-700"
-                          }`}
-                        >
-                          {t.status}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right space-x-3">
-                        <button
-                          type="button"
-                          onClick={() => handleViewBookings(t.id)}
-                          className="text-blue-600 hover:underline text-xs cursor-pointer"
-                        >
-                          Bookings
-                        </button>
-                        {t.status !== "cancelled" && (
-                          <button
-                            type="button"
-                            onClick={() => handleCancelTrip(t.id)}
-                            className="text-red-600 hover:underline text-xs cursor-pointer"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+
+                <tbody>
+                  {vehicles.map((vehicle) => {
+                    const id =
+                      vehicle.id ??
+                      vehicle.vehicle_id;
+
+                    const plate =
+                      vehicle.number_plate ||
+                      vehicle.plate_number ||
+                      `Vehicle #${id}`;
+
+                    return (
+                      <tr key={id}>
+                        <td>{plate}</td>
+                        <td>
+                          {vehicle.capacity ?? "—"} seats
+                        </td>
+                        <td>
+                          <span className="availability-badge availability-available">
+                            Available
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           )}
-        </div>
-      </div>
+        </section>
 
-      {/* Bookings Modal */}
-      {selectedTripBookings && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full shadow-lg max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4 border-b pb-2">
-              <h2 className="text-lg font-bold">
-                Bookings for Trip #{selectedTripBookings.tripId}
+        <section className="vehicles-panel">
+          <div className="vehicles-toolbar">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Trips
               </h2>
-              <button
-                type="button"
-                onClick={() => setSelectedTripBookings(null)}
-                className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
-              >
-                ✕
-              </button>
+
+              <p className="text-sm text-gray-500 mt-1">
+                Trips scheduled for this route.
+              </p>
             </div>
 
-            {isBookingsLoading ? (
-              <p className="text-center text-gray-500 py-4">Loading bookings...</p>
-            ) : selectedTripBookings.bookings.length === 0 ? (
-              <p className="text-center text-gray-500 py-4">No passenger bookings for this trip.</p>
-            ) : (
-              <div className="space-y-3">
-                {selectedTripBookings.bookings.map((b, i) => (
-                  <div key={b.id || i} className="p-3 border rounded-md text-sm flex justify-between">
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {b.passenger_name || b.user?.name || `Passenger #${b.user_id || b.id}`}
-                      </p>
-                      <p className="text-xs text-gray-500">Seat: {b.seat_number || "Assigned"}</p>
-                    </div>
-                    <span className="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-700 rounded self-center">
-                      {b.status || "Booked"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <button
+              type="button"
+              onClick={() => setShowTripModal(true)}
+              className="add-stop-button"
+            >
+              + Create Trip
+            </button>
           </div>
-        </div>
-      )}
+
+          {trips.length === 0 ? (
+            <p className="vehicle-table-empty">
+              No trips have been created for this route yet.
+            </p>
+          ) : (
+            <div className="vehicle-table-container">
+              <table className="vehicle-table">
+                <thead>
+                  <tr>
+                    <th>Trip</th>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Vehicle</th>
+                    <th>Start</th>
+                    <th>Stop</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {trips.map((trip, index) => {
+                    const tripId = getTripId(trip);
+
+                    const origin =
+                      trip.origin_routestop?.name ||
+                      trip.origin_stop?.name ||
+                      trip.origin_routestop_name ||
+                      trip.origin_stop_name ||
+                      trip.origin_routestop_id ||
+                      "—";
+
+                    const destination =
+                      trip.destination_routestop?.name ||
+                      trip.destination_stop?.name ||
+                      trip.destination_routestop_name ||
+                      trip.destination_stop_name ||
+                      trip.destination_routestop_id ||
+                      "—";
+
+                    const status =
+                      trip.status || "scheduled";
+
+                    return (
+                      <tr
+                        key={tripId || index}
+                      >
+                        <td>
+                          #{tripId || index + 1}
+                        </td>
+
+                        <td>{origin}</td>
+
+                        <td>{destination}</td>
+
+                        <td>
+                          {getVehicleName(trip)}
+                        </td>
+
+                        <td>
+                          {formatDateTime(
+                            trip.start_time
+                          )}
+                        </td>
+
+                        <td>
+                          {formatDateTime(
+                            trip.stop_time
+                          )}
+                        </td>
+
+                        <td>
+                          <span
+                            className={
+                              status === "cancelled"
+                                ? "availability-badge availability-unavailable"
+                                : "availability-badge availability-available"
+                            }
+                          >
+                            {status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleViewBookings(
+                                  tripId
+                                )
+                              }
+                              className="px-3 py-1 text-xs border border-blue-600 rounded text-blue-600 hover:bg-blue-50 cursor-pointer"
+                            >
+                              Bookings
+                            </button>
+
+                            {status !==
+                              "cancelled" && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleCancelTrip(
+                                    tripId
+                                  )
+                                }
+                                className="px-3 py-1 text-xs border border-red-600 rounded text-red-600 hover:bg-red-50 cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </div>
 
       {tripModal}
-    </div>
+
+      {selectedTripBookings &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60"
+            onClick={() =>
+              setSelectedTripBookings(null)
+            }
+          >
+            <div
+              className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl"
+              onClick={(e) =>
+                e.stopPropagation()
+              }
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold">
+                  Trip #{selectedTripBookings.tripId}{" "}
+                  Bookings
+                </h2>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedTripBookings(null)
+                  }
+                  className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
+                >
+                  ×
+                </button>
+              </div>
+
+              {isBookingsLoading ? (
+                <p className="text-center text-gray-500 py-8">
+                  Loading bookings...
+                </p>
+              ) : selectedTripBookings.bookings
+                  .length === 0 ? (
+                <p className="text-center text-gray-500 py-8">
+                  No bookings found for this trip.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {selectedTripBookings.bookings.map(
+                    (booking, index) => (
+                      <div
+                        key={
+                          booking.id ||
+                          booking.booking_id ||
+                          index
+                        }
+                        className="border rounded-lg p-4"
+                      >
+                        <div className="flex justify-between">
+                          <span className="font-semibold">
+                            Booking #
+                            {booking.id ||
+                              booking.booking_id ||
+                              index + 1}
+                          </span>
+
+                          <span className="text-sm text-gray-500">
+                            {booking.status ||
+                              "confirmed"}
+                          </span>
+                        </div>
+
+                        <p className="text-sm text-gray-600 mt-2">
+                          Passenger:{" "}
+                          {booking.passenger?.name ||
+                            booking.user?.name ||
+                            booking.passenger_name ||
+                            booking.user_name ||
+                            "—"}
+                        </p>
+
+                        <p className="text-sm text-gray-600">
+                          Seat:{" "}
+                          {booking.seat_number ||
+                            booking.seat_id ||
+                            "—"}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
+    </>
   );
 };
 
 export default RouteDetail;
+
