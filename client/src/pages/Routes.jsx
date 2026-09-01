@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
-import RouteCard from "./RouteCard";
-import AddRouteModal from "./AddRouteModal";
+import RouteCard from "../components/RouteCard";
+import AddRouteModal from "../components/dashboard/AddRouteModal";
 
 const API_BASE_URL = "http://127.0.0.1:5000";
 

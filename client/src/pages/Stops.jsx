@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { MapPin, Pencil, Trash2, Plus } from "lucide-react";
-import "../../styles/dashboard.css";
-import AddStopModal from "./AddStopModal";
+import "../styles/dashboard.css";
+import AddStopModal from "../components/AddStopModal";
 
 const API_BASE_URL = "http://localhost:5000";
 

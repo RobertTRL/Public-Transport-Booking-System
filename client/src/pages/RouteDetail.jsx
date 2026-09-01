@@ -1,13 +1,23 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { createPortal } from "react-dom";
+import { apiGet, apiPost, apiPatch, apiDelete } from "../api/client";
+
+const defaultApiClient = {
+  get: (url) => apiGet(url).then((data) => ({ data })),
+  post: (url, body) => apiPost(url, body).then((data) => ({ data })),
+  patch: (url, body) => apiPatch(url, body).then((data) => ({ data })),
+  delete: (url) => apiDelete(url).then((data) => ({ data })),
+};
 
 const RouteDetail = ({ apiClient }) => {
   const { routeId } = useParams();
+  const client = useMemo(() => apiClient || defaultApiClient, [apiClient]);
 
   const [route, setRoute] = useState(null);
   const [stops, setStops] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const [allVehicles, setAllVehicles] = useState([]);
   const [trips, setTrips] = useState([]);
 
   const [showTripModal, setShowTripModal] = useState(false);
@@ -30,7 +40,7 @@ const RouteDetail = ({ apiClient }) => {
 
   const fetchTrips = useCallback(async () => {
     try {
-      const response = await apiClient.get(
+      const response = await client.get(
         `/api/v1/provider/routes/${routeId}/trips`
       );
 
@@ -44,7 +54,7 @@ const RouteDetail = ({ apiClient }) => {
     } catch (err) {
       console.error("Failed to fetch trips", err);
     }
-  }, [apiClient, routeId]);
+  }, [client, routeId]);
 
   useEffect(() => {
     let ignore = false;
@@ -53,10 +63,11 @@ const RouteDetail = ({ apiClient }) => {
       setError(null);
 
       try {
-        const [routeRes, vehiclesRes, tripsRes] = await Promise.all([
-          apiClient.get(`/api/v1/provider/routes/${routeId}`),
-          apiClient.get(`/api/v1/provider/vehicles?route_id=${routeId}`),
-          apiClient.get(`/api/v1/provider/routes/${routeId}/trips`),
+        const [routeRes, vehiclesRes, tripsRes, allVehiclesRes] = await Promise.all([
+          client.get(`/api/v1/provider/routes/${routeId}`),
+          client.get(`/api/v1/provider/vehicles?route_id=${routeId}`).catch(() => ({ data: [] })),
+          client.get(`/api/v1/provider/routes/${routeId}/trips`).catch(() => ({ data: [] })),
+          client.get(`/api/v1/provider/vehicles`).catch(() => ({ data: [] })),
         ]);
 
         if (ignore) return;
@@ -80,6 +91,14 @@ const RouteDetail = ({ apiClient }) => {
             (Array.isArray(vData) ? vData : [])
         );
 
+        const allVData = allVehiclesRes.data;
+
+        setAllVehicles(
+          allVData.items ||
+            allVData.vehicles ||
+            (Array.isArray(allVData) ? allVData : [])
+        );
+
         const tData = tripsRes.data;
 
         setTrips(
@@ -91,6 +110,7 @@ const RouteDetail = ({ apiClient }) => {
         if (!ignore) {
           setError(
             err.response?.data?.message ||
+            err.message ||
               "Failed to load route details."
           );
         }
@@ -106,7 +126,7 @@ const RouteDetail = ({ apiClient }) => {
     return () => {
       ignore = true;
     };
-  }, [apiClient, routeId]);
+  }, [client, routeId]);
 
   const resetTripForm = () => {
     setNewTrip({
@@ -170,7 +190,7 @@ const RouteDetail = ({ apiClient }) => {
     setIsCreatingTrip(true);
 
     try {
-      await apiClient.post(
+      await client.post(
         `/api/v1/provider/routes/${routeId}/trips`,
         payload
       );
@@ -185,6 +205,7 @@ const RouteDetail = ({ apiClient }) => {
       alert(
         err.response?.data?.message ||
           err.response?.data?.error ||
+          err.message ||
           "Failed to create trip."
       );
     } finally {
@@ -202,7 +223,7 @@ const RouteDetail = ({ apiClient }) => {
     }
 
     try {
-      await apiClient.patch(
+      await client.patch(
         `/api/v1/provider/trips/${tripId}/cancel`
       );
 
@@ -210,6 +231,7 @@ const RouteDetail = ({ apiClient }) => {
     } catch (err) {
       alert(
         err.response?.data?.message ||
+          err.message ||
           "Failed to cancel trip."
       );
     }
@@ -219,20 +241,21 @@ const RouteDetail = ({ apiClient }) => {
     setIsBookingsLoading(true);
 
     try {
-      const res = await apiClient.get(
+      const res = await client.get(
         `/api/v1/provider/trips/${tripId}/bookings`
       );
 
       setSelectedTripBookings({
         tripId,
         bookings:
-          res.data.bookings ||
-          res.data.items ||
+          res.data?.bookings ||
+          res.data?.items ||
           (Array.isArray(res.data) ? res.data : []),
       });
     } catch (err) {
       alert(
         err.response?.data?.message ||
+          err.message ||
           "Failed to load bookings for this trip."
       );
     } finally {
@@ -399,13 +422,13 @@ const RouteDetail = ({ apiClient }) => {
                   Select Vehicle
                 </label>
 
-                {vehicles.length === 0 ? (
+                {(allVehicles.length > 0 ? allVehicles : vehicles).length === 0 ? (
                   <p className="text-sm text-red-600 border border-red-200 rounded p-3">
-                    No vehicles assigned to this route.
+                    No vehicles available in your SACCO.
                   </p>
                 ) : (
                   <div className="space-y-2">
-                    {vehicles.map((v) => {
+                    {(allVehicles.length > 0 ? allVehicles : vehicles).map((v) => {
                       const id = v.id ?? v.vehicle_id;
 
                       const plate =

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Search, Pencil, Trash2, Power } from "lucide-react";
-import AddVehicleModal from "../components/dashboard/AddVehicleModal";
+import AddVehicleModal from "../components/AddVehicleModal";
 import {
   listVehicles,
   updateVehicle,

@@ -38,7 +38,7 @@ createRoot(document.getElementById("root")).render(
           <Route index element={<DashboardSummary />} />
           <Route path="vehicles" element={<Vehicles />} />
           <Route path="routes" element={<RoutesPage />} />
-          <Route path="routes/:routeName" element={<RouteDetail />} />
+          <Route path="routes/:routeId" element={<RouteDetail />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="stops" element={<Stops />} />
           <Route path="users" element={<Users />} />
