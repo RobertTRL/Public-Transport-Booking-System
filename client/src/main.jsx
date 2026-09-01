@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import App from "./pages/App.jsx";
 import Login from "./pages/Login.jsx";
@@ -27,7 +27,7 @@ import Activity from "./components/bookings/Activity.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
 
@@ -52,6 +52,6 @@ createRoot(document.getElementById("root")).render(
           <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>
 );
