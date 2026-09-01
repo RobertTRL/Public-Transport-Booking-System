@@ -49,7 +49,6 @@ function FindVehicles() {
   const toId = searchParams.get("to");
 
   const [loadingInitialData, setLoadingInitialData] = useState(!!routeId);
-
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
@@ -71,14 +70,16 @@ function FindVehicles() {
         const originData = await getStopByIdFromAPI(routeId, fromId);
         const destinationData = await getStopByIdFromAPI(routeId, toId);
 
-        setOrigin(originData);
-        setDestination(destinationData);
-        setSheetState(
-          originData && destinationData
-             ? SHEET_EXPANDED
-              : SHEET_COLLAPSED
-      );
+        const finalOrigin = originData || getStopById(fromId);
+        const finalDestination = destinationData || getStopById(toId);
 
+        setOrigin(finalOrigin);
+        setDestination(finalDestination);
+        setSheetState(
+          finalOrigin && finalDestination
+            ? SHEET_EXPANDED
+            : SHEET_COLLAPSED
+        );
       } catch (error) {
         console.error("Error fetching initial data:", error);
         const fallbackOrigin = getStopById(fromId);
@@ -90,8 +91,7 @@ function FindVehicles() {
           fallbackOrigin && fallbackDestination
             ? SHEET_EXPANDED
             : SHEET_COLLAPSED
-      );
-
+        );
       } finally {
         setLoadingInitialData(false);
       }
