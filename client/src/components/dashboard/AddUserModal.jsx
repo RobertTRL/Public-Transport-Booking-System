@@ -1,33 +1,60 @@
 import { useState } from "react";
 import Modal from "../Modal";
-import { createUser } from "../../api/mockApi";
+import { apiPost } from "../../api/client";
 
 function AddUserModal({ onClose, onCreated }) {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
-    role: "Driver",
+    password: "",
+    phone_number: "",
+    role: "driver",
   });
+
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
+
+    setForm((current) => ({
+      ...current,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSubmitting(true);
-    const created = await createUser(form);
-    setSubmitting(false);
-    onCreated(created.user ?? form);
-    onClose();
+    setError("");
+
+    try {
+      const created = await apiPost("/api/v1/users", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        phone_number: form.phone_number,
+        role: form.role,
+      });
+
+      onCreated(created?.user ?? created);
+      onClose();
+    } catch (err) {
+      setError(err.message || "Unable to create user.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <Modal title="Add User" onClose={onClose}>
       <form className="modal-form" onSubmit={handleSubmit}>
+        {error && (
+          <p className="modal-error" role="alert">
+            {error}
+          </p>
+        )}
+
         <div className="modal-field">
           <label htmlFor="user-name">Full name</label>
           <input
@@ -54,13 +81,29 @@ function AddUserModal({ onClose, onCreated }) {
         </div>
 
         <div className="modal-field">
+          <label htmlFor="user-password">Temporary password</label>
+          <input
+            id="user-password"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="TemporaryPassword123!"
+            minLength={8}
+            required
+          />
+        </div>
+
+        <div className="modal-field">
           <label htmlFor="user-phone">Phone number</label>
           <input
             id="user-phone"
-            name="phone"
-            value={form.phone}
+            name="phone_number"
+            type="tel"
+            value={form.phone_number}
             onChange={handleChange}
-            placeholder="+254 712 345 678"
+            placeholder="+254712345678"
+            required
           />
         </div>
 
@@ -71,18 +114,29 @@ function AddUserModal({ onClose, onCreated }) {
             name="role"
             value={form.role}
             onChange={handleChange}
+            required
           >
-            <option value="Manager">Manager</option>
-            <option value="Driver">Driver</option>
-            <option value="Conductor">Conductor</option>
+            <option value="driver">Driver</option>
+            <option value="conductor">Conductor</option>
+            <option value="manager">Manager</option>
           </select>
         </div>
 
         <div className="modal-actions">
-          <button type="button" className="modal-cancel" onClick={onClose}>
+          <button
+            type="button"
+            className="modal-cancel"
+            onClick={onClose}
+            disabled={submitting}
+          >
             Cancel
           </button>
-          <button type="submit" className="modal-submit" disabled={submitting}>
+
+          <button
+            type="submit"
+            className="modal-submit"
+            disabled={submitting}
+          >
             {submitting ? "Saving..." : "Add User"}
           </button>
         </div>
