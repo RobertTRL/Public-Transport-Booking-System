@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { clearAccessToken } from '../../utils/auth'
 import '../../styles/user.css'
 
 function ProfilePage() {
@@ -40,6 +41,7 @@ function ProfilePage() {
   }
 
   const handleLogout = () => {
+    clearAccessToken()
     navigate('/login')
   }
 
@@ -127,32 +129,13 @@ function ProfilePage() {
 
             <div className="profile-actions">
 
-              {!isEditing ? (
-                <button
-                  type="button"
-                  className="profile-button primary"
-                  onClick={() => setIsEditing(true)}
-                >
-                  Edit Profile
-                </button>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    className="profile-button secondary"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="profile-button primary"
-                  >
-                    Save Changes
-                  </button>
-                </>
-              )}
+              <button
+                type="button"
+                className="profile-button danger"
+                onClick={handleLogout}
+              >
+                Log out
+              </button>
 
             </div>
 

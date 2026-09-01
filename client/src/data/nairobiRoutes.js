@@ -52,6 +52,33 @@ export const nairobiRoutes = [
   },
 ];
 
+export const allRoutes = [
+  {
+    id: "thika-road",
+    name: "CBD → Thika Road",
+    color: "#e63946",
+    stopsCount: 7,
+  },
+  {
+    id: "mombasa-road",
+    name: "CBD → Mombasa Road",
+    color: "#1a73e8",
+    stopsCount: 6,
+  },
+  {
+    id: "waiyaki-way",
+    name: "CBD → Waiyaki Way",
+    color: "#2a9d8f",
+    stopsCount: 6,
+  },
+  {
+    id: "ngong-road",
+    name: "CBD → Ngong Road",
+    color: "#f4a261",
+    stopsCount: 4,
+  },
+];
+
 // Flat list for the dropdowns and for rendering every pin on the map
 export const allStops = nairobiRoutes.flatMap((route) =>
   route.stops.map((stop) => ({

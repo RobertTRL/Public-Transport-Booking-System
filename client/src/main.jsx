@@ -1,11 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import App from "./pages/App.jsx";
-import DashLogin from "./pages/DashLogin.jsx";
-import DashAccountCreation from "./pages/DashAccountCreation.jsx";
 import Login from "./pages/Login.jsx";
 import AccountCreation from "./pages/AccountCreation.jsx";
 
@@ -27,11 +25,9 @@ import Activity from "./components/bookings/Activity.jsx"
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-      <BrowserRouter>
+      <HashRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/dashlogin" element={<DashLogin />} />
-        <Route path="/dashsignup" element={<DashAccountCreation />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<AccountCreation />} />
@@ -40,7 +36,7 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<DashboardSummary />} />
             <Route path="vehicles" element={<Vehicles />} />
             <Route path="routes" element={<RoutesPage />} />
-            <Route path="routes/:routeId" element={<RouteDetail />} />
+            <Route path="routes/:routeName" element={<RouteDetail />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="stops" element={<Stops />} />
             <Route path="users" element={<Users />} />
@@ -54,6 +50,6 @@ createRoot(document.getElementById("root")).render(
           <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Routes>
-      </BrowserRouter>
-  </StrictMode>
+      </HashRouter>
+    </StrictMode>
 );

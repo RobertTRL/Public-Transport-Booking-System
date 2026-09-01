@@ -2,9 +2,9 @@ from flask import request
 from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Trip, Vehicle
-from provider.helpers import get_current_provider_user, parse_datetime, trip_response
+from .helpers import get_current_provider_user, parse_datetime, trip_response
 
 ALLOWED_TRIP_STATUSES = {"scheduled", "in_progress", "completed", "cancelled"}
 
@@ -34,10 +34,22 @@ class ProviderRouteTripsResource(Resource):
         if to_value and to_date is None:
             return {"error": "Invalid 'to' datetime. Use ISO 8601 format."}, 400
 
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
         route_stop_ids = [route_stop.id for route_stop in route.route_stops]
 
         if not route_stop_ids:
-            return [], 200
+            # Same envelope shape as the populated case below, instead of
+            # a bare list — keeps the response consistent for callers that
+            # always expect an 'items' key.
+            return {
+                'page': page,
+                'per_page': per_page,
+                'total': 0,
+                'total_pages': 0,
+                'items': []
+            }, 200
 
         query = Trip.query.filter(
             Trip.origin_routestop_id.in_(route_stop_ids),
@@ -50,9 +62,21 @@ class ProviderRouteTripsResource(Resource):
         if to_date:
             query = query.filter(Trip.start_time <= to_date)
 
-        trips = query.order_by(Trip.start_time.asc()).all()
+        pagination = query.order_by(Trip.start_time.asc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
 
-        return [trip_response(trip) for trip in trips], 200
+        trips = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [trip_response(trip) for trip in trips]
+        }, 200
 
     @jwt_required()
     def post(self, route_id):
@@ -69,7 +93,7 @@ class ProviderRouteTripsResource(Resource):
             return {"error": "Request body is required"}, 400
 
         required_fields = ["origin_routestop_id", "destination_routestop_id", "vehicle_id"]
-        missing = [field for field in required_fields if field not in data]
+        missing = [field for field in required_fields if data.get(field) is None]
         if missing:
             return {"error": "Missing required fields", "fields": missing}, 400
 
@@ -167,8 +191,11 @@ class ProviderTripResource(Resource):
         if trip is None:
             return {"error": "Trip not found"}, 404
 
+        # Fail closed: if the trip's current vehicle is missing (e.g. it
+        # was deleted, or vehicle_id is a dangling reference), treat that
+        # as unauthorized rather than silently letting the check pass.
         current_vehicle = db.session.get(Vehicle, trip.vehicle_id)
-        if current_vehicle and current_vehicle.sacco_id != user.sacco_id:
+        if not current_vehicle or current_vehicle.sacco_id != user.sacco_id:
             return {"error": "You are not authorized to modify this trip."}, 403
 
         data = request.get_json(silent=True)
@@ -208,9 +235,13 @@ class ProviderTripResource(Resource):
 
         # Re-validate that origin and destination still belong to the same
         # route and are still in the right order — either field may have
-        # just been changed independently above.
+        # just been changed independently above. Guard against either one
+        # pointing at a route stop that no longer exists.
         origin_stop = db.session.get(RouteStop, trip.origin_routestop_id)
         destination_stop = db.session.get(RouteStop, trip.destination_routestop_id)
+
+        if origin_stop is None or destination_stop is None:
+            return {"error": "Trip references a route stop that no longer exists"}, 400
 
         if origin_stop.route_id != destination_stop.route_id:
             return {"error": "Origin and destination route stops must belong to the same route"}, 400
@@ -265,8 +296,9 @@ class CancelTripResource(Resource):
         if trip is None:
             return {"error": "Trip not found"}, 404
 
+        # Same fail-closed fix as ProviderTripResource.patch above.
         vehicle = db.session.get(Vehicle, trip.vehicle_id)
-        if vehicle and vehicle.sacco_id != user.sacco_id:
+        if not vehicle or vehicle.sacco_id != user.sacco_id:
             return {"error": "You are not authorized to cancel this trip."}, 403
 
         if trip.status == "completed":
@@ -284,8 +316,3 @@ class CancelTripResource(Resource):
             return {"error": "Could not cancel trip"}, 400
 
         return trip_response(trip), 200
-
-
-api.add_resource(ProviderRouteTripsResource, '/api/v1/provider/routes/<int:route_id>/trips')
-api.add_resource(ProviderTripResource, '/api/v1/provider/trips/<int:trip_id>')
-api.add_resource(CancelTripResource, '/api/v1/provider/trips/<int:trip_id>/cancel')

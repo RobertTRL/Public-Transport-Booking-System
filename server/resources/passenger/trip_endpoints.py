@@ -4,42 +4,25 @@ from flask import request
 from flask_restful import Resource
 from sqlalchemy.orm import aliased, joinedload
 
-from config import api, db
+from config import db
 from models import RouteStop, Trip
 from schemas import TripDetailSchema
 
-try:
-    from resources.passenger.helpers import (
-        get_route_stop_pair,
-        get_trip_availability,
-        trip_contains_segment,
-        valid_route_segment,
-    )
-except ImportError:
-    try:
-        from passenger.helpers import (
-            get_route_stop_pair,
-            get_trip_availability,
-            trip_contains_segment,
-            valid_route_segment,
-        )
-    except ImportError:
-        from server.resources.passenger.helpers import (
-            get_route_stop_pair,
-            get_trip_availability,
-            trip_contains_segment,
-            valid_route_segment,
-        )
+from .helpers import (
+    get_route_stop_pair,
+    get_trip_availability,
+    trip_contains_segment,
+    valid_route_segment,
+)
 
-
-# =========================================================
-# Trip resources
-# =========================================================
 
 class AvailableTripsResource(Resource):
     """Return trips available for a requested route segment and date."""
 
     def get(self):
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("per_page", 5, type=int)
+
         origin_routestop_id = request.args.get(
             "origin_routestop_id",
             type=int,
@@ -88,19 +71,13 @@ class AvailableTripsResource(Resource):
                 )
             }, 400
 
-        # A trip covers a segment if the trip's own origin/destination
-        # bracket the requested stops on the same route -- the same rule
-        # `trip_contains_segment` uses for availability/booking. Matching
-        # on exact routestop-id equality (as before) would miss every
-        # trip that runs a longer stretch of the route than the segment
-        # being searched for.
         trip_origin_rs = aliased(RouteStop)
         trip_destination_rs = aliased(RouteStop)
 
         day_start = datetime.combine(requested_date, time.min)
         day_end = datetime.combine(requested_date, time.max)
 
-        trips = (
+        pagination = (
             Trip.query
             .join(
                 trip_origin_rs,
@@ -121,18 +98,27 @@ class AvailableTripsResource(Resource):
                 trip_origin_rs.route_id == origin.route_id,
                 trip_origin_rs.sequence <= origin.sequence,
                 trip_destination_rs.sequence >= destination.sequence,
-                # Only trips that can still actually be booked -- a trip
-                # that's in progress/completed but not "cancelled" used
-                # to show up here and then fail at booking time.
                 Trip.status == "scheduled",
                 Trip.start_time >= day_start,
                 Trip.start_time <= day_end,
             )
             .order_by(Trip.start_time.asc())
-            .all()
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False,
+            )
         )
 
-        return TripDetailSchema(many=True).dump(trips), 200
+        trips = pagination.items
+
+        return {
+            "page": page,
+            "per_page": per_page,
+            "total": pagination.total,
+            "total_pages": pagination.pages,
+            "items": TripDetailSchema(many=True).dump(trips),
+        }, 200
 
 
 class TripResource(Resource):
@@ -199,19 +185,3 @@ class TripAvailabilityResource(Resource):
             origin,
             destination,
         ), 200
-
-
-api.add_resource(
-    AvailableTripsResource,
-    "/api/v1/trips",
-)
-
-api.add_resource(
-    TripResource,
-    "/api/v1/trips/<int:trip_id>",
-)
-
-api.add_resource(
-    TripAvailabilityResource,
-    "/api/v1/trips/<int:trip_id>/availability",
-)

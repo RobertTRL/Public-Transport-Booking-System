@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { MapPin, Pencil, Trash2, Plus } from "lucide-react";
 import "../../styles/dashboard.css";
+import AddStopModal from "./AddStopModal";
 
-const stops = [
+const seedStops = [
   {
     id: "kigali-city-centre",
     name: "Kigali City Centre",
@@ -29,6 +31,16 @@ const stops = [
 ];
 
 function Stops() {
+  const [stopList, setStopList] = useState(seedStops);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleAddStop = (stop) => {
+    setStopList((list) => [
+      { id: `stop-${Date.now()}`, ...stop },
+      ...list,
+    ]);
+  };
+
   return (
     <>
       <div className="dashboard-header stops-header">
@@ -37,7 +49,11 @@ function Stops() {
           <p>View and manage public transport stops.</p>
         </div>
 
-        <button type="button" className="add-stop-button">
+        <button
+          type="button"
+          className="add-stop-button"
+          onClick={() => setModalOpen(true)}
+        >
           <Plus size={16} />
           Add Stop
         </button>
@@ -45,7 +61,7 @@ function Stops() {
 
       <section className="stops-section">
         <div className="stops-grid">
-          {stops.map((stop) => (
+          {stopList.map((stop) => (
             <article className="stop-card" key={stop.id}>
               <div className="stop-card-top">
                 <div className="stop-icon">
@@ -87,6 +103,13 @@ function Stops() {
           ))}
         </div>
       </section>
+
+      {modalOpen && (
+        <AddStopModal
+          onClose={() => setModalOpen(false)}
+          onCreated={handleAddStop}
+        />
+      )}
     </>
   );
 }

@@ -203,13 +203,15 @@ function DashAccountCreation() {
           </button>
         </form>
 
-        <p className="auth-footer">
-          Already have an account?{" "}
-          <Link to="/dashlogin">Sign in</Link>
-        </p>
-      </section>
-    </main>
-  );
+    <p className="auth-footer">
+      Already have an account?{' '}
+      <Link to="/login">Sign in</Link>
+    </p>
+  </section>
+</main>
+
+
+);
 }
 
 export default DashAccountCreation;

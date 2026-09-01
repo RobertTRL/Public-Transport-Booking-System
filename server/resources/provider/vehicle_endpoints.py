@@ -4,10 +4,10 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from sqlalchemy.orm import aliased
 
-from config import api, db
+from config import db
 from models import RouteStop, Trip, Vehicle
 from schemas import VehicleSchema
-from provider.helpers import get_current_provider_user, vehicle_response
+from .helpers import get_current_provider_user, vehicle_response
 
 vehicle_schema = VehicleSchema()
 vehicles_schema = VehicleSchema(many=True)
@@ -51,8 +51,24 @@ class ListVehiclesResource(Resource):
         if q:
             query = query.filter(Vehicle.number_plate.ilike(f"%{q}%"))
 
-        vehicles = query.all()
-        return vehicles_schema.dump(vehicles), 200
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
+        pagination = query.order_by(Vehicle.id.asc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+
+        vehicles = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': vehicles_schema.dump(vehicles)
+        }, 200
 
 
 class CreateVehicleResource(Resource):
@@ -69,7 +85,12 @@ class CreateVehicleResource(Resource):
             return {'error': 'Request body is required.'}, 400
 
         try:
-            validated_data = vehicle_schema.load(data)
+            # sacco_id is normally required by VehicleSchema, but it's
+            # always derived from the requester below — the client
+            # shouldn't have to send one just to pass validation, and any
+            # value they do send is discarded regardless. Same fix as
+            # ListCreateUserResource.post.
+            validated_data = vehicle_schema.load(data, partial=("sacco_id",))
         except ValidationError as err:
             return {'errors': err.messages}, 400
 
@@ -131,7 +152,10 @@ class ProviderVehicleResource(Resource):
             vehicle.number_plate = data["number_plate"]
 
         if "capacity" in data:
-            if not isinstance(data["capacity"], int):
+            # bool is a subclass of int in Python, so isinstance(True, int)
+            # is True — without the extra bool check, {"capacity": true}
+            # would silently pass as capacity=1.
+            if not isinstance(data["capacity"], int) or isinstance(data["capacity"], bool):
                 return {"error": "capacity must be an integer"}, 400
             if data["capacity"] < 1:
                 return {"error": "capacity must be at least 1"}, 400
@@ -171,8 +195,3 @@ class ProviderVehicleResource(Resource):
             return {"error": "Vehicle cannot be deleted because it is in use"}, 409
 
         return {"message": "Vehicle deleted successfully"}, 200
-
-
-api.add_resource(ListVehiclesResource, '/api/v1/provider/vehicles')
-api.add_resource(CreateVehicleResource, '/api/v1/provider/vehicles')
-api.add_resource(ProviderVehicleResource, '/api/v1/provider/vehicles/<int:vehicle_id>')

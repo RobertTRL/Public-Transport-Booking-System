@@ -1,22 +1,4 @@
-try:
-    from resources.passenger import (
-        booking_endpoints,
-        route_endpoints,
-        stops_endpoints,
-        trip_endpoints,
-    )
-except ImportError:
-    try:
-        from passenger import (
-            booking_endpoints,
-            route_endpoints,
-            stops_endpoints,
-            trip_endpoints,
-        )
-    except ImportError:
-        from server.resources.passenger import (
-            booking_endpoints,
-            route_endpoints,
-            stops_endpoints,
-            trip_endpoints,
-        )
+from .booking_endpoints import MyBookingsResource, BookingResource, CancelBookingResource, BookingDetailResource
+from .route_endpoints import RouteSearchResource, RouteResource, GeneralRouteInfoResource, PassengerRouteStopsResource
+from .stops_endpoints import StopsResource
+from .trip_endpoints import AvailableTripsResource, TripResource, TripAvailabilityResource

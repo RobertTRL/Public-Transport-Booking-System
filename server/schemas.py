@@ -222,9 +222,18 @@ class TripSchema(BaseSchema):
         if not origin_id or not destination_id:
             return
 
+        if origin_id == destination_id:
+            return
+
         origin = db.session.get(RouteStop, origin_id)
         destination = db.session.get(RouteStop, destination_id)
 
+        if not origin or not destination:
+            raise ValidationError(
+                "origin_routestop_id and destination_routestop_id must "
+                "reference existing route stops.",
+                field_name="destination_routestop_id",
+            )
         if not origin or not destination:
             raise ValidationError(
                 "origin_routestop_id and destination_routestop_id must "
@@ -267,7 +276,6 @@ class BookingSchema(BaseSchema):
     # Always starts "active" on creation and is only ever changed by the
     # dedicated cancel action -- never accepted directly from client input.
     status = fields.String(dump_only=True)
-    cancelled_at = fields.DateTime(dump_only=True, allow_none=True)
     made_at = fields.DateTime(dump_only=True)
 
     @validates_schema

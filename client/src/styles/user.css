@@ -315,3 +315,32 @@
     flex-direction: column;
   }
 }
+
+/* Profile bookings */
+
+.profile-bookings {
+  margin-top: 1.5rem;
+}
+
+.profile-bookings__title {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.profile-bookings__meta {
+  margin: 0 0 1rem;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.profile-bookings__meta--error {
+  color: #dc2626;
+}
+
+.profile-bookings__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

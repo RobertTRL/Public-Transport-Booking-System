@@ -3,9 +3,9 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from sqlalchemy import func
 
-from config import api, db
+from config import db
 from models import Booking, RouteStop, Trip, Vehicle
-from provider.helpers import get_current_provider_user, parse_datetime, booking_response
+from .helpers import get_current_provider_user, parse_datetime, booking_response
 
 
 class ProviderBookingsResource(Resource):
@@ -67,13 +67,26 @@ class ProviderBookingsResource(Resource):
             query = query.filter(Booking.made_at <= to_date)
 
         if status:
-            return {
-                "error": "Booking status filtering is unavailable because Booking has no status field."
-            }, 400
+            query = query.filter(Booking.status == status)
 
-        bookings = query.order_by(Booking.made_at.desc()).all()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
 
-        return [booking_response(booking) for booking in bookings], 200
+        pagination = query.order_by(Booking.made_at.desc()).paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
+
+        bookings = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [booking_response(booking) for booking in bookings]
+        }, 200
 
 
 class BookingStatisticsResource(Resource):
@@ -142,11 +155,26 @@ class TripBookingsResource(Resource):
         if vehicle and vehicle.sacco_id != user.sacco_id:
             return {"error": "You are not authorized to view this trip's bookings."}, 403
 
-        bookings = Booking.query.filter_by(trip_id=trip_id).order_by(Booking.made_at.desc()).all()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
 
-        return [booking_response(booking) for booking in bookings], 200
+        pagination = (
+            Booking.query
+            .filter_by(trip_id=trip_id)
+            .order_by(Booking.made_at.desc())
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False
+            )
+        )
 
+        bookings = pagination.items
 
-api.add_resource(ProviderBookingsResource, '/api/v1/provider/bookings')
-api.add_resource(BookingStatisticsResource, '/api/v1/provider/booking-statistics')
-api.add_resource(TripBookingsResource, '/api/v1/provider/trips/<int:trip_id>/bookings')
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [booking_response(booking) for booking in bookings]
+        }, 200

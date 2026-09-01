@@ -3,10 +3,10 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from config import api, db
+from config import db
 from models import Route, RouteStop, Stop
 from schemas import RouteStopDetailSchema, RouteStopUpdateSchema
-from provider.helpers import get_current_provider_user
+from .helpers import get_current_provider_user
 
 route_stop_detail_schema = RouteStopDetailSchema()
 route_stop_update_schema = RouteStopUpdateSchema()
@@ -25,18 +25,39 @@ class ProviderRouteStopsResource(Resource):
         if not route:
             return {'error': 'Route not found'}, 404
 
-        route_stops = RouteStop.query.filter_by(route_id=route_id).order_by(RouteStop.sequence.asc()).all()
-        return [
-            {
-                'id': rs.id,
-                'stop_id': rs.stop_id,
-                'sequence': rs.sequence,
-                'name': rs.stop.name if rs.stop else None,
-                'latitude': rs.stop.latitude if rs.stop else None,
-                'longitude': rs.stop.longitude if rs.stop else None
-            }
-            for rs in route_stops
-        ], 200
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
+        pagination = (
+            RouteStop.query
+            .filter_by(route_id=route_id)
+            .order_by(RouteStop.sequence.asc())
+            .paginate(
+                page=page,
+                per_page=per_page,
+                error_out=False
+            )
+        )
+
+        route_stops = pagination.items
+
+        return {
+            'page': page,
+            'per_page': per_page,
+            'total': pagination.total,
+            'total_pages': pagination.pages,
+            'items': [
+                {
+                    'id': rs.id,
+                    'stop_id': rs.stop_id,
+                    'sequence': rs.sequence,
+                    'name': rs.stop.name if rs.stop else None,
+                    'latitude': rs.stop.latitude if rs.stop else None,
+                    'longitude': rs.stop.longitude if rs.stop else None
+                }
+                for rs in route_stops
+            ]
+        }, 200
 
     @jwt_required()
     def post(self, route_id):
@@ -196,8 +217,3 @@ class DeleteRouteStopResource(Resource):
             return {'error': 'Unable to delete route stop.'}, 400
 
         return {'message': 'Route stop deleted successfully.'}, 200
-
-
-api.add_resource(ProviderRouteStopsResource, '/api/v1/provider/routes/<int:route_id>/stops')
-api.add_resource(UpdateRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
-api.add_resource(DeleteRouteStopResource, '/api/v1/provider/routes/<int:route_id>/stops/<int:stop_id>')
