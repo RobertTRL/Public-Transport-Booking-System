@@ -49,11 +49,8 @@ function Home() {
   }, []);
 
   // Fetch stops for selected route
-  useEffect(() => {
+    useEffect(() => {
     if (!route) {
-      setStops([]);
-      setOrigin(null);
-      setDestination(null);
       return;
     }
 

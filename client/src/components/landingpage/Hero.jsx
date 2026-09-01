@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchWithAuth, getAccessToken } from "../../utils/auth";
 import "../../styles/hero.css";
 
@@ -27,28 +27,6 @@ export default function HeroGeometric({
 
           if (response.ok) {
             navigate("/home");
-          } else {
-            navigate("/login", { state: { error: "Your session expired. Please sign in again." } });
-          }
-        } catch {
-          navigate("/login", { state: { error: "Unable to verify your session. Please try again." } });
-        }
-    }
-
-    async function handleGoToDashboard() {
-        setAuthError("");
-        const token = getAccessToken();
-
-        if (!token) {
-            navigate("/login", { state: { error: "Please sign in to access the dashboard." } });
-            return;
-        }
-
-        try {
-          const response = await fetchWithAuth("/api/v1/me");
-
-          if (response.ok) {
-            navigate("/dashboard");
           } else {
             navigate("/login", { state: { error: "Your session expired. Please sign in again." } });
           }
