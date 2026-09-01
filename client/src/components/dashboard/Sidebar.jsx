@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SidebarButton from "./SidebarButton";
-import { clearAccessToken } from "../../utils/auth";
+import { clearTokens } from "../../utils/auth";
 import "../../styles/sidebar.css";
 
 const DEFAULT_WIDTH = 280;
@@ -74,8 +74,8 @@ function Sidebar({ isOpen = false, onClose }) {
   }, []);
 
   const handleLogout = () => {
-    clearAccessToken();
-    navigate("/login");
+  clearTokens();
+  navigate("/login", { replace: true });
   };
 
   return (
