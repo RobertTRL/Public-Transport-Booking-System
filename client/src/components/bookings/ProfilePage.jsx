@@ -15,8 +15,6 @@ function ProfilePage() {
     accountType: 'Passenger',
   })
 
-  const [savedProfile, setSavedProfile] = useState(profile)
-
   const handleChange = (event) => {
     const { name, value } = event.target
 
@@ -29,15 +27,9 @@ function ProfilePage() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    setSavedProfile(profile)
     setIsEditing(false)
 
     console.log('Profile updated:', profile)
-  }
-
-  const handleCancel = () => {
-    setProfile(savedProfile)
-    setIsEditing(false)
   }
 
   const handleLogout = () => {
