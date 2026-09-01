@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { getAccessToken, setAccessToken } from "../utils/auth";
+import { setTokens } from "../utils/auth";
 import "../styles/auth.css";
 
 const USER_TYPES = [
@@ -65,7 +65,10 @@ function Login() {
         throw new Error("No access token returned from server.");
       }
 
-      setAccessToken(token);
+      setTokens({
+        access_token: data.access_token || token,
+        refresh_token: data.refresh_token,
+      });
 
       if (userType === "operator") {
         navigate("/dashboard");
