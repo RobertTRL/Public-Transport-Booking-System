@@ -18,20 +18,30 @@ export default function HeroGeometric({
         const token = getAccessToken();
 
         if (!token) {
-            navigate("/login", { state: { error: "Please sign in to book a ride." } });
+            navigate("/login", {
+                state: { error: "Please sign in to book a ride." },
+            });
             return;
         }
 
         try {
-          const response = await fetchWithAuth("/api/v1/me");
+            const response = await fetchWithAuth("/api/v1/me");
 
-          if (response.ok) {
-            navigate("/home");
-          } else {
-            navigate("/login", { state: { error: "Your session expired. Please sign in again." } });
-          }
+            if (response.ok) {
+                navigate("/home");
+            } else {
+                navigate("/login", {
+                    state: {
+                        error: "Your session expired. Please sign in again.",
+                    },
+                });
+            }
         } catch {
-          navigate("/login", { state: { error: "Unable to verify your session. Please try again." } });
+            navigate("/login", {
+                state: {
+                    error: "Unable to verify your session. Please try again.",
+                },
+            });
         }
     }
 
@@ -53,19 +63,33 @@ export default function HeroGeometric({
                                         className="main-title"
                                         initial={{ y: "100%", opacity: 0 }}
                                         animate={{ y: "0%", opacity: 1 }}
-                                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                        transition={{
+                                            duration: 1,
+                                            ease: [0.16, 1, 0.3, 1],
+                                            delay: 0.2,
+                                        }}
                                     >
-                                        <span className="hero-geometric__title--bold">{title1}</span>
+                                        <span className="hero-geometric__title--bold">
+                                            {title1}
+                                        </span>
                                     </motion.h1>
                                 </div>
                             )}
+
                             {title2 && (
-                                <div className="hero-geometric__title-wrap" id="title2">
+                                <div
+                                    className="hero-geometric__title-wrap"
+                                    id="title2"
+                                >
                                     <motion.h1
                                         className="main-title hero-geometric__title--subtitle"
                                         initial={{ y: "100%", opacity: 0 }}
                                         animate={{ y: "0%", opacity: 1 }}
-                                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+                                        transition={{
+                                            duration: 1,
+                                            ease: [0.16, 1, 0.3, 1],
+                                            delay: 0.35,
+                                        }}
                                     >
                                         {title2}
                                     </motion.h1>
@@ -79,7 +103,11 @@ export default function HeroGeometric({
                                     className="hero-geometric__description"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                                    transition={{
+                                        duration: 0.8,
+                                        delay: 0.6,
+                                        ease: "easeOut",
+                                    }}
                                 >
                                     {description}
                                 </motion.p>
@@ -100,7 +128,11 @@ export default function HeroGeometric({
                             className="hero-geometric__actions"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.75, ease: "easeOut" }}
+                            transition={{
+                                duration: 0.8,
+                                delay: 0.75,
+                                ease: "easeOut",
+                            }}
                         >
                             <button
                                 type="button"
@@ -109,10 +141,11 @@ export default function HeroGeometric({
                             >
                                 Book a Ride
                             </button>
+
                             <button
                                 type="button"
-                                onClick={handleScrollToDemo}
                                 className="hero-geometric__cta hero-geometric__cta--secondary"
+                                onClick={handleScrollToDemo}
                             >
                                 Try a Live Demo
                             </button>

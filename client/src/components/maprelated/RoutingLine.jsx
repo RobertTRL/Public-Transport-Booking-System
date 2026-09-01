@@ -8,19 +8,14 @@ function RoutingLine({ waypoints }) {
   const controlRef = useRef(null);
 
   useEffect(() => {
-    if (!waypoints || waypoints.length < 2) return undefined;
-
-    if (controlRef.current) {
-      try {
-        map.removeControl(controlRef.current);
-      } catch {
-        // control may already have been removed
-      }
-      controlRef.current = null;
+    if (!map || !waypoints || waypoints.length < 2) {
+      return undefined;
     }
 
     const control = L.Routing.control({
-      waypoints: waypoints.map(([lat, lng]) => L.latLng(lat, lng)),
+      waypoints: waypoints.map(([lat, lng]) =>
+        L.latLng(lat, lng)
+      ),
       routeWhileDragging: false,
       addWaypoints: false,
       draggableWaypoints: false,
@@ -33,17 +28,36 @@ function RoutingLine({ waypoints }) {
           { color: "#1a73e8", opacity: 1, weight: 5 },
         ],
       },
-    }).addTo(map);
+    });
 
     controlRef.current = control;
+    control.addTo(map);
 
     return () => {
-      try {
-        map.removeControl(control);
-      } catch {
-        // control may already have been removed during unmount
-      }
+      const currentControl = controlRef.current;
       controlRef.current = null;
+
+      if (!currentControl) {
+        return;
+      }
+
+      try {
+        const router = currentControl.getRouter?.();
+
+        if (router && typeof router.abort === "function") {
+          router.abort();
+        }
+      } catch {
+        // Ignore router cleanup errors.
+      }
+
+      try {
+        if (map && map._loaded) {
+          map.removeControl(currentControl);
+        }
+      } catch {
+        // Ignore control cleanup errors.
+      }
     };
   }, [map, waypoints]);
 

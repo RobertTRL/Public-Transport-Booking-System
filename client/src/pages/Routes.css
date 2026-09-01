@@ -1,0 +1,102 @@
+.routes-page {
+padding: 24px;
+}
+
+.routes-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 24px;
+}
+
+.routes-header h1 {
+margin: 0;
+color: #1f2937;
+font-size: 24px;
+font-weight: 700;
+}
+
+.routes-header p {
+margin: 6px 0 0;
+color: #6b7280;
+font-size: 14px;
+}
+
+.routes-table-container {
+background: #ffffff;
+border: 1px solid #e5e7eb;
+border-radius: 8px;
+overflow: hidden;
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.routes-message {
+padding: 32px;
+text-align: center;
+color: #6b7280;
+}
+
+.loading-message {
+color: #6b7280;
+}
+
+.error-message {
+color: #dc2626;
+}
+
+.routes-table-wrapper {
+width: 100%;
+overflow-x: auto;
+}
+
+.routes-table {
+width: 100%;
+border-collapse: collapse;
+text-align: left;
+font-size: 14px;
+}
+
+.routes-table thead {
+background: #f9fafb;
+border-bottom: 1px solid #e5e7eb;
+}
+
+.routes-table th {
+padding: 16px;
+color: #6b7280;
+font-size: 12px;
+font-weight: 600;
+text-transform: uppercase;
+}
+
+.routes-table td {
+padding: 16px;
+border-bottom: 1px solid #e5e7eb;
+color: #4b5563;
+}
+
+.routes-table tbody tr:hover {
+background: #f9fafb;
+}
+
+.routes-table .route-name {
+color: #1f2937;
+font-weight: 600;
+}
+
+.actions-column {
+text-align: right;
+}
+
+.delete-button {
+border: none;
+background: none;
+padding: 0;
+color: #dc2626;
+font-size: 12px;
+cursor: pointer;
+}
+
+.delete-button:hover {
+text-decoration: underline;
+}

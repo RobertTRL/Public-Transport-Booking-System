@@ -15,7 +15,7 @@ function Vehicles() {
   ).length;
 
   const filteredVehicles = vehicles.filter((vehicle) =>
-    String(vehicle[searchField])
+    String(vehicle[searchField] ?? "")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
@@ -28,13 +28,12 @@ function Vehicles() {
   };
 
   return (
-    <>
-      <div className="dashboard-header vehicles-header">
+    <div className="vehicles-page">
+      <div className="vehicles-header">
         <div>
           <h1>Vehicles</h1>
           <p>View and manage service provider vehicles.</p>
         </div>
-
         <button
           type="button"
           className="add-vehicle-button"
@@ -94,29 +93,36 @@ function Vehicles() {
                 <th>Route</th>
                 <th>Capacity</th>
                 <th>Availability</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {filteredVehicles.length > 0 ? (
                 filteredVehicles.map((vehicle) => (
-                  <tr key={vehicle.numberPlate}>
-                    <td>{vehicle.numberPlate}</td>
-                    <td>{vehicle.route}</td>
+                  <tr key={vehicle.id}>
+                    <td className="font-semibold">{vehicle.numberPlate}</td>
+                    <td>{vehicle.route || "Unassigned"}</td>
                     <td>{vehicle.capacity}</td>
                     <td>
                       <span
-                        className={`availability-badge availability-${vehicle.availability.toLowerCase()}`}
+                        className={`status-badge ${
+                          vehicle.availability === "Available"
+                            ? "status-available"
+                            : "status-unavailable"
+                        }`}
                       >
                         {vehicle.availability}
                       </span>
+                    </td>
+                    <td className="text-right">
+                      <button className="edit-button">Edit</button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="vehicle-table-empty">
-                    No vehicles found.
+                  <td colSpan="5" className="text-center py-4">
+                    No vehicles found matching your criteria.
                   </td>
                 </tr>
               )}
@@ -125,13 +131,12 @@ function Vehicles() {
         </div>
       </section>
 
-      {modalOpen && (
-        <AddVehicleModal
-          onClose={() => setModalOpen(false)}
-          onCreated={handleAddVehicle}
-        />
-      )}
-    </>
+      <AddVehicleModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={handleAddVehicle}
+      />
+    </div>
   );
 }
 
