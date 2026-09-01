@@ -42,7 +42,7 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ 
-          "user_type": userType,
+          "user_type": userType === "operator" ? "user" : userType,
           "email": email,
           "password": password
         }),
