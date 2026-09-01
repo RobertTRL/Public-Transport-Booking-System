@@ -1,3 +1,7 @@
+import RouteDropdown from "./maprelated/RouteDropdown";
+import LocationDropdown from "./maprelated/LocationDropdown";
+import { allStops, allRoutes } from "../data/nairobiRoutes";
+
 function RouteSearch({
   route,
   origin,
@@ -9,9 +13,12 @@ function RouteSearch({
   onSelectDestination,
   loadingRoutes = false,
   loadingStops = false,
-  children, // NEW: optional extra content rendered in the same row (e.g. a CTA button)
+  children, // optional extra content rendered in the same row (e.g. a CTA button)
 }) {
+  // Use API-fetched routes if available, fallback to local data
   const routeOptions = routes.length > 0 ? routes : allRoutes;
+
+  // Use API-fetched stops if available, fallback to all stops
   const stopOptions = stops.length > 0 ? stops : allStops;
 
   return (
@@ -28,7 +35,13 @@ function RouteSearch({
         placeholder="Pick a starting point"
         options={stopOptions}
         value={origin}
-        onChange={(stop) => onSelectOrigin(stop === null ? null : stop)}
+        onChange={(stop) => {
+          if (stop === null) {
+            onSelectOrigin(null);
+            return;
+          }
+          onSelectOrigin(stop);
+        }}
         disabled={!route || loadingStops}
       />
 
@@ -36,7 +49,13 @@ function RouteSearch({
         placeholder="Pick a destination"
         options={stopOptions}
         value={destination}
-        onChange={(stop) => onSelectDestination(stop === null ? null : stop)}
+        onChange={(stop) => {
+          if (stop === null) {
+            onSelectDestination(null);
+            return;
+          }
+          onSelectDestination(stop);
+        }}
         disabled={!route || loadingStops}
       />
 

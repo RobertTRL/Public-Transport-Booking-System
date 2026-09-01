@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
 import { getStopById, getRouteById, getRouteForStop, allRoutes } from "../../data/nairobiRoutes";
@@ -7,6 +7,7 @@ import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
 
 function HowItWorks() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // Seed initial state from URL search params (Home handoff)
   const initialOrigin = getStopById(searchParams.get("from"));
@@ -70,6 +71,14 @@ function HowItWorks() {
   const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
   const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
 
+  // All three dropdowns must be filled before booking is allowed
+  const canBookVehicles = Boolean(route && origin && destination);
+
+  function handleBookVehicles() {
+    if (!canBookVehicles) return;
+    navigate("/login");
+  }
+
   return (
     <div className="how-it-works-page">
       <main>
@@ -90,7 +99,16 @@ function HowItWorks() {
               onSelectRoute={handleSelectRoute}
               onSelectOrigin={handleSelectOrigin}
               onSelectDestination={handleSelectDestination}
-            />
+            >
+              <button
+                type="button"
+                className="route-search__book-btn"
+                disabled={!canBookVehicles}
+                onClick={handleBookVehicles}
+              >
+                Book Vehicles
+              </button>
+            </RouteSearch>
 
             <div className="how-it-works__map">
               <Map
