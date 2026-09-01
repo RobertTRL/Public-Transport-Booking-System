@@ -144,8 +144,8 @@ export default function HeroGeometric({
 
                             <button
                                 type="button"
-                                onClick={handleScrollToDemo}
                                 className="hero-geometric__cta hero-geometric__cta--secondary"
+                                onClick={handleScrollToDemo}
                             >
                                 Try a Live Demo
                             </button>
@@ -156,4 +156,3 @@ export default function HeroGeometric({
         </div>
     );
 }
-

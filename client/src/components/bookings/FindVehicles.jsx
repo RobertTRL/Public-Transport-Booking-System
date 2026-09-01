@@ -53,6 +53,16 @@ function FindVehicles() {
   const [destination, setDestination] = useState(null);
   const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
 
+  const [booked, setBooked] = useState({});
+  const [loadingId, setLoadingId] = useState(null);
+
+  const [sidebarWidth, setSidebarWidth] = useState(360);
+  const isResizing = useRef(false);
+
+  const suppressClickRef = useRef(false);
+  const dragStartY = useRef(null);
+
+  // Fetch initial origin and destination from API if route ID is available
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!routeId || !fromId || !toId) {
@@ -86,7 +96,7 @@ function FindVehicles() {
         );
       } catch (error) {
         console.error("Error fetching initial data:", error);
-
+        // Fallback to local data
         const fallbackOrigin = getStopById(fromId);
         const fallbackDestination = getStopById(toId);
 
@@ -104,15 +114,6 @@ function FindVehicles() {
 
     fetchInitialData();
   }, [routeId, fromId, toId]);
-
-  const suppressClickRef = useRef(false);
-  const dragStartY = useRef(null);
-
-  const [booked, setBooked] = useState({});
-  const [loadingId, setLoadingId] = useState(null);
-
-  const [sidebarWidth, setSidebarWidth] = useState(360);
-  const isResizing = useRef(false);
 
   useEffect(() => {
     function onMouseMove(event) {

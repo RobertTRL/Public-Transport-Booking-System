@@ -6,14 +6,31 @@ import "../../styles/user.css";
 function ProfilePage() {
   const navigate = useNavigate();
 
-  const [isEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const [profile] = useState({
+  const [profile, setProfile] = useState({
     name: "Stephen Muasya",
     email: "stephen@example.com",
     phone: "+254 700 000 000",
     accountType: "Passenger",
   });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setProfile((currentProfile) => ({
+      ...currentProfile,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    setIsEditing(false);
+
+    console.log("Profile updated:", profile);
+  };
 
   const handleLogout = () => {
     clearAccessToken();
@@ -48,7 +65,7 @@ function ProfilePage() {
 
           <div className="profile-divider" />
 
-          <form className="profile-form">
+          <form className="profile-form" onSubmit={handleSubmit}>
             <div className="profile-form-group">
               <label htmlFor="name">Full name</label>
 
@@ -57,8 +74,8 @@ function ProfilePage() {
                 name="name"
                 type="text"
                 value={profile.name}
+                onChange={handleChange}
                 disabled={!isEditing}
-                readOnly
               />
             </div>
 
@@ -70,8 +87,8 @@ function ProfilePage() {
                 name="email"
                 type="email"
                 value={profile.email}
+                onChange={handleChange}
                 disabled={!isEditing}
-                readOnly
               />
             </div>
 
@@ -83,8 +100,8 @@ function ProfilePage() {
                 name="phone"
                 type="tel"
                 value={profile.phone}
+                onChange={handleChange}
                 disabled={!isEditing}
-                readOnly
               />
             </div>
 
@@ -141,4 +158,3 @@ function ProfilePage() {
 }
 
 export default ProfilePage;
-

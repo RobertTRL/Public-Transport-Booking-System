@@ -51,6 +51,7 @@ function Home() {
     fetchRoutes();
   }, []);
 
+  // Fetch stops for selected route
   useEffect(() => {
     if (!route) {
       return;
@@ -288,4 +289,3 @@ function Home() {
 }
 
 export default Home;
-
