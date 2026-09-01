@@ -13,10 +13,11 @@ function RouteSearch({
   onSelectDestination,
   loadingRoutes = false,
   loadingStops = false,
+  children, // optional extra content rendered in the same row (e.g. a CTA button)
 }) {
   // Use API-fetched routes if available, fallback to local data
   const routeOptions = routes.length > 0 ? routes : allRoutes;
-  
+
   // Use API-fetched stops if available, fallback to all stops
   const stopOptions = stops.length > 0 ? stops : allStops;
 
@@ -57,6 +58,8 @@ function RouteSearch({
         }}
         disabled={!route || loadingStops}
       />
+
+      {children}
     </div>
   );
 }

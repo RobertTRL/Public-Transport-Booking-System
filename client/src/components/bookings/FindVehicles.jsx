@@ -9,6 +9,7 @@ import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
 const SHEET_EXPANDED = "expanded";
+const DESKTOP_BREAKPOINT = 768;
 
 const DUMMY_VEHICLES = [
   { id: "v1", plate: "KDA 214B", type: "Matatu · 14-seater", operator: "Super Metro", departsIn: "3 min", fare: "KSh 100" },
@@ -22,7 +23,6 @@ async function getStopByIdFromAPI(routeId, routeStopId) {
     const response = await fetch(`http://localhost:5000/api/v1/routes/${routeId}`);
     if (response.ok) {
       const route = await response.json();
-      // Find the route stop with the given ID
       const routeStop = route.route_stops?.find(rs => rs.id === parseInt(routeStopId));
       if (routeStop) {
         return {
@@ -59,23 +59,9 @@ function FindVehicles() {
   const [sidebarWidth, setSidebarWidth] = useState(360);
   const isResizing = useRef(false);
 
-  const suppressClickRef = useRef(false);
-  const dragStartY = useRef(null);
-
-  // Fetch initial origin and destination from API if route ID is available
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!routeId || !fromId || !toId) {
-        const fallbackOrigin = getStopById(fromId);
-        const fallbackDestination = getStopById(toId);
-
-        setOrigin(fallbackOrigin);
-        setDestination(fallbackDestination);
-        setSheetState(
-          fallbackOrigin && fallbackDestination
-            ? SHEET_EXPANDED
-            : SHEET_COLLAPSED
-        );
         setLoadingInitialData(false);
         return;
       }
@@ -96,7 +82,6 @@ function FindVehicles() {
         );
       } catch (error) {
         console.error("Error fetching initial data:", error);
-        // Fallback to local data
         const fallbackOrigin = getStopById(fromId);
         const fallbackDestination = getStopById(toId);
 
@@ -114,6 +99,9 @@ function FindVehicles() {
 
     fetchInitialData();
   }, [routeId, fromId, toId]);
+
+  const suppressClickRef = useRef(false);
+  const dragStartY = useRef(null);
 
   useEffect(() => {
     function onMouseMove(event) {
@@ -138,6 +126,9 @@ function FindVehicles() {
   }, []);
 
   function startResizing(event) {
+    // Defensive: the handle is also hidden via CSS below 768px,
+    // but skip the drag logic entirely on mobile too.
+    if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
     event.preventDefault();
     isResizing.current = true;
     document.body.style.cursor = "col-resize";
@@ -177,14 +168,13 @@ function FindVehicles() {
   const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
   const hasRoute = Boolean(selection);
   const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
-  
-  const showResults = hasRoute && sheetState === SHEET_EXPANDED;
+
+  const showResults = hasRoute && sheetState === SHEET_EXPANDED
 
   function toggleSheet() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
   }
 
-  // Mobile-only: drag the handle to snap the sheet open/closed.
   function handleHandlePointerDown(e) {
     dragStartY.current = e.clientY;
     suppressClickRef.current = false;
@@ -237,7 +227,7 @@ function FindVehicles() {
 
       <aside
         className={`find-vehicles__sidebar find-vehicles__sidebar--${sheetState}`}
-        style={{ width: sidebarWidth }}
+        style={{ "--sidebar-width": `${sidebarWidth}px` }}
       >
         <div
           className="find-vehicles__resize-handle"
