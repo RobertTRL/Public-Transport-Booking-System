@@ -134,7 +134,7 @@ function Vehicles() {
       <AddVehicleModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onVehicleAdded={handleAddVehicle}
+        onSuccess={handleAddVehicle}
       />
     </div>
   );

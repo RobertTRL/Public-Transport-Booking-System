@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Search, Pencil, Trash2, Power } from "lucide-react";
-import AddVehicleModal from "./AddVehicleModal";
+import AddVehicleModal from "../components/dashboard/AddVehicleModal";
 import {
   listVehicles,
   updateVehicle,
   deleteVehicle,
   listRoutes,
-} from "../../api/providerClient";
-import "../../styles/Vehicle.css";
+} from "../api/providerClient";
+import "../styles/Vehicle.css";
 
 const PER_PAGE = 10;
 
@@ -326,12 +326,12 @@ function Vehicles() {
         </div>
       </section>
 
-      {modalOpen && (
-        <AddVehicleModal
-          onClose={() => setModalOpen(false)}
-          onCreated={handleAddVehicle}
-        />
-      )}
+   {modalOpen && (
+  <AddVehicleModal
+    onClose={() => setModalOpen(false)}
+    onSuccess={handleAddVehicle}
+  />
+)}
     </>
   );
 }

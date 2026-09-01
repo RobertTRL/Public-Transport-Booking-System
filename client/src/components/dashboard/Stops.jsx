@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MapPin, Pencil, Trash2, Plus } from "lucide-react";
-import "../../styles/dashboard.css";
-import AddStopModal from "./AddStopModal";
+import "../styles/dashboard.css";
+import AddStopModal from "../components/dashboard/AddStopModal";
 
 const seedStops = [
   {
