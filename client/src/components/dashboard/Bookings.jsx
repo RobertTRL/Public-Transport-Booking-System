@@ -158,11 +158,13 @@ function Bookings() {
 
         const bookings = Array.isArray(data)
           ? data
-          : Array.isArray(data?.data)
-            ? data.data
-            : Array.isArray(data?.bookings)
-              ? data.bookings
-              : [];
+          : Array.isArray(data?.items)
+            ? data.items
+            : Array.isArray(data?.data)
+              ? data.data
+              : Array.isArray(data?.bookings)
+                ? data.bookings
+                : [];
 
         setRecentBookings(bookings);
       } catch (err) {
