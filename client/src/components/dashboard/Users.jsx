@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import AddUserModal from "./AddUserModal";
 import { apiGet } from "../../api/client";
 
@@ -110,82 +111,92 @@ function Users() {
         </button>
       </div>
 
-      <section className="dashboard-content">
-        <div className="users-toolbar">
+      <div className="users-toolbar-top">
+        <div className="users-search-box">
+          <Search size={16} className="users-search-icon" />
+
           <input
             type="search"
-            placeholder="Search by name or email..."
+            className="users-search-input"
+            placeholder="Search users by name or email..."
             value={search}
             onChange={handleSearch}
             aria-label="Search users"
           />
         </div>
+      </div>
 
-        {loading && <p>Loading users...</p>}
+      {loading && (
+        <div className="users-loading-state">
+          <p>Loading users...</p>
+        </div>
+      )}
 
-        {error && <p>{error}</p>}
+      {error && <p className="vehicle-table-error">{error}</p>}
 
-        {!loading && !error && userList.length === 0 && (
-          <p>No users found.</p>
-        )}
+      {!loading && !error && userList.length === 0 && (
+        <div className="users-empty-state">
+          <p>No users found matching your search.</p>
+        </div>
+      )}
 
-        {!loading && !error && userList.length > 0 && (
-          <div className="users-grid">
-            {userList.map((user) => (
-              <article
-                className="dashboard-card user-card"
-                key={user.id}
-              >
-                <div className="user-avatar">
-                  {getInitials(user.name)}
-                </div>
+      {!loading && !error && userList.length > 0 && (
+        <div className="users-cards-grid">
+          {userList.map((user) => (
+            <article
+              className="user-card-item"
+              key={user.id}
+            >
+              <div className="user-avatar">
+                {getInitials(user.name)}
+              </div>
 
+              <div className="user-card-info">
                 <h2>{user.name}</h2>
-
-                <p className="user-role">
+                <span className="user-role-badge">
                   {user.role}
-                </p>
+                </span>
 
-                <div className="user-details">
-                  <span>{user.email}</span>
-                  <span>
+                <div className="user-details-list">
+                  <span className="user-email-text">{user.email}</span>
+                  <span className="user-phone-text">
                     {user.phone_number ?? user.phone ?? "—"}
                   </span>
                 </div>
-              </article>
-            ))}
-          </div>
-        )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
 
-        {!search && totalPages > 1 && (
-          <div className="pagination">
-            <button
-              type="button"
-              disabled={page <= 1}
-              onClick={() => setPage((current) => current - 1)}
-            >
-              Previous
-            </button>
+      {!search && totalPages > 1 && (
+        <div className="vehicle-pagination">
+          <button
+            type="button"
+            disabled={page <= 1}
+            onClick={() => setPage((current) => current - 1)}
+          >
+            Previous
+          </button>
 
-            <span>
-              Page {page} of {totalPages}
-            </span>
+          <span>
+            Page {page} of {totalPages}
+          </span>
 
-            <button
-              type="button"
-              disabled={page >= totalPages}
-              onClick={() => setPage((current) => current + 1)}
-            >
-              Next
-            </button>
-          </div>
-        )}
-      </section>
+          <button
+            type="button"
+            disabled={page >= totalPages}
+            onClick={() => setPage((current) => current + 1)}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {modalOpen && (
         <AddUserModal
           onClose={() => setModalOpen(false)}
-          onCreated={handleAddUser}
+          onSuccess={handleAddUser}
         />
       )}
     </>
