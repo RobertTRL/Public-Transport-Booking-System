@@ -5,6 +5,7 @@ import { API_BASE_URL } from "../api/client"
 
 function AccountCreation() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
