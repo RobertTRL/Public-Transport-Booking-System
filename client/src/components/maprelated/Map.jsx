@@ -87,6 +87,11 @@ function getStopLabel(stop, origin, destination) {
 }
 
 function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, onSelectStop }) {
+  // Only render stops that have a valid [lat, lng] position
+  const validStops = stops.filter(
+    (stop) => Array.isArray(stop.position) && stop.position.length === 2
+  );
+
   function getIcon(stop) {
     if (origin && stop.id === origin.id) return originIcon;
     if (destination && stop.id === destination.id) return destinationIcon;
@@ -107,11 +112,11 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
 
-        <MapBounds stops={stops} />
+        <MapBounds stops={validStops} />
 
         {waypoints && waypoints.length >= 2 && <RoutingLine waypoints={waypoints} />}
 
-        {stops.map((stop) => (
+        {validStops.map((stop) => (
           <Marker
             key={stop.id}
             position={stop.position}
