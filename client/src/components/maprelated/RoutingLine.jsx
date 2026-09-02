@@ -2,20 +2,21 @@ import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-routing-machine";
+import { isValidPosition } from "../../utils/routeSelection";
 
 function RoutingLine({ waypoints }) {
   const map = useMap();
   const controlRef = useRef(null);
 
   useEffect(() => {
-    if (!map || !waypoints || waypoints.length < 2) {
-      return undefined;
-    }
+    const validWaypoints = Array.isArray(waypoints)
+      ? waypoints.filter(isValidPosition)
+      : [];
+
+    if (!map || validWaypoints.length < 2) return undefined;
 
     const control = L.Routing.control({
-      waypoints: waypoints.map(([lat, lng]) =>
-        L.latLng(lat, lng)
-      ),
+      waypoints: validWaypoints.map(([lat, lng]) => L.latLng(lat, lng)),
       routeWhileDragging: false,
       addWaypoints: false,
       draggableWaypoints: false,
@@ -37,24 +38,17 @@ function RoutingLine({ waypoints }) {
       const currentControl = controlRef.current;
       controlRef.current = null;
 
-      if (!currentControl) {
-        return;
-      }
+      if (!currentControl) return;
 
       try {
         const router = currentControl.getRouter?.();
-
-        if (router && typeof router.abort === "function") {
-          router.abort();
-        }
+        if (router && typeof router.abort === "function") router.abort();
       } catch {
         // Ignore router cleanup errors.
       }
 
       try {
-        if (map && map._loaded) {
-          map.removeControl(currentControl);
-        }
+        if (map && map._loaded) map.removeControl(currentControl);
       } catch {
         // Ignore control cleanup errors.
       }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Component, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
@@ -13,36 +13,37 @@ import {
 } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
+class MapErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error("Map rendering failed:", error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="find-vehicles__map-error">
+          The map could not be displayed. You can still choose your route and
+          stops from the panel.
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const SHEET_COLLAPSED = "collapsed";
 const SHEET_EXPANDED = "expanded";
 const DESKTOP_BREAKPOINT = 768;
-
-const DUMMY_VEHICLES = [
-  {
-    id: "v1",
-    plate: "KDA 214B",
-    type: "Matatu · 14-seater",
-    operator: "Super Metro",
-    departsIn: "3 min",
-    fare: "KSh 100",
-  },
-  {
-    id: "v2",
-    plate: "KCX 771T",
-    type: "Bus · 33-seater",
-    operator: "Citi Hoppa",
-    departsIn: "7 min",
-    fare: "KSh 80",
-  },
-  {
-    id: "v3",
-    plate: "KDB 552L",
-    type: "Matatu · 14-seater",
-    operator: "Metro Trans",
-    departsIn: "12 min",
-    fare: "KSh 100",
-  },
-];
 
 async function getStopByIdFromAPI(routeId, routeStopId) {
   try {
@@ -92,9 +93,16 @@ function FindVehicles() {
   const [routes, setRoutes] = useState(allRoutes);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [stops, setStops] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [loadingRoutes, setLoadingRoutes] = useState(false);
+  const [loadingStops, setLoadingStops] = useState(false);
+  const [loadingVehicles, setLoadingVehicles] = useState(false);
+  const [vehicleError, setVehicleError] = useState("");
   const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
   const [sidebarWidth, setSidebarWidth] = useState(420);
   const [booked, setBooked] = useState({});
+  const [bookingStatus, setBookingStatus] = useState({});
   const [loadingId, setLoadingId] = useState(null);
   const [loadingInitialData, setLoadingInitialData] = useState(false);
   const isResizing = useRef(false);
@@ -102,9 +110,107 @@ function FindVehicles() {
   // Load the route list and select the route supplied by Home. The local
   // route data remains available as a fallback when the API is unavailable.
   useEffect(() => {
+    let cancelled = false;
+
+    async function fetchStops() {
+      if (!route) {
+        setStops([]);
+        return;
+      }
+
+      setLoadingStops(true);
+
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/v1/routes/${route.id}/stops?per_page=100`
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch stops");
+
+        const data = await response.json();
+        const apiStops = (data.items || []).map((routeStop) => ({
+          ...routeStop,
+          name: routeStop.name || routeStop.stop?.name || "Unnamed stop",
+          position:
+            routeStop.position ||
+            (routeStop.stop?.latitude && routeStop.stop?.longitude
+              ? [routeStop.stop.latitude, routeStop.stop.longitude]
+              : undefined),
+          routeId: route.id,
+          routeName: route.name,
+        }));
+
+        if (!cancelled) setStops(apiStops.length > 0 ? apiStops : route.stops || []);
+      } catch (error) {
+        console.error("Error fetching stops:", error);
+        if (!cancelled) setStops(route.stops || []);
+      } finally {
+        if (!cancelled) setLoadingStops(false);
+      }
+    }
+
+    fetchStops();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [route]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchVehicles() {
+      if (!origin || !destination || !route) {
+        setVehicles([]);
+        setVehicleError("");
+        return;
+      }
+
+      setLoadingVehicles(true);
+      setVehicleError("");
+
+      try {
+        const today = new Date().toISOString().split("T")[0];
+        const params = new URLSearchParams({
+          origin_routestop_id: origin.id,
+          destination_routestop_id: destination.id,
+          date: today,
+          per_page: "100",
+        });
+        const response = await fetch(
+          `http://localhost:5000/api/v1/trips?${params.toString()}`
+        );
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch available vehicles");
+        }
+
+        if (!cancelled) setVehicles(data.items || []);
+      } catch (error) {
+        console.error("Error fetching available vehicles:", error);
+        if (!cancelled) {
+          setVehicles([]);
+          setVehicleError(error.message || "Failed to load vehicles.");
+        }
+      } finally {
+        if (!cancelled) setLoadingVehicles(false);
+      }
+    }
+
+    fetchVehicles();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [route, origin, destination]);
+
+  useEffect(() => {
     setRoute(getRouteById(routeId));
 
     async function fetchRoutes() {
+      setLoadingRoutes(true);
+
       try {
         const response = await fetch(
           "http://localhost:5000/api/v1/routes/generalinfo"
@@ -128,6 +234,8 @@ function FindVehicles() {
         }
       } catch (error) {
         console.error("Error fetching routes:", error);
+      } finally {
+        setLoadingRoutes(false);
       }
     }
 
@@ -210,36 +318,54 @@ function FindVehicles() {
   }
 
   async function handleBook(vehicle) {
-    if (booked[vehicle.id] || loadingId === vehicle.id) return;
+    if (
+      booked[vehicle.id] ||
+      bookingStatus[vehicle.id] === "failed" ||
+      loadingId !== null
+    ) {
+      return;
+    }
 
     setLoadingId(vehicle.id);
+    setBookingStatus((previous) => ({ ...previous, [vehicle.id]: "loading" }));
 
     try {
       const token = localStorage.getItem("access_token");
 
-      await fetch("http://localhost:5000/api/v1/bookings", {
+      const response = await fetch("http://localhost:5000/api/v1/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
-          trip_id: vehicle.trip_id || 1,
-          seat_count: 1,
+          trip_id: vehicle.id,
+          origin_routestop_id: origin.id,
+          destination_routestop_id: destination.id,
         }),
       });
-    } catch {
-      // Demo fallback.
-    }
 
-    setBooked((previous) => ({ ...previous, [vehicle.id]: true }));
-    setLoadingId(null);
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Booking failed");
+      }
+
+      setBooked((previous) => ({ ...previous, [vehicle.id]: true }));
+      setBookingStatus((previous) => ({ ...previous, [vehicle.id]: "booked" }));
+    } catch (error) {
+      console.error("Error booking vehicle:", error);
+      setBookingStatus((previous) => ({ ...previous, [vehicle.id]: "failed" }));
+    } finally {
+      setLoadingId(null);
+    }
   }
 
   function handleSelectRoute(selectedRoute) {
     setRoute(selectedRoute);
+    setStops([]);
     setOrigin(null);
     setDestination(null);
+    setVehicles([]);
   }
 
   function handleSelectOrigin(stop) {
@@ -280,6 +406,18 @@ function FindVehicles() {
     [selection]
   );
   const showResults = hasRoute && sheetState === SHEET_EXPANDED;
+
+  function formatDeparture(startTime) {
+    if (!startTime) return "Scheduled";
+
+    const departure = new Date(startTime);
+    if (Number.isNaN(departure.getTime())) return "Scheduled";
+
+    return departure.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
 
   function toggleSheet() {
     setSheetState((previous) =>
@@ -330,14 +468,16 @@ function FindVehicles() {
   return (
     <div className="find-vehicles">
       <div className="find-vehicles__map">
-        <Map
-          stops={visibleStops}
-          origin={origin}
-          destination={destination}
-          highlightedStopIds={selection?.highlightedStopIds || []}
-          waypoints={selection?.waypoints}
-          onSelectStop={handleSelectStop}
-        />
+        <MapErrorBoundary>
+          <Map
+            stops={visibleStops}
+            origin={origin}
+            destination={destination}
+            highlightedStopIds={selection?.highlightedStopIds || []}
+            waypoints={selection?.waypoints}
+            onSelectStop={handleSelectStop}
+          />
+        </MapErrorBoundary>
       </div>
 
       <aside
@@ -376,7 +516,9 @@ function FindVehicles() {
           <RouteSearch
             route={route}
             routes={routes}
-            stops={route?.stops || []}
+            stops={stops}
+            loadingRoutes={loadingRoutes}
+            loadingStops={loadingStops}
             origin={origin}
             destination={destination}
             onSelectRoute={handleSelectRoute}
@@ -389,43 +531,75 @@ function FindVehicles() {
           <div className="find-vehicles__results">
             <p className="find-vehicles__results-label">Available vehicles</p>
 
-            <ul className="find-vehicles__vehicle-list">
-              {DUMMY_VEHICLES.map((vehicle) => (
+            {loadingVehicles && <p>Loading available vehicles...</p>}
+            {!loadingVehicles && vehicleError && (
+              <p className="find-vehicles__error">{vehicleError}</p>
+            )}
+            {!loadingVehicles && !vehicleError && vehicles.length === 0 && (
+              <p>No vehicles are available for this route segment today.</p>
+            )}
+
+            {!loadingVehicles && !vehicleError && vehicles.length > 0 && (
+              <ul className="find-vehicles__vehicle-list">
+              {vehicles.map((vehicle) => {
+                const status = bookingStatus[vehicle.id];
+                const hasBookedVehicle = Object.values(bookingStatus).some(
+                  (booking) => booking === "booked"
+                );
+                const isDisabled =
+                  hasBookedVehicle || loadingId !== null || status === "booked";
+
+                return (
                 <li key={vehicle.id} className="find-vehicles__vehicle">
                   <div className="find-vehicles__vehicle-main">
                     <span className="find-vehicles__vehicle-plate">
-                      {vehicle.plate}
+                      {vehicle.vehicle?.number_plate || vehicle.number_plate || "Vehicle"}
                     </span>
                     <span className="find-vehicles__vehicle-type">
-                      {vehicle.type}
+                      {vehicle.vehicle?.capacity
+                        ? `Vehicle · ${vehicle.vehicle.capacity}-seater`
+                        : "Vehicle"}
                     </span>
                   </div>
 
                   <div className="find-vehicles__vehicle-meta">
-                    <span>{vehicle.operator}</span>
-                    <span>{vehicle.departsIn}</span>
+                    <span>{vehicle.vehicle?.sacco?.name || "Available operator"}</span>
+                    <span>{formatDeparture(vehicle.start_time)}</span>
                     <span className="find-vehicles__vehicle-fare">
-                      {vehicle.fare}
+                      —
                     </span>
                   </div>
 
                   <button
                     type="button"
                     className={`find-vehicles__book${
-                      booked[vehicle.id] ? " is-booked" : ""
+                      status === "booked"
+                        ? " is-booked"
+                        : status === "failed"
+                        ? " is-failed"
+                        : ""
                     }`}
-                    disabled={booked[vehicle.id] || loadingId === vehicle.id}
+                    style={
+                      status === "failed"
+                        ? { backgroundColor: "#dc2626", color: "#fff" }
+                        : undefined
+                    }
+                    disabled={isDisabled}
                     onClick={() => handleBook(vehicle)}
                   >
-                    {booked[vehicle.id]
+                    {status === "booked"
                       ? "Arriving"
+                      : status === "failed"
+                      ? "Failed"
                       : loadingId === vehicle.id
                       ? "Booking..."
                       : "Book"}
                   </button>
                 </li>
-              ))}
-            </ul>
+                );
+              })}
+              </ul>
+            )}
           </div>
         )}
       </aside>
