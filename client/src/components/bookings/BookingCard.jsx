@@ -12,14 +12,22 @@ function formatDateTime(value) {
 }
 
 function BookingCard({ booking }) {
-  const originName = booking.origin_routestop?.stop?.name ?? "Origin";
+  const originName =
+    booking.origin_routestop?.stop?.name ??
+    booking.origin ??
+    "Origin";
+
   const destinationName =
-    booking.destination_routestop?.stop?.name ?? "Destination";
+    booking.destination_routestop?.stop?.name ??
+    booking.destination ??
+    "Destination";
 
   const vehicle = booking.trip?.vehicle;
+  const plateNumber = vehicle?.number_plate ?? booking.number_plate ?? booking.vehicle ?? "—";
 
   const tripOrigin = booking.trip?.origin_routestop?.stop?.name;
   const tripDestination = booking.trip?.destination_routestop?.stop?.name;
+  const departureTime = booking.trip?.start_time ?? booking.date ?? booking.made_at;
 
   return (
     <article className="booking-card">
@@ -29,10 +37,10 @@ function BookingCard({ booking }) {
             {originName} → {destinationName}
           </h3>
           <p className="booking-card__sub">
-            {formatDateTime(booking.trip?.start_time)}
+            {formatDateTime(departureTime)}
           </p>
         </div>
-        <span className="booking-card__badge">
+        <span className={`booking-card__badge is-${booking.status || "active"}`}>
           {booking.status ?? "Confirmed"}
         </span>
       </div>
@@ -41,7 +49,7 @@ function BookingCard({ booking }) {
         <div className="booking-card__detail">
           <span className="booking-card__label">Vehicle</span>
           <span className="booking-card__value">
-            {vehicle?.number_plate ?? "—"}
+            {plateNumber}
           </span>
         </div>
         <div className="booking-card__detail">
