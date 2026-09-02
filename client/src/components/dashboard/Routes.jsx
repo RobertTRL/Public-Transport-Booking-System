@@ -91,13 +91,14 @@ function Routes() {
         </button>
       </div>
 
-      <div className="vehicles-toolbar">
-        <div className="vehicle-search">
-          <Search size={16} className="vehicle-search-icon" />
+      <div className="routes-toolbar">
+        <div className="routes-search-box">
+          <Search size={16} className="routes-search-icon" />
 
           <input
             type="text"
-            placeholder="Search routes by name"
+            className="routes-search-input"
+            placeholder="Search routes by name..."
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
           />
