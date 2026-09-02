@@ -1,110 +1,139 @@
 import { useCallback, useEffect, useState } from "react";
-import { Plus } from "lucide-react";
-import RouteCard from "../components/dashboard/RouteCard";
-import AddRouteModal from "../components/dashboard/AddRouteModal";
-import { listRoutes } from "../api/providerClient";
-import "../styles/dashboard.css";
+import { Plus, Search } from "lucide-react";
+import RouteCard from "./RouteCard";
+import AddRouteModal from "./AddRouteModal";
+
+const API_BASE_URL = "http://127.0.0.1:5000";
 
 function Routes() {
-const [routeList, setRouteList] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState("");
-const [modalOpen, setModalOpen] = useState(false);
+  const [routeList, setRouteList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [colorFilter, setColorFilter] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
-const loadRoutes = useCallback(async () => {
-setLoading(true);
-setError("");
+  const loadRoutes = useCallback(async () => {
+    setLoading(true);
+    setError("");
 
+    try {
+      const token = localStorage.getItem("access_token");
+      const params = new URLSearchParams({
+        per_page: "50",
+      });
 
-try {
-  const data = await listRoutes({ per_page: 50 });
+      if (searchTerm) {
+        params.append("q", searchTerm);
+      }
 
-  setRouteList(data?.items || data?.routes || []);
-} catch (err) {
-  setError(err?.message || "Failed to load routes.");
-} finally {
-  setLoading(false);
-}
+      if (colorFilter) {
+        params.append("color", colorFilter);
+      }
 
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/provider/routes?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      );
 
-}, []);
+      const data = await response.json();
 
-useEffect(() => {
-let cancelled = false;
+      if (!response.ok) {
+        throw new Error(
+          data?.message ||
+            data?.error ||
+            `Failed to fetch routes. Status: ${response.status}`
+        );
+      }
 
-
-const fetchRoutes = async () => {
-  setLoading(true);
-  setError("");
-
-  try {
-    const data = await listRoutes({ per_page: 50 });
-
-    if (!cancelled) {
-      setRouteList(data?.items || data?.routes || []);
-    }
-  } catch (err) {
-    if (!cancelled) {
-      setError(err?.message || "Failed to load routes.");
-    }
-  } finally {
-    if (!cancelled) {
+      setRouteList(
+        Array.isArray(data)
+          ? data
+          : data.items || data.routes || []
+      );
+    } catch (err) {
+      setError(err.message || "Failed to fetch routes.");
+    } finally {
       setLoading(false);
     }
-  }
-};
+  }, [searchTerm, colorFilter]);
 
-fetchRoutes();
+  useEffect(() => {
+    const timeoutId = setTimeout(loadRoutes, 300);
+    return () => clearTimeout(timeoutId);
+  }, [loadRoutes]);
 
-return () => {
-  cancelled = true;
-};
+  const handleAddRoute = () => {
+    loadRoutes();
+  };
 
+  return (
+    <>
+      <div className="dashboard-header routes-header">
+        <div>
+          <h1>Routes</h1>
+          <p>Select a route to view its vehicles.</p>
+        </div>
 
-}, []);
+        <button
+          type="button"
+          className="add-route-button"
+          onClick={() => setModalOpen(true)}
+        >
+          <Plus size={16} />
+          Add Route
+        </button>
+      </div>
 
-const handleAddRoute = () => {
-setModalOpen(false);
-loadRoutes();
-};
+      <div className="vehicles-toolbar">
+        <div className="vehicle-search">
+          <Search size={16} className="vehicle-search-icon" />
 
-return ( <div className="routes-page"> <div className="dashboard-header"> <div> <h1>Routes</h1> <p>Select a route to view its vehicles.</p> </div>
+          <input
+            type="text"
+            placeholder="Search routes by name"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+        </div>
 
+        <input
+          type="text"
+          placeholder="Filter by color (exact)"
+          value={colorFilter}
+          onChange={(event) => setColorFilter(event.target.value)}
+        />
+      </div>
 
-    <button
-      type="button"
-      className="add-route-button"
-      onClick={() => setModalOpen(true)}
-    >
-      <Plus size={16} />
-      Add Route
-    </button>
-  </div>
+      {error && <p className="vehicle-table-error">{error}</p>}
 
-  {error && <p className="route-table-error">{error}</p>}
+      {loading ? (
+        <p>Loading routes...</p>
+      ) : routeList.length === 0 ? (
+        <p>No routes found.</p>
+      ) : (
+        <section className="routes-grid">
+          {routeList.map((route) => (
+            <RouteCard key={route.id} route={route} />
+          ))}
+        </section>
+      )}
 
-  <section className="routes-grid">
-    {loading ? (
-      <p>Loading routes...</p>
-    ) : routeList.length > 0 ? (
-      routeList.map((route) => (
-        <RouteCard key={route.id} route={route} />
-      ))
-    ) : (
-      <p>No routes found.</p>
-    )}
-  </section>
-
-  {modalOpen && (
-    <AddRouteModal
-      onClose={() => setModalOpen(false)}
-      onSuccess={handleAddRoute}
-    />
-  )}
-</div>
-
-
-);
+      {modalOpen && (
+        <AddRouteModal
+          onClose={() => setModalOpen(false)}
+          onCreated={handleAddRoute}
+          onSuccess={handleAddRoute}
+        />
+      )}
+    </>
+  );
 }
 
 export default Routes;
