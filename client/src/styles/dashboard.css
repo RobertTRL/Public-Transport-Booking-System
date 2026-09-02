@@ -350,8 +350,9 @@ ROUTES
 
 .routes-grid {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 1.5rem;
+grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+gap: 1.25rem;
+margin-top: 1rem;
 }
 
 .route-card {
