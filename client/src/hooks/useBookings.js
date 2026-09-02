@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { API_BASE_URL } from "../api/client";
+import { getAccessToken } from "../utils/auth";
 
 const DEFAULT_PER_PAGE = 10;
 
@@ -14,15 +16,17 @@ export function useBookings() {
   });
 
   const fetchBookings = useCallback(async () => {
+    const token = getAccessToken() || localStorage.getItem("access_token");
     const params = new URLSearchParams({
       page: String(page),
       per_page: String(perPage),
     });
 
     try {
-      const response = await fetch(`/api/v1/me/bookings?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/me/bookings?${params}`, {
         headers: {
           Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
