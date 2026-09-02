@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../api/client";
 import "../styles/auth.css";
 
 function DashAccountCreation() {
@@ -45,7 +46,7 @@ function DashAccountCreation() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/api/v1/auth/provider/register",
+        `${API_BASE_URL}/api/v1/auth/provider/register`,
         {
           method: "POST",
           headers: {

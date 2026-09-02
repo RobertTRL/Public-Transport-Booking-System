@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Modal from "../Modal";
-
-const API_BASE_URL = "http://127.0.0.1:5000";
+import { API_BASE_URL } from "../../api/client";
 
 function AddVehicleModal({ onClose, onCreated }) {
   const [form, setForm] = useState({

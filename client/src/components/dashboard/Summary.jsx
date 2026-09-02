@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { apiGet } from "../../api/client";
+import Map from "../maprelated/Map";
+import { allStops } from "../../data/nairobiRoutes";
 
 function DashboardSummary() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [stops, setStops] = useState(allStops);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,7 +33,33 @@ function DashboardSummary() {
       }
     }
 
+    async function loadStops() {
+      try {
+        const stopsData = await apiGet("/api/v1/provider/stops");
+        if (cancelled) return;
+
+        const rawList = Array.isArray(stopsData)
+          ? stopsData
+          : stopsData.items || stopsData.stops || [];
+
+        const formatted = rawList
+          .filter((s) => s.latitude && s.longitude)
+          .map((s) => ({
+            id: String(s.id),
+            name: s.name,
+            position: [Number(s.latitude), Number(s.longitude)],
+          }));
+
+        if (formatted.length > 0) {
+          setStops(formatted);
+        }
+      } catch {
+        // Fallback to allStops
+      }
+    }
+
     loadDashboard();
+    loadStops();
 
     return () => {
       cancelled = true;
@@ -104,8 +133,8 @@ function DashboardSummary() {
       <section className="dashboard-map">
         <h2>Routes Map</h2>
 
-        <div className="map-placeholder">
-          <p>Map will be displayed here</p>
+        <div className="dashboard-map-wrapper">
+          <Map stops={stops} />
         </div>
       </section>
     </>

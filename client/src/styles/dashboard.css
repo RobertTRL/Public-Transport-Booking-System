@@ -156,6 +156,21 @@ font-weight: 600;
 color: var(--sb-foreground);
 }
 
+.dashboard-map-wrapper {
+height: 380px;
+width: 100%;
+border-radius: 12px;
+overflow: hidden;
+border: 1px solid #e2e8f0;
+}
+
+.dashboard-map-wrapper .transport-map,
+.dashboard-map-wrapper .map-container {
+height: 100% !important;
+width: 100% !important;
+min-height: 380px;
+}
+
 .map-placeholder {
 display: flex;
 align-items: center;

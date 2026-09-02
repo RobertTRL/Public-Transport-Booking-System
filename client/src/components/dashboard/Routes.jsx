@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import RouteCard from "./RouteCard";
 import AddRouteModal from "./AddRouteModal";
-
-const API_BASE_URL = "http://127.0.0.1:5000";
+import { API_BASE_URL } from "../../api/client";
+import { getAccessToken } from "../../utils/auth";
 
 function Routes() {
   const [routeList, setRouteList] = useState([]);
@@ -18,7 +18,7 @@ function Routes() {
     setError("");
 
     try {
-      const token = localStorage.getItem("access_token");
+      const token = getAccessToken() || localStorage.getItem("access_token");
       const params = new URLSearchParams({
         per_page: "50",
       });

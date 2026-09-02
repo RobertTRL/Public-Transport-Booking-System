@@ -121,7 +121,7 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
             key={stop.id}
             position={stop.position}
             icon={getIcon(stop)}
-            eventHandlers={{ click: () => onSelectStop(stop) }}
+            eventHandlers={{ click: () => onSelectStop && onSelectStop(stop) }}
           >
             <Tooltip direction="top" offset={[0, -42]} opacity={0.9}>
               {getStopLabel(stop, origin, destination)}

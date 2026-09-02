@@ -1,7 +1,8 @@
 const ACCESS_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "https://public-transport-booking-system.onrender.com";
 
 export function getAccessToken() {
   if (typeof window === "undefined") return null;
