@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { API_BASE_URL } from "../../api/client";
+import { fetchWithAuth } from "../../utils/auth";
+
 function formatDateTime(value) {
   if (!value) return "Upcoming trip";
 
@@ -11,7 +15,40 @@ function formatDateTime(value) {
   });
 }
 
-function BookingCard({ booking }) {
+function BookingCard({ booking, onCancelled }) {
+  const [cancelling, setCancelling] = useState(false);
+  const [localStatus, setLocalStatus] = useState(booking.status || "active");
+  const [error, setError] = useState("");
+
+  const handleCancel = async () => {
+    if (!window.confirm("Are you sure you want to cancel this booking?")) {
+      return;
+    }
+
+    setCancelling(true);
+    setError("");
+
+    try {
+      const response = await fetchWithAuth(
+        `${API_BASE_URL}/api/v1/bookings/${booking.id}/cancel`,
+        { method: "PATCH" }
+      );
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.error || `Failed to cancel (${response.status})`);
+      }
+
+      setLocalStatus("cancelled");
+      if (onCancelled) {
+        onCancelled();
+      }
+    } catch (err) {
+      setError(err.message || "Failed to cancel booking.");
+    } finally {
+      setCancelling(false);
+    }
+  };
   const originName =
     booking.origin_routestop?.stop?.name ??
     booking.origin ??
@@ -40,8 +77,8 @@ function BookingCard({ booking }) {
             {formatDateTime(departureTime)}
           </p>
         </div>
-        <span className={`booking-card__badge is-${booking.status || "active"}`}>
-          {booking.status ?? "Confirmed"}
+        <span className={`booking-card__badge is-${localStatus}`}>
+          {localStatus === "cancelled" ? "Cancelled" : "Confirmed"}
         </span>
       </div>
 
@@ -67,6 +104,21 @@ function BookingCard({ booking }) {
           </span>
         </div>
       </div>
+
+      {error && <p className="booking-card__error">{error}</p>}
+
+      {localStatus !== "cancelled" && (
+        <div className="booking-card__actions">
+          <button
+            type="button"
+            className="booking-card__cancel-btn"
+            onClick={handleCancel}
+            disabled={cancelling}
+          >
+            {cancelling ? "Cancelling..." : "Cancel Booking"}
+          </button>
+        </div>
+      )}
     </article>
   );
 }
