@@ -15,7 +15,7 @@ function Pagination({ page, totalPages, setPage, perPage, setPerPage }) {
     pages.push(i);
   }
 
-  return (
+    return (
     <div className="pagination">
       <button
         type="button"
@@ -73,6 +73,10 @@ function Pagination({ page, totalPages, setPage, perPage, setPerPage }) {
       >
         Next
       </button>
+
+      <span className="pagination__label">
+        Page {page} of {totalPages}
+      </span>
 
       <label className="pagination__per-page">
         <span>Per page</span>
