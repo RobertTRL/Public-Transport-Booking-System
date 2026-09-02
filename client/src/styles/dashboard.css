@@ -439,6 +439,18 @@ border-color: #2563eb;
 box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+.routes-loading-state,
+.routes-empty-state {
+padding: 3rem 1.5rem;
+text-align: center;
+background: #ffffff;
+border: 1px dashed #cbd5e1;
+border-radius: 14px;
+color: #64748b;
+font-size: 0.95rem;
+margin-top: 1rem;
+}
+
 /* Route Cards Styling */
 
 .route-card-item {

@@ -121,9 +121,13 @@ function Routes() {
       {error && <p className="vehicle-table-error">{error}</p>}
 
       {loading ? (
-        <p>Loading routes...</p>
+        <div className="routes-loading-state">
+          <p>Loading routes...</p>
+        </div>
       ) : routeList.length === 0 ? (
-        <p>No routes found.</p>
+        <div className="routes-empty-state">
+          <p>No routes found matching your criteria.</p>
+        </div>
       ) : (
         <section className="routes-grid">
           {routeList.map((route) => (
