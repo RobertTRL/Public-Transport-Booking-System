@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { createPortal } from "react-dom";
-import { apiGet, apiPost, apiPatch, apiDelete } from "../api/client";
+import { apiGet, apiPost, apiPatch, apiDelete } from "../../api/client";
 
 const defaultApiClient = {
   get: (url) => apiGet(url).then((data) => ({ data })),
@@ -999,4 +999,3 @@ const RouteDetail = ({ apiClient }) => {
 };
 
 export default RouteDetail;
-
