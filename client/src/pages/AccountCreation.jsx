@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import '../styles/auth.css'
+import { API_BASE_URL } from "../api/client"
 
 function AccountCreation() {
   const navigate = useNavigate();
@@ -27,9 +28,18 @@ function AccountCreation() {
       url.searchParams.set("email", email);
       url.searchParams.set("password", password);
 
-      const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: { Accept: "application/json" },
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          user_type: "passenger",
+          name,
+          email,
+          password,
+        }),
       });
 
       if (!response.ok) {

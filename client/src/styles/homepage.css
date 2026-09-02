@@ -257,3 +257,9 @@
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
+.pagination__label {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0.5rem;
+}
