@@ -23,11 +23,6 @@ function AccountCreation() {
     }
 
     try {
-      const url = new URL("/api/v1/auth/register", window.location.origin);
-      url.searchParams.set("name", name);
-      url.searchParams.set("email", email);
-      url.searchParams.set("password", password);
-
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
         method: "POST",
         headers: {
