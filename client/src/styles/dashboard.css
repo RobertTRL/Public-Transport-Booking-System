@@ -278,6 +278,76 @@ font-size: 0.95rem;
 margin-top: 1rem;
 }
 
+.users-cards-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+gap: 1.25rem;
+width: 100%;
+}
+
+.user-card-item {
+position: relative;
+display: flex;
+align-items: flex-start;
+gap: 1rem;
+padding: 1.25rem;
+background: #ffffff;
+border: 1px solid #e2e8f0;
+border-radius: 14px;
+box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.user-card-item:hover {
+transform: translateY(-2px);
+border-color: #cbd5e1;
+box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.user-card-info {
+flex: 1;
+min-width: 0;
+}
+
+.user-card-info h2 {
+margin: 0 0 0.25rem;
+font-size: 0.95rem;
+font-weight: 700;
+color: #1e293b;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.user-role-badge {
+display: inline-block;
+padding: 0.15rem 0.5rem;
+background: #eff6ff;
+color: #2563eb;
+border-radius: 999px;
+font-size: 0.7rem;
+font-weight: 700;
+text-transform: capitalize;
+margin-bottom: 0.5rem;
+}
+
+.user-details-list {
+display: flex;
+flex-direction: column;
+gap: 0.2rem;
+padding-top: 0.5rem;
+border-top: 1px solid #f1f5f9;
+}
+
+.user-email-text,
+.user-phone-text {
+font-size: 0.775rem;
+color: #64748b;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
 .users-grid {
 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
@@ -297,13 +367,13 @@ border-radius: 9999px;
 background: #18181b;
 color: #fafafa;
 font-weight: 600;
+flex-shrink: 0;
 }
 
 .user-avatar {
 width: 2.75rem;
 height: 2.75rem;
 font-size: 0.95rem;
-margin-bottom: 0.25rem;
 }
 
 .user-card h2 {
