@@ -1,107 +1,157 @@
 import { useState } from "react";
 import Modal from "../Modal";
-import { createVehicle } from "../../api/mockApi";
 
-function AddVehicleModal({ onClose, onSuccess }) {
-const [form, setForm] = useState({
-numberPlate: "",
-route: "",
-capacity: "",
-availability: "Available",
-});
-const [submitting, setSubmitting] = useState(false);
+const API_BASE_URL = "http://127.0.0.1:5000";
 
-const handleChange = (event) => {
-const { name, value } = event.target;
-setForm((current) => ({ ...current, [name]: value }));
-};
+function AddVehicleModal({ onClose, onCreated }) {
+  const [form, setForm] = useState({
+    number_plate: "",
+    capacity: "",
+    is_active: true,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-const handleSubmit = async (event) => {
-event.preventDefault();
-setSubmitting(true);
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setForm((current) => ({
+      ...current,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSubmitting(true);
+    setError("");
 
-const payload = {
-  ...form,
-  capacity: form.capacity === "" ? 0 : Number(form.capacity),
-};
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setError("You are not authenticated. Please log in again.");
+      setSubmitting(false);
+      return;
+    }
 
-const created = await createVehicle(payload);
+    const payload = {
+      number_plate: form.number_plate.trim(),
+      capacity: form.capacity === "" ? 0 : Number(form.capacity),
+      is_active: form.is_active,
+    };
 
-setSubmitting(false);
-onSuccess(created.vehicle ?? payload);
-onClose();
+    if (!payload.number_plate) {
+      setError("Number plate is required.");
+      setSubmitting(false);
+      return;
+    }
 
+    if (!Number.isFinite(payload.capacity) || payload.capacity < 1) {
+      setError("Capacity must be at least 1.");
+      setSubmitting(false);
+      return;
+    }
 
-};
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/provider/vehicles`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-return ( <Modal title="Add Vehicle" onClose={onClose}> <form className="modal-form" onSubmit={handleSubmit}> <div className="modal-field"> <label htmlFor="vehicle-plate">Number plate</label> <input
-         id="vehicle-plate"
-         name="numberPlate"
-         value={form.numberPlate}
-         onChange={handleChange}
-         placeholder="KXX 123A"
-         required
-       /> </div>
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
-```
-    <div className="modal-field">
-      <label htmlFor="vehicle-route">Route</label>
-      <input
-        id="vehicle-route"
-        name="route"
-        value={form.route}
-        onChange={handleChange}
-        placeholder="Route A"
-        required
-      />
-    </div>
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            data.error ||
+            "Failed to create vehicle."
+        );
+      }
 
-    <div className="modal-field">
-      <label htmlFor="vehicle-capacity">Capacity</label>
-      <input
-        id="vehicle-capacity"
-        name="capacity"
-        type="number"
-        min="1"
-        value={form.capacity}
-        onChange={handleChange}
-        placeholder="33"
-        required
-      />
-    </div>
+      onCreated(data);
+      onClose();
+    } catch (err) {
+      setError(err.message || "Failed to create vehicle.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-    <div className="modal-field">
-      <label htmlFor="vehicle-availability">Availability</label>
-      <select
-        id="vehicle-availability"
-        name="availability"
-        value={form.availability}
-        onChange={handleChange}
-      >
-        <option value="Available">Available</option>
-        <option value="Unavailable">Unavailable</option>
-      </select>
-    </div>
+  return (
+    <Modal title="Add Vehicle" onClose={onClose}>
+      <form className="modal-form" onSubmit={handleSubmit}>
+        {error && <p className="modal-error">{error}</p>}
 
-    <div className="modal-actions">
-      <button type="button" className="modal-cancel" onClick={onClose}>
-        Cancel
-      </button>
+        <div className="modal-field">
+          <label htmlFor="vehicle-plate">Number plate</label>
+          <input
+            id="vehicle-plate"
+            name="number_plate"
+            value={form.number_plate}
+            onChange={handleChange}
+            placeholder="KXX 123A"
+            required
+          />
+        </div>
 
-      <button
-        type="submit"
-        className="modal-submit"
-        disabled={submitting}
-      >
-        {submitting ? "Saving..." : "Add Vehicle"}
-      </button>
-    </div>
-  </form>
-</Modal>
+        <div className="modal-field">
+          <label htmlFor="vehicle-capacity">Capacity</label>
+          <input
+            id="vehicle-capacity"
+            name="capacity"
+            type="number"
+            min="1"
+            value={form.capacity}
+            onChange={handleChange}
+            placeholder="33"
+            required
+          />
+        </div>
 
+        <div className="modal-field modal-field-checkbox">
+          <label htmlFor="vehicle-active">
+            <input
+              id="vehicle-active"
+              name="is_active"
+              type="checkbox"
+              checked={form.is_active}
+              onChange={handleChange}
+            />
+            Active
+          </label>
+        </div>
 
-);
+        <div className="modal-actions">
+          <button
+            type="button"
+            className="modal-cancel"
+            onClick={onClose}
+            disabled={submitting}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="modal-submit"
+            disabled={submitting}
+          >
+            {submitting ? "Saving..." : "Add Vehicle"}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
 }
 
 export default AddVehicleModal;
