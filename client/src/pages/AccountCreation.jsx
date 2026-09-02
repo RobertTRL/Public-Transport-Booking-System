@@ -6,6 +6,7 @@ import { API_BASE_URL } from "../api/client"
 function AccountCreation() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -14,20 +15,23 @@ function AccountCreation() {
     const form = event.target;
     const name = form.name.value.trim();
     const email = form.email.value.trim();
+    const phone = form.phone.value.trim();
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
-    try {
-      const url = new URL("/api/v1/auth/register", window.location.origin);
-      url.searchParams.set("name", name);
-      url.searchParams.set("email", email);
-      url.searchParams.set("password", password);
+    setLoading(true);
 
+    try {
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
         method: "POST",
         headers: {
@@ -38,18 +42,22 @@ function AccountCreation() {
           user_type: "passenger",
           name,
           email,
+          phone_number: phone,
           password,
         }),
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const text = await response.text().catch(() => "");
-        throw new Error(text || `Registration failed (${response.status})`);
+        throw new Error(data?.error || data?.message || `Registration failed (${response.status})`);
       }
 
-      navigate("/login", { state: { error: null } });
+      navigate("/login", { state: { error: null, message: "Account created successfully! Please log in." } });
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,13 +95,25 @@ function AccountCreation() {
           </div>
 
           <div className="form-group">
+            <label htmlFor="register-phone">Phone number</label>
+            <input
+              id="register-phone"
+              name="phone"
+              type="tel"
+              placeholder="0712345678"
+              autoComplete="tel"
+            />
+          </div>
+
+          <div className="form-group">
             <label htmlFor="register-password">Password</label>
             <input
               id="register-password"
               name="password"
               type="password"
-              placeholder="Create a password"
+              placeholder="At least 8 characters"
               autoComplete="new-password"
+              minLength={8}
               required
             />
           </div>
@@ -106,14 +126,15 @@ function AccountCreation() {
               type="password"
               placeholder="Confirm your password"
               autoComplete="new-password"
+              minLength={8}
               required
             />
           </div>
 
           {error && <p className="auth-error">{error}</p>}
 
-          <button type="submit" className="auth-button">
-            Create account
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? "Creating account..." : "Create account"}
           </button>
         </form>
 

@@ -109,6 +109,15 @@ function Login() {
           ))}
         </div>
 
+        {userType === "operator" && (
+          <div className="auth-info" role="note">
+            Operator and staff accounts are provisioned directly by your SACCO administrator.
+          </div>
+        )}
+
+        {location.state?.message && (
+          <p className="auth-success">{location.state.message}</p>
+        )}
         {redirectError && <p className="auth-error">{redirectError}</p>}
         {error && <p className="auth-error">{error}</p>}
 
@@ -150,8 +159,14 @@ function Login() {
         </form>
 
         <p className="auth-footer">
-          Don&apos;t have an account?{' '}
-          <Link to="/signup">Create an account</Link>
+          {userType === "passenger" ? (
+            <>
+              Don&apos;t have an account?{" "}
+              <Link to="/signup">Create an account</Link>
+            </>
+          ) : (
+            <span>Staff accounts are provisioned by your SACCO administrator.</span>
+          )}
         </p>
       </section>
     </main>

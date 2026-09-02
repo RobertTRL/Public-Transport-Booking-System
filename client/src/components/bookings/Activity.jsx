@@ -109,6 +109,7 @@ function Activity() {
           <BookingCard
             key={booking.id ?? `${booking.origin}-${booking.destination}`}
             booking={booking}
+            onCancelled={fetchBookings}
           />
         ))}
       </div>

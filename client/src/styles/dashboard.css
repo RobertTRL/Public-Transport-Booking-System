@@ -1495,3 +1495,79 @@ grid-template-columns: 1fr;
 .add-route-button:active {
   transform: translateY(0);
 }
+
+/* Bookings Table Styling */
+.bookings-table-wrapper {
+  overflow-x: auto;
+  margin-top: 0.5rem;
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.bookings-table th {
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bookings-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.bookings-table tr:last-child td {
+  border-bottom: none;
+}
+
+.bookings-table tr:hover td {
+  background: #f8fafc;
+}
+
+.passenger-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.passenger-cell strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.passenger-cell small {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.booking-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.booking-status-pill.is-active,
+.booking-status-pill.is-confirmed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.booking-status-pill.is-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}

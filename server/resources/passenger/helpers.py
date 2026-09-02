@@ -1,6 +1,4 @@
-"""Shared helper functions used across passenger-side resources."""
-
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, get_jwt
 
 from config import db
 from models import Booking, Passenger, RouteStop, Trip
@@ -11,7 +9,14 @@ from models import Booking, Passenger, RouteStop, Trip
 # =========================================================
 
 def get_current_passenger():
-    """Return the passenger associated with the current JWT."""
+    """Return the passenger associated with the current JWT.
+    
+    Rejects tokens that explicitly declare a non-passenger user_type.
+    """
+    claims = get_jwt()
+    if claims.get("user_type") and claims.get("user_type") != "passenger":
+        return None
+
     passenger_id = get_jwt_identity()
 
     try:
