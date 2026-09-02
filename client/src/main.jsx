@@ -12,12 +12,10 @@ import DashboardSummary from "./components/dashboard/Summary.jsx";
 import Bookings from "./components/dashboard/Bookings.jsx";
 import Users from "./components/dashboard/Users.jsx";
 import Profile from "./components/dashboard/Profile.jsx";
-
-// API Pages imported from src/pages/
-import RoutesPage from "./pages/Routes.jsx";
-import RouteDetail from "./pages/RouteDetail.jsx";
-import Stops from "./pages/Stops.jsx";
-import Vehicles from "./pages/Vehicles.jsx";
+import RoutesPage from "./components/dashboard/Routes.jsx";
+import RouteDetail from "./components/dashboard/RouteDetail.jsx";
+import Stops from "./components/dashboard/Stops.jsx";
+import Vehicles from "./components/dashboard/Vehicles.jsx";
 
 import ProfilePage from "./components/bookings/ProfilePage.jsx";
 import Home from "./components/bookings/Home.jsx";
