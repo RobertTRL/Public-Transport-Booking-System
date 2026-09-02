@@ -1,19 +1,81 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { clearAccessToken } from "../../utils/auth";
+import { getCurrentUser } from "../../api/client";
+import { clearAccessToken, getAccessToken } from "../../utils/auth";
 import "../../styles/user.css";
 
 function ProfilePage() {
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [profile, setProfile] = useState({
-    name: "Stephen Muasya",
-    email: "stephen@example.com",
-    phone: "+254 700 000 000",
+    name: "",
+    email: "",
+    phone: "",
     accountType: "Passenger",
   });
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadProfile() {
+      if (!getAccessToken()) {
+        navigate("/login", {
+          replace: true,
+          state: { error: "Please log in to continue." },
+        });
+        return;
+      }
+
+      try {
+        const data = await getCurrentUser("passenger");
+
+        if (!isActive) return;
+
+        const formattedName =
+          data?.name ||
+          data?.email?.split("@")[0]?.replace(/[._-]+/g, " ") ||
+          "Passenger";
+
+        setProfile({
+          name: formattedName
+            .split(" ")
+            .filter(Boolean)
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(" "),
+          email: data?.email || "",
+          phone: data?.phone_number || "",
+          accountType: "Passenger",
+        });
+      } catch (err) {
+        if (!isActive) return;
+
+        if (err?.status === 401) {
+          clearAccessToken();
+          navigate("/login", {
+            replace: true,
+            state: { error: "Please log in to continue." },
+          });
+          return;
+        }
+
+        setError(err?.message || "Unable to load your profile.");
+      } finally {
+        if (isActive) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadProfile();
+
+    return () => {
+      isActive = false;
+    };
+  }, [navigate]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -37,6 +99,26 @@ function ProfilePage() {
     navigate("/login");
   };
 
+  if (loading) {
+    return (
+      <main className="profile-page">
+        <section className="profile-container">
+          <p>Loading profile...</p>
+        </section>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="profile-page">
+        <section className="profile-container">
+          <p>{error}</p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="profile-page">
       <section className="profile-container">
@@ -50,7 +132,7 @@ function ProfilePage() {
         <div className="profile-card">
           <div className="profile-top">
             <div className="profile-avatar">
-              {profile.name.charAt(0).toUpperCase()}
+              {profile.name ? profile.name.charAt(0).toUpperCase() : "P"}
             </div>
 
             <div className="profile-info">
