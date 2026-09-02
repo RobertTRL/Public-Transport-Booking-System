@@ -146,6 +146,7 @@ background: var(--sb-card);
 border: 1px solid var(--sb-border);
 border-radius: var(--sb-radius);
 box-shadow: var(--sb-shadow);
+margin-top: 1.5rem;
 }
 
 .dashboard-map h2 {
@@ -160,9 +161,11 @@ display: flex;
 align-items: center;
 justify-content: center;
 min-height: 280px;
-border: 1px dashed var(--sb-border);
-border-radius: calc(var(--sb-radius) - 0.25rem);
-background: var(--sb-bg);
+background: #f8fafc;
+border: 2px dashed #e2e8f0;
+border-radius: 8px;
+color: var(--sb-muted);
+font-size: 0.875rem;
 }
 
 .map-placeholder p {
