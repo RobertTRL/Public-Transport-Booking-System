@@ -10,6 +10,7 @@ import {
 import {
   getRouteSelection,
   getVisibleStops,
+  isValidPosition,
 } from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
@@ -53,6 +54,7 @@ async function getStopByIdFromAPI(routeId, routeStopId) {
 
     if (response.ok) {
       const route = await response.json();
+
       const routeStop = route.route_stops?.find(
         (stop) => stop.id === parseInt(routeStopId, 10)
       );
@@ -107,8 +109,9 @@ function FindVehicles() {
   const [loadingInitialData, setLoadingInitialData] = useState(false);
   const isResizing = useRef(false);
 
-  // Load the route list and select the route supplied by Home. The local
-  // route data remains available as a fallback when the API is unavailable.
+  // Load the route list and select the route supplied by Home.
+  // The local route data remains available as a fallback when the API
+  // is unavailable.
   useEffect(() => {
     let cancelled = false;
 
@@ -125,9 +128,12 @@ function FindVehicles() {
           `http://localhost:5000/api/v1/routes/${route.id}/stops?per_page=100`
         );
 
-        if (!response.ok) throw new Error("Failed to fetch stops");
+        if (!response.ok) {
+          throw new Error("Failed to fetch stops");
+        }
 
         const data = await response.json();
+
         const apiStops = (data.items || []).map((routeStop) => ({
           ...routeStop,
           name: routeStop.name || routeStop.stop?.name || "Unnamed stop",
@@ -140,12 +146,19 @@ function FindVehicles() {
           routeName: route.name,
         }));
 
-        if (!cancelled) setStops(apiStops.length > 0 ? apiStops : route.stops || []);
+        if (!cancelled) {
+          setStops(apiStops.length > 0 ? apiStops : route.stops || []);
+        }
       } catch (error) {
         console.error("Error fetching stops:", error);
-        if (!cancelled) setStops(route.stops || []);
+
+        if (!cancelled) {
+          setStops(route.stops || []);
+        }
       } finally {
-        if (!cancelled) setLoadingStops(false);
+        if (!cancelled) {
+          setLoadingStops(false);
+        }
       }
     }
 
@@ -171,30 +184,42 @@ function FindVehicles() {
 
       try {
         const today = new Date().toISOString().split("T")[0];
+
         const params = new URLSearchParams({
           origin_routestop_id: origin.id,
           destination_routestop_id: destination.id,
           date: today,
           per_page: "100",
         });
+
         const response = await fetch(
           `http://localhost:5000/api/v1/trips?${params.toString()}`
         );
 
         const data = await response.json();
+
         if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch available vehicles");
+          throw new Error(
+            data.error || "Failed to fetch available vehicles"
+          );
         }
 
-        if (!cancelled) setVehicles(data.items || []);
+        if (!cancelled) {
+          setVehicles(data.items || []);
+        }
       } catch (error) {
         console.error("Error fetching available vehicles:", error);
+
         if (!cancelled) {
           setVehicles([]);
-          setVehicleError(error.message || "Failed to load vehicles.");
+          setVehicleError(
+            error.message || "Failed to load vehicles."
+          );
         }
       } finally {
-        if (!cancelled) setLoadingVehicles(false);
+        if (!cancelled) {
+          setLoadingVehicles(false);
+        }
       }
     }
 
@@ -216,12 +241,16 @@ function FindVehicles() {
           "http://localhost:5000/api/v1/routes/generalinfo"
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          return;
+        }
 
         const data = await response.json();
         const apiRoutes = data.items || [];
 
-        if (apiRoutes.length === 0) return;
+        if (apiRoutes.length === 0) {
+          return;
+        }
 
         setRoutes(apiRoutes);
 
@@ -244,7 +273,9 @@ function FindVehicles() {
 
   useEffect(() => {
     async function fetchInitialData() {
-      if (!routeId) return;
+      if (!routeId) {
+        return;
+      }
 
       setLoadingInitialData(true);
 
@@ -256,7 +287,10 @@ function FindVehicles() {
             setOrigin(stopFromAPI);
           } else {
             const fallbackStop = getStopById(fromId);
-            if (fallbackStop) setOrigin(fallbackStop);
+
+            if (fallbackStop) {
+              setOrigin(fallbackStop);
+            }
           }
         }
 
@@ -267,7 +301,10 @@ function FindVehicles() {
             setDestination(stopToAPI);
           } else {
             const fallbackStop = getStopById(toId);
-            if (fallbackStop) setDestination(fallbackStop);
+
+            if (fallbackStop) {
+              setDestination(fallbackStop);
+            }
           }
         }
       } catch (error) {
@@ -285,14 +322,18 @@ function FindVehicles() {
 
   useEffect(() => {
     function onMouseMove(event) {
-      if (!isResizing.current) return;
+      if (!isResizing.current) {
+        return;
+      }
 
       const next = Math.min(600, Math.max(360, event.clientX));
       setSidebarWidth(next);
     }
 
     function onMouseUp() {
-      if (!isResizing.current) return;
+      if (!isResizing.current) {
+        return;
+      }
 
       isResizing.current = false;
       document.body.style.cursor = "";
@@ -309,7 +350,9 @@ function FindVehicles() {
   }, []);
 
   function startResizing(event) {
-    if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
+    if (window.innerWidth <= DESKTOP_BREAKPOINT) {
+      return;
+    }
 
     event.preventDefault();
     isResizing.current = true;
@@ -327,34 +370,52 @@ function FindVehicles() {
     }
 
     setLoadingId(vehicle.id);
-    setBookingStatus((previous) => ({ ...previous, [vehicle.id]: "loading" }));
+
+    setBookingStatus((previous) => ({
+      ...previous,
+      [vehicle.id]: "loading",
+    }));
 
     try {
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://localhost:5000/api/v1/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          trip_id: vehicle.id,
-          origin_routestop_id: origin.id,
-          destination_routestop_id: destination.id,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/v1/bookings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            trip_id: vehicle.id,
+            origin_routestop_id: origin.id,
+            destination_routestop_id: destination.id,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         throw new Error(data.error || "Booking failed");
       }
 
-      setBooked((previous) => ({ ...previous, [vehicle.id]: true }));
-      setBookingStatus((previous) => ({ ...previous, [vehicle.id]: "booked" }));
+      setBooked((previous) => ({
+        ...previous,
+        [vehicle.id]: true,
+      }));
+
+      setBookingStatus((previous) => ({
+        ...previous,
+        [vehicle.id]: "booked",
+      }));
     } catch (error) {
       console.error("Error booking vehicle:", error);
-      setBookingStatus((previous) => ({ ...previous, [vehicle.id]: "failed" }));
+
+      setBookingStatus((previous) => ({
+        ...previous,
+        [vehicle.id]: "failed",
+      }));
     } finally {
       setLoadingId(null);
     }
@@ -374,7 +435,9 @@ function FindVehicles() {
   }
 
   function handleSelectDestination(stop) {
-    if (stop && origin && stop.id === origin.id) return;
+    if (stop && origin && stop.id === origin.id) {
+      return;
+    }
 
     setDestination(stop);
 
@@ -390,7 +453,9 @@ function FindVehicles() {
       return;
     }
 
-    if (stop.id === origin.id) return;
+    if (stop.id === origin.id) {
+      return;
+    }
 
     setDestination(stop);
     setSheetState(SHEET_EXPANDED);
@@ -400,18 +465,48 @@ function FindVehicles() {
     () => getRouteSelection(origin, destination),
     [origin, destination]
   );
+
   const hasRoute = Boolean(selection);
-  const visibleStops = useMemo(
-    () => getVisibleStops(selection),
-    [selection]
-  );
-  const showResults = hasRoute && sheetState === SHEET_EXPANDED;
+
+  // The map must not depend on the trips request. Keep the selected route's
+  // stops visible even when the API returns zero trips or returns an error.
+  const visibleStops = useMemo(() => {
+    if (stops.length > 0) {
+      return stops;
+    }
+
+    return getVisibleStops(selection);
+  }, [selection, stops]);
+
+  const mapWaypoints = useMemo(() => {
+    // Do not route through every visible stop before the user has selected a
+    // complete journey. Visible stops are for pins only.
+    if (!origin || !destination) {
+      return [];
+    }
+
+    if (selection?.waypoints?.length >= 2) {
+      return selection.waypoints;
+    }
+
+    return [origin.position, destination.position].filter(
+      isValidPosition
+    );
+  }, [destination, origin, selection]);
+
+  const showResults =
+    hasRoute && sheetState === SHEET_EXPANDED;
 
   function formatDeparture(startTime) {
-    if (!startTime) return "Scheduled";
+    if (!startTime) {
+      return "Scheduled";
+    }
 
     const departure = new Date(startTime);
-    if (Number.isNaN(departure.getTime())) return "Scheduled";
+
+    if (Number.isNaN(departure.getTime())) {
+      return "Scheduled";
+    }
 
     return departure.toLocaleTimeString([], {
       hour: "numeric",
@@ -421,7 +516,9 @@ function FindVehicles() {
 
   function toggleSheet() {
     setSheetState((previous) =>
-      previous === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED
+      previous === SHEET_EXPANDED
+        ? SHEET_COLLAPSED
+        : SHEET_EXPANDED
     );
   }
 
@@ -432,14 +529,21 @@ function FindVehicles() {
   }
 
   function handleHandlePointerMove(event) {
-    if (dragStartY.current === null) return;
+    if (dragStartY.current === null) {
+      return;
+    }
 
     const delta = event.clientY - dragStartY.current;
-    if (Math.abs(delta) > 10) suppressClickRef.current = true;
+
+    if (Math.abs(delta) > 10) {
+      suppressClickRef.current = true;
+    }
   }
 
   function handleHandlePointerUp(event) {
-    if (dragStartY.current === null) return;
+    if (dragStartY.current === null) {
+      return;
+    }
 
     const delta = event.clientY - dragStartY.current;
     dragStartY.current = null;
@@ -474,7 +578,7 @@ function FindVehicles() {
             origin={origin}
             destination={destination}
             highlightedStopIds={selection?.highlightedStopIds || []}
-            waypoints={selection?.waypoints}
+            waypoints={mapWaypoints}
             onSelectStop={handleSelectStop}
           />
         </MapErrorBoundary>
@@ -529,77 +633,116 @@ function FindVehicles() {
 
         {showResults && (
           <div className="find-vehicles__results">
-            <p className="find-vehicles__results-label">Available vehicles</p>
+            <p className="find-vehicles__results-label">
+              Available vehicles
+            </p>
 
-            {loadingVehicles && <p>Loading available vehicles...</p>}
+            {loadingVehicles && (
+              <p>Loading available vehicles...</p>
+            )}
+
             {!loadingVehicles && vehicleError && (
-              <p className="find-vehicles__error">{vehicleError}</p>
+              <p className="find-vehicles__error">
+                {vehicleError}
+              </p>
             )}
-            {!loadingVehicles && !vehicleError && vehicles.length === 0 && (
-              <p>No vehicles are available for this route segment today.</p>
-            )}
 
-            {!loadingVehicles && !vehicleError && vehicles.length > 0 && (
-              <ul className="find-vehicles__vehicle-list">
-              {vehicles.map((vehicle) => {
-                const status = bookingStatus[vehicle.id];
-                const hasBookedVehicle = Object.values(bookingStatus).some(
-                  (booking) => booking === "booked"
-                );
-                const isDisabled =
-                  hasBookedVehicle || loadingId !== null || status === "booked";
+            {!loadingVehicles &&
+              !vehicleError &&
+              vehicles.length === 0 && (
+                <p>
+                  No vehicles are available for this route segment
+                  today.
+                </p>
+              )}
 
-                return (
-                <li key={vehicle.id} className="find-vehicles__vehicle">
-                  <div className="find-vehicles__vehicle-main">
-                    <span className="find-vehicles__vehicle-plate">
-                      {vehicle.vehicle?.number_plate || vehicle.number_plate || "Vehicle"}
-                    </span>
-                    <span className="find-vehicles__vehicle-type">
-                      {vehicle.vehicle?.capacity
-                        ? `Vehicle · ${vehicle.vehicle.capacity}-seater`
-                        : "Vehicle"}
-                    </span>
-                  </div>
+            {!loadingVehicles &&
+              !vehicleError &&
+              vehicles.length > 0 && (
+                <ul className="find-vehicles__vehicle-list">
+                  {vehicles.map((vehicle) => {
+                    const status = bookingStatus[vehicle.id];
 
-                  <div className="find-vehicles__vehicle-meta">
-                    <span>{vehicle.vehicle?.sacco?.name || "Available operator"}</span>
-                    <span>{formatDeparture(vehicle.start_time)}</span>
-                    <span className="find-vehicles__vehicle-fare">
-                      —
-                    </span>
-                  </div>
+                    const hasBookedVehicle = Object.values(
+                      bookingStatus
+                    ).some(
+                      (booking) => booking === "booked"
+                    );
 
-                  <button
-                    type="button"
-                    className={`find-vehicles__book${
-                      status === "booked"
-                        ? " is-booked"
-                        : status === "failed"
-                        ? " is-failed"
-                        : ""
-                    }`}
-                    style={
-                      status === "failed"
-                        ? { backgroundColor: "#dc2626", color: "#fff" }
-                        : undefined
-                    }
-                    disabled={isDisabled}
-                    onClick={() => handleBook(vehicle)}
-                  >
-                    {status === "booked"
-                      ? "Arriving"
-                      : status === "failed"
-                      ? "Failed"
-                      : loadingId === vehicle.id
-                      ? "Booking..."
-                      : "Book"}
-                  </button>
-                </li>
-                );
-              })}
-              </ul>
-            )}
+                    const isDisabled =
+                      hasBookedVehicle ||
+                      loadingId !== null ||
+                      status === "booked";
+
+                    return (
+                      <li
+                        key={vehicle.id}
+                        className="find-vehicles__vehicle"
+                      >
+                        <div className="find-vehicles__vehicle-main">
+                          <span className="find-vehicles__vehicle-plate">
+                            {vehicle.vehicle?.number_plate ||
+                              vehicle.number_plate ||
+                              "Vehicle"}
+                          </span>
+
+                          <span className="find-vehicles__vehicle-type">
+                            {vehicle.vehicle?.capacity
+                              ? `Vehicle · ${vehicle.vehicle.capacity}-seater`
+                              : "Vehicle"}
+                          </span>
+                        </div>
+
+                        <div className="find-vehicles__vehicle-meta">
+                          <span>
+                            {vehicle.vehicle?.sacco?.name ||
+                              "Available operator"}
+                          </span>
+
+                          <span>
+                            {formatDeparture(
+                              vehicle.start_time
+                            )}
+                          </span>
+
+                          <span className="find-vehicles__vehicle-fare">
+                            —
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          className={`find-vehicles__book${
+                            status === "booked"
+                              ? " is-booked"
+                              : status === "failed"
+                              ? " is-failed"
+                              : ""
+                          }`}
+                          style={
+                            status === "failed"
+                              ? {
+                                  backgroundColor: "#dc2626",
+                                  color: "#fff",
+                                }
+                              : undefined
+                          }
+                          disabled={isDisabled}
+                          onClick={() => handleBook(vehicle)}
+                        >
+                          {status === "booked"
+                            ? "Arriving"
+                            : status === "failed"
+                            ? "Failed"
+                            : loadingId === vehicle.id
+                            ? "Booking..."
+                            : "Book"}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
           </div>
         )}
       </aside>
