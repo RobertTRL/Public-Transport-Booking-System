@@ -2,9 +2,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
-import { getStopById } from "../../data/nairobiRoutes";
-import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
-import { API_BASE_URL } from "../../api/client";
+import {
+  allRoutes,
+  getRouteById,
+  getStopById,
+} from "../../data/nairobiRoutes";
+import {
+  getRouteSelection,
+  getVisibleStops,
+} from "../../utils/routeSelection";
 import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
@@ -12,33 +18,64 @@ const SHEET_EXPANDED = "expanded";
 const DESKTOP_BREAKPOINT = 768;
 
 const DUMMY_VEHICLES = [
-  { id: "v1", plate: "KDA 214B", type: "Matatu · 14-seater", operator: "Super Metro", departsIn: "3 min", fare: "KSh 100" },
-  { id: "v2", plate: "KCX 771T", type: "Bus · 33-seater", operator: "Citi Hoppa", departsIn: "7 min", fare: "KSh 80" },
-  { id: "v3", plate: "KDB 552L", type: "Matatu · 14-seater", operator: "Metro Trans", departsIn: "12 min", fare: "KSh 100" },
+  {
+    id: "v1",
+    plate: "KDA 214B",
+    type: "Matatu · 14-seater",
+    operator: "Super Metro",
+    departsIn: "3 min",
+    fare: "KSh 100",
+  },
+  {
+    id: "v2",
+    plate: "KCX 771T",
+    type: "Bus · 33-seater",
+    operator: "Citi Hoppa",
+    departsIn: "7 min",
+    fare: "KSh 80",
+  },
+  {
+    id: "v3",
+    plate: "KDB 552L",
+    type: "Matatu · 14-seater",
+    operator: "Metro Trans",
+    departsIn: "12 min",
+    fare: "KSh 100",
+  },
 ];
 
-// Helper function to fetch stop data from API
 async function getStopByIdFromAPI(routeId, routeStopId) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/routes/${routeId}`);
+    const response = await fetch(
+      `http://localhost:5000/api/v1/routes/${routeId}`
+    );
+
     if (response.ok) {
       const route = await response.json();
-      const routeStop = route.route_stops?.find(rs => rs.id === parseInt(routeStopId));
+      const routeStop = route.route_stops?.find(
+        (stop) => stop.id === parseInt(routeStopId, 10)
+      );
+
       if (routeStop) {
         return {
           id: routeStop.id,
           stop_id: routeStop.stop_id,
           name: routeStop.stop?.name || routeStop.name,
-          position: routeStop.stop?.latitude && routeStop.stop?.longitude
-            ? [routeStop.stop.latitude, routeStop.stop.longitude]
-            : undefined,
-          routeId: routeId
+          position:
+            routeStop.stop?.latitude && routeStop.stop?.longitude
+              ? [routeStop.stop.latitude, routeStop.stop.longitude]
+              : undefined,
+          routeId,
         };
       }
     }
   } catch (error) {
-    console.error(`Error fetching stop ${routeStopId} from route ${routeId}:`, error);
+    console.error(
+      `Error fetching stop ${routeStopId} from route ${routeId}:`,
+      error
+    );
   }
+
   return null;
 }
 
@@ -48,6 +85,11 @@ function FindVehicles() {
   const fromId = searchParams.get("from");
   const toId = searchParams.get("to");
 
+  // Home passes the selected route through the URL. Keeping this value in
+  // state makes RouteSearch controlled and allows the route input to display
+  // the selected route when this page opens.
+  const [route, setRoute] = useState(() => getRouteById(routeId));
+  const [routes, setRoutes] = useState(allRoutes);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
@@ -57,13 +99,51 @@ function FindVehicles() {
   const [loadingInitialData, setLoadingInitialData] = useState(false);
   const isResizing = useRef(false);
 
+  // Load the route list and select the route supplied by Home. The local
+  // route data remains available as a fallback when the API is unavailable.
+  useEffect(() => {
+    setRoute(getRouteById(routeId));
+
+    async function fetchRoutes() {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/v1/routes/generalinfo"
+        );
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const apiRoutes = data.items || [];
+
+        if (apiRoutes.length === 0) return;
+
+        setRoutes(apiRoutes);
+
+        const selectedRoute = apiRoutes.find(
+          (candidate) => String(candidate.id) === String(routeId)
+        );
+
+        if (selectedRoute) {
+          setRoute(selectedRoute);
+        }
+      } catch (error) {
+        console.error("Error fetching routes:", error);
+      }
+    }
+
+    fetchRoutes();
+  }, [routeId]);
+
   useEffect(() => {
     async function fetchInitialData() {
       if (!routeId) return;
+
       setLoadingInitialData(true);
+
       try {
         if (fromId) {
           const stopFromAPI = await getStopByIdFromAPI(routeId, fromId);
+
           if (stopFromAPI && stopFromAPI.position) {
             setOrigin(stopFromAPI);
           } else {
@@ -71,8 +151,10 @@ function FindVehicles() {
             if (fallbackStop) setOrigin(fallbackStop);
           }
         }
+
         if (toId) {
           const stopToAPI = await getStopByIdFromAPI(routeId, toId);
+
           if (stopToAPI && stopToAPI.position) {
             setDestination(stopToAPI);
           } else {
@@ -80,8 +162,8 @@ function FindVehicles() {
             if (fallbackStop) setDestination(fallbackStop);
           }
         }
-      } catch (err) {
-        console.error("Error loading initial route data:", err);
+      } catch (error) {
+        console.error("Error loading initial route data:", error);
       } finally {
         setLoadingInitialData(false);
       }
@@ -96,12 +178,14 @@ function FindVehicles() {
   useEffect(() => {
     function onMouseMove(event) {
       if (!isResizing.current) return;
+
       const next = Math.min(600, Math.max(360, event.clientX));
       setSidebarWidth(next);
     }
 
     function onMouseUp() {
       if (!isResizing.current) return;
+
       isResizing.current = false;
       document.body.style.cursor = "";
       document.body.style.userSelect = "";
@@ -109,6 +193,7 @@ function FindVehicles() {
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
+
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
@@ -117,6 +202,7 @@ function FindVehicles() {
 
   function startResizing(event) {
     if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
+
     event.preventDefault();
     isResizing.current = true;
     document.body.style.cursor = "col-resize";
@@ -125,10 +211,13 @@ function FindVehicles() {
 
   async function handleBook(vehicle) {
     if (booked[vehicle.id] || loadingId === vehicle.id) return;
+
     setLoadingId(vehicle.id);
+
     try {
       const token = localStorage.getItem("access_token");
-      await fetch(`${API_BASE_URL}/api/v1/bookings`, {
+
+      await fetch("http://localhost:5000/api/v1/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,10 +229,17 @@ function FindVehicles() {
         }),
       });
     } catch {
-      // Demo fallback
+      // Demo fallback.
     }
-    setBooked((prev) => ({ ...prev, [vehicle.id]: true }));
+
+    setBooked((previous) => ({ ...previous, [vehicle.id]: true }));
     setLoadingId(null);
+  }
+
+  function handleSelectRoute(selectedRoute) {
+    setRoute(selectedRoute);
+    setOrigin(null);
+    setDestination(null);
   }
 
   function handleSelectOrigin(stop) {
@@ -153,8 +249,12 @@ function FindVehicles() {
 
   function handleSelectDestination(stop) {
     if (stop && origin && stop.id === origin.id) return;
+
     setDestination(stop);
-    if (stop && origin) setSheetState(SHEET_EXPANDED);
+
+    if (stop && origin) {
+      setSheetState(SHEET_EXPANDED);
+    }
   }
 
   function handleSelectStop(stop) {
@@ -163,36 +263,47 @@ function FindVehicles() {
       setDestination(null);
       return;
     }
+
     if (stop.id === origin.id) return;
+
     setDestination(stop);
     setSheetState(SHEET_EXPANDED);
   }
 
-  const selection = useMemo(() => getRouteSelection(origin, destination), [origin, destination]);
+  const selection = useMemo(
+    () => getRouteSelection(origin, destination),
+    [origin, destination]
+  );
   const hasRoute = Boolean(selection);
-  const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
-
-  const showResults = hasRoute && sheetState === SHEET_EXPANDED
+  const visibleStops = useMemo(
+    () => getVisibleStops(selection),
+    [selection]
+  );
+  const showResults = hasRoute && sheetState === SHEET_EXPANDED;
 
   function toggleSheet() {
-    setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
+    setSheetState((previous) =>
+      previous === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED
+    );
   }
 
-  function handleHandlePointerDown(e) {
-    dragStartY.current = e.clientY;
+  function handleHandlePointerDown(event) {
+    dragStartY.current = event.clientY;
     suppressClickRef.current = false;
-    e.currentTarget.setPointerCapture?.(e.pointerId);
+    event.currentTarget.setPointerCapture?.(event.pointerId);
   }
 
-  function handleHandlePointerMove(e) {
+  function handleHandlePointerMove(event) {
     if (dragStartY.current === null) return;
-    const delta = e.clientY - dragStartY.current;
+
+    const delta = event.clientY - dragStartY.current;
     if (Math.abs(delta) > 10) suppressClickRef.current = true;
   }
 
-  function handleHandlePointerUp(e) {
+  function handleHandlePointerUp(event) {
     if (dragStartY.current === null) return;
-    const delta = e.clientY - dragStartY.current;
+
+    const delta = event.clientY - dragStartY.current;
     dragStartY.current = null;
 
     if (delta < -40) {
@@ -202,6 +313,7 @@ function FindVehicles() {
     } else if (!suppressClickRef.current) {
       toggleSheet();
     }
+
     suppressClickRef.current = false;
   }
 
@@ -237,6 +349,7 @@ function FindVehicles() {
           onMouseDown={startResizing}
           aria-hidden="true"
         />
+
         {hasRoute && (
           <button
             type="button"
@@ -244,7 +357,11 @@ function FindVehicles() {
             onPointerDown={handleHandlePointerDown}
             onPointerMove={handleHandlePointerMove}
             onPointerUp={handleHandlePointerUp}
-            aria-label={sheetState === SHEET_EXPANDED ? "Hide vehicle list" : "Show vehicle list"}
+            aria-label={
+              sheetState === SHEET_EXPANDED
+                ? "Hide vehicle list"
+                : "Show vehicle list"
+            }
           >
             <span className="find-vehicles__sheet-handle-bar" />
           </button>
@@ -257,8 +374,12 @@ function FindVehicles() {
 
         <div className="find-vehicles__search">
           <RouteSearch
+            route={route}
+            routes={routes}
+            stops={route?.stops || []}
             origin={origin}
             destination={destination}
+            onSelectRoute={handleSelectRoute}
             onSelectOrigin={handleSelectOrigin}
             onSelectDestination={handleSelectDestination}
           />
@@ -267,21 +388,32 @@ function FindVehicles() {
         {showResults && (
           <div className="find-vehicles__results">
             <p className="find-vehicles__results-label">Available vehicles</p>
+
             <ul className="find-vehicles__vehicle-list">
               {DUMMY_VEHICLES.map((vehicle) => (
                 <li key={vehicle.id} className="find-vehicles__vehicle">
                   <div className="find-vehicles__vehicle-main">
-                    <span className="find-vehicles__vehicle-plate">{vehicle.plate}</span>
-                    <span className="find-vehicles__vehicle-type">{vehicle.type}</span>
+                    <span className="find-vehicles__vehicle-plate">
+                      {vehicle.plate}
+                    </span>
+                    <span className="find-vehicles__vehicle-type">
+                      {vehicle.type}
+                    </span>
                   </div>
+
                   <div className="find-vehicles__vehicle-meta">
                     <span>{vehicle.operator}</span>
                     <span>{vehicle.departsIn}</span>
-                    <span className="find-vehicles__vehicle-fare">{vehicle.fare}</span>
+                    <span className="find-vehicles__vehicle-fare">
+                      {vehicle.fare}
+                    </span>
                   </div>
+
                   <button
                     type="button"
-                    className={`find-vehicles__book${booked[vehicle.id] ? " is-booked" : ""}`}
+                    className={`find-vehicles__book${
+                      booked[vehicle.id] ? " is-booked" : ""
+                    }`}
                     disabled={booked[vehicle.id] || loadingId === vehicle.id}
                     onClick={() => handleBook(vehicle)}
                   >
