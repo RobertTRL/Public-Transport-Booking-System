@@ -335,47 +335,65 @@ function Bookings() {
                 <thead>
                   <tr>
                     <th>Passenger</th>
-                    <th>Route</th>
+                    <th>Route / Segment</th>
+                    <th>Vehicle</th>
                     <th>Status</th>
                     <th>Date</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {recentBookings.map((booking, index) => (
-                    <tr
-                      key={
-                        booking.id ??
-                        booking.booking_id ??
-                        index
-                      }
-                    >
-                      <td>
-                        {booking.passenger_name ||
-                          booking.passenger?.name ||
-                          booking.user?.name ||
-                          "—"}
-                      </td>
+                  {recentBookings.map((booking, index) => {
+                    const segment =
+                      booking.origin_name && booking.destination_name
+                        ? `${booking.origin_name} → ${booking.destination_name}`
+                        : "";
+                    const routeDisplay = booking.route_name
+                      ? segment
+                        ? `${booking.route_name} (${segment})`
+                        : booking.route_name
+                      : segment || "—";
 
-                      <td>
-                        {booking.route_name ||
-                          booking.route?.name ||
-                          booking.route ||
-                          "—"}
-                      </td>
+                    return (
+                      <tr
+                        key={
+                          booking.id ??
+                          booking.booking_id ??
+                          index
+                        }
+                      >
+                        <td>
+                          <div className="passenger-cell">
+                            <strong>{booking.passenger_name || "Passenger"}</strong>
+                            {booking.passenger_phone && (
+                              <small>{booking.passenger_phone}</small>
+                            )}
+                          </div>
+                        </td>
 
-                      <td>
-                        {booking.status || "—"}
-                      </td>
+                        <td>{routeDisplay}</td>
 
-                      <td>
-                        {booking.booking_date ||
-                          booking.created_at ||
-                          booking.date ||
-                          "—"}
-                      </td>
-                    </tr>
-                  ))}
+                        <td>{booking.vehicle_plate || "—"}</td>
+
+                        <td>
+                          <span
+                            className={`booking-status-pill is-${
+                              booking.status || "active"
+                            }`}
+                          >
+                            {booking.status || "Active"}
+                          </span>
+                        </td>
+
+                        <td>
+                          {booking.booking_date ||
+                            (booking.made_at
+                              ? new Date(booking.made_at).toLocaleDateString()
+                              : "—")}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
