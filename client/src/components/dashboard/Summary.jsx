@@ -70,16 +70,6 @@ function DashboardSummary() {
     dashboard?.sacco_name ||
     "SACCO";
 
-  const recentTrips =
-    dashboard?.recent_trips ||
-    dashboard?.recentTrips ||
-    [];
-
-  const recentBookings =
-    dashboard?.recent_bookings ||
-    dashboard?.recentBookings ||
-    [];
-
   return (
     <>
       <div className="dashboard-header">
@@ -116,82 +106,6 @@ function DashboardSummary() {
 
         <div className="map-placeholder">
           <p>Map will be displayed here</p>
-        </div>
-      </section>
-
-      <section className="dashboard-content">
-        <div className="dashboard-card">
-          <h2>Recent Trips</h2>
-
-          {recentTrips.length === 0 ? (
-            <p>No recent trips.</p>
-          ) : (
-            <div className="dashboard-list">
-              {recentTrips.map((trip, index) => (
-                <div
-                  className="dashboard-list-item"
-                  key={trip.id ?? trip.trip_id ?? index}
-                >
-                  <div>
-                    <strong>
-                      {trip.route_name ||
-                        trip.route?.name ||
-                        trip.route ||
-                        "Route"}
-                    </strong>
-
-                    <p>
-                      {trip.vehicle?.registration_number ||
-                        trip.vehicle_registration ||
-                        trip.vehicle ||
-                        "Vehicle"}
-                    </p>
-                  </div>
-
-                  <span>
-                    {trip.status || "Scheduled"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="dashboard-card">
-          <h2>Recent Bookings</h2>
-
-          {recentBookings.length === 0 ? (
-            <p>No recent bookings.</p>
-          ) : (
-            <div className="dashboard-list">
-              {recentBookings.map((booking, index) => (
-                <div
-                  className="dashboard-list-item"
-                  key={booking.id ?? booking.booking_id ?? index}
-                >
-                  <div>
-                    <strong>
-                      {booking.passenger_name ||
-                        booking.passenger?.name ||
-                        booking.user?.name ||
-                        "Passenger"}
-                    </strong>
-
-                    <p>
-                      {booking.route_name ||
-                        booking.route?.name ||
-                        booking.route ||
-                        "Route"}
-                    </p>
-                  </div>
-
-                  <span>
-                    {booking.status || "Confirmed"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </section>
     </>

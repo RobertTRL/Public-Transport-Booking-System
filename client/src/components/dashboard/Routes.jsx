@@ -91,32 +91,43 @@ function Routes() {
         </button>
       </div>
 
-      <div className="vehicles-toolbar">
-        <div className="vehicle-search">
-          <Search size={16} className="vehicle-search-icon" />
+      <div className="routes-toolbar">
+        <div className="routes-search-box">
+          <Search size={16} className="routes-search-icon" />
 
           <input
             type="text"
-            placeholder="Search routes by name"
+            className="routes-search-input"
+            placeholder="Search routes by name..."
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
           />
         </div>
 
-        <input
-          type="text"
-          placeholder="Filter by color (exact)"
+        <select
+          className="routes-filter-select"
           value={colorFilter}
           onChange={(event) => setColorFilter(event.target.value)}
-        />
+        >
+          <option value="">All colors</option>
+          <option value="#2563eb">Blue</option>
+          <option value="#16a34a">Green</option>
+          <option value="#dc2626">Red</option>
+          <option value="#9333ea">Purple</option>
+          <option value="#f59e0b">Orange</option>
+        </select>
       </div>
 
       {error && <p className="vehicle-table-error">{error}</p>}
 
       {loading ? (
-        <p>Loading routes...</p>
+        <div className="routes-loading-state">
+          <p>Loading routes...</p>
+        </div>
       ) : routeList.length === 0 ? (
-        <p>No routes found.</p>
+        <div className="routes-empty-state">
+          <p>No routes found matching your criteria.</p>
+        </div>
       ) : (
         <section className="routes-grid">
           {routeList.map((route) => (
