@@ -1,39 +1,131 @@
-import { useState } from "react";
-import { Plus, Search } from "lucide-react";
-import { vehicles as seedVehicles } from "../../data/routesData";
+import { useCallback, useEffect, useState } from "react";
+import { Plus, Search, Pencil, Trash2, Power } from "lucide-react";
 import AddVehicleModal from "./AddVehicleModal";
+import {
+  listVehicles,
+  updateVehicle,
+  deleteVehicle,
+  listRoutes,
+} from "../../api/providerClient";
 import "../../styles/Vehicle.css";
 
+const PER_PAGE = 10;
+
 function Vehicles() {
-  const [vehicles, setVehicles] = useState(seedVehicles);
-  const [searchField, setSearchField] = useState("numberPlate");
+  const [vehicles, setVehicles] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [page, setPage] = useState(1);
+
   const [searchTerm, setSearchTerm] = useState("");
+  const [routeFilter, setRouteFilter] = useState("");
+  const [routeOptions, setRouteOptions] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
-  const availableCount = vehicles.filter(
-    (vehicle) => vehicle.availability === "Available"
-  ).length;
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({ number_plate: "", capacity: "" });
+  const [rowBusyId, setRowBusyId] = useState(null);
 
-  const filteredVehicles = vehicles.filter((vehicle) =>
-    String(vehicle[searchField] ?? "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    listRoutes({ per_page: 50 })
+      .then((data) => setRouteOptions(data.items || []))
+      .catch(() => setRouteOptions([]));
+  }, []);
 
-  const handleAddVehicle = (vehicle) => {
-    setVehicles((list) => [
-      { id: `vehicle-${Date.now()}`, ...vehicle },
-      ...list,
-    ]);
+  const loadVehicles = useCallback(() => {
+    setLoading(true);
+    setError("");
+
+    return listVehicles({
+      page,
+      per_page: PER_PAGE,
+      q: searchTerm || undefined,
+      route_id: routeFilter || undefined,
+    })
+      .then((data) => {
+        setVehicles(data.items || []);
+        setTotal(data.total || 0);
+        setTotalPages(data.total_pages || 1);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [page, searchTerm, routeFilter]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(loadVehicles, 300);
+    return () => clearTimeout(timeoutId);
+  }, [loadVehicles]);
+
+  const handleAddVehicle = () => {
+    loadVehicles();
+  };
+
+  const startEdit = (vehicle) => {
+    setEditingId(vehicle.id);
+    setEditForm({ number_plate: vehicle.number_plate, capacity: vehicle.capacity });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+  };
+
+  const saveEdit = async (vehicleId) => {
+    setRowBusyId(vehicleId);
+    try {
+      const updated = await updateVehicle(vehicleId, {
+        number_plate: editForm.number_plate,
+        capacity: Number(editForm.capacity),
+      });
+      setVehicles((list) =>
+        list.map((vehicle) => (vehicle.id === vehicleId ? updated : vehicle))
+      );
+      setEditingId(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRowBusyId(null);
+    }
+  };
+
+  const toggleActive = async (vehicle) => {
+    setRowBusyId(vehicle.id);
+    try {
+      const updated = await updateVehicle(vehicle.id, {
+        is_active: !vehicle.is_active,
+      });
+      setVehicles((list) =>
+        list.map((item) => (item.id === vehicle.id ? updated : item))
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRowBusyId(null);
+    }
+  };
+
+  const removeVehicle = async (vehicle) => {
+    if (!window.confirm(`Delete vehicle ${vehicle.number_plate}?`)) return;
+    setRowBusyId(vehicle.id);
+    try {
+      await deleteVehicle(vehicle.id);
+      loadVehicles();
+    } catch (err) {
+      setError(err.message);
+      setRowBusyId(null);
+    }
   };
 
   return (
-    <div className="vehicles-page">
-      <div className="vehicles-header">
+    <>
+      <div className="dashboard-header vehicles-header">
         <div>
           <h1>Vehicles</h1>
           <p>View and manage service provider vehicles.</p>
         </div>
+
         <button
           type="button"
           className="add-vehicle-button"
@@ -47,19 +139,16 @@ function Vehicles() {
       <section className="dashboard-content vehicles-summary">
         <div className="dashboard-card">
           <h2>Total Vehicles</h2>
-          <p>{vehicles.length}</p>
+          <p>{total}</p>
         </div>
 
         <div className="dashboard-card">
-          <h2>Available</h2>
-          <p>{availableCount}</p>
-        </div>
-
-        <div className="dashboard-card">
-          <h2>Unavailable</h2>
-          <p>{vehicles.length - availableCount}</p>
+          <h2>Page</h2>
+          <p>{page} of {totalPages}</p>
         </div>
       </section>
+
+      {error && <p className="vehicle-table-error">{error}</p>}
 
       <section className="vehicles-panel">
         <div className="vehicles-toolbar">
@@ -68,21 +157,29 @@ function Vehicles() {
 
             <input
               type="text"
-              placeholder={`Search by ${searchField}`}
+              placeholder="Search by number plate"
               value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
+              onChange={(event) => {
+                setSearchTerm(event.target.value);
+                setPage(1);
+              }}
             />
-
-            <select
-              value={searchField}
-              onChange={(event) => setSearchField(event.target.value)}
-            >
-              <option value="numberPlate">Number Plate</option>
-              <option value="route">Route</option>
-              <option value="capacity">Capacity</option>
-              <option value="availability">Availability</option>
-            </select>
           </div>
+
+          <select
+            value={routeFilter}
+            onChange={(event) => {
+              setRouteFilter(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">All routes</option>
+            {routeOptions.map((route) => (
+              <option key={route.id} value={route.id}>
+                {route.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="vehicle-table-container">
@@ -90,53 +187,152 @@ function Vehicles() {
             <thead>
               <tr>
                 <th>Number Plate</th>
-                <th>Route</th>
                 <th>Capacity</th>
-                <th>Availability</th>
-                <th className="text-right">Actions</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
-              {filteredVehicles.length > 0 ? (
-                filteredVehicles.map((vehicle) => (
-                  <tr key={vehicle.id}>
-                    <td className="font-semibold">{vehicle.numberPlate}</td>
-                    <td>{vehicle.route || "Unassigned"}</td>
-                    <td>{vehicle.capacity}</td>
-                    <td>
-                      <span
-                        className={`status-badge ${
-                          vehicle.availability === "Available"
-                            ? "status-available"
-                            : "status-unavailable"
-                        }`}
-                      >
-                        {vehicle.availability}
-                      </span>
-                    </td>
-                    <td className="text-right">
-                      <button className="edit-button">Edit</button>
-                    </td>
-                  </tr>
-                ))
+              {loading ? (
+                <tr>
+                  <td colSpan="4" className="vehicle-table-empty">
+                    Loading vehicles...
+                  </td>
+                </tr>
+              ) : vehicles.length > 0 ? (
+                vehicles.map((vehicle) => {
+                  const isEditing = editingId === vehicle.id;
+                  const isBusy = rowBusyId === vehicle.id;
+
+                  return (
+                    <tr key={vehicle.id}>
+                      <td>
+                        {isEditing ? (
+                          <input
+                            value={editForm.number_plate}
+                            onChange={(event) =>
+                              setEditForm((form) => ({
+                                ...form,
+                                number_plate: event.target.value,
+                              }))
+                            }
+                          />
+                        ) : (
+                          vehicle.number_plate
+                        )}
+                      </td>
+                      <td>
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            min="1"
+                            value={editForm.capacity}
+                            onChange={(event) =>
+                              setEditForm((form) => ({
+                                ...form,
+                                capacity: event.target.value,
+                              }))
+                            }
+                          />
+                        ) : (
+                          vehicle.capacity
+                        )}
+                      </td>
+                      <td>
+                        <span
+                          className={`availability-badge availability-${
+                            vehicle.is_active ? "available" : "unavailable"
+                          }`}
+                        >
+                          {vehicle.is_active ? "Active" : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="vehicle-row-actions">
+                        {isEditing ? (
+                          <>
+                            <button
+                              type="button"
+                              disabled={isBusy}
+                              onClick={() => saveEdit(vehicle.id)}
+                            >
+                              Save
+                            </button>
+                            <button type="button" onClick={cancelEdit}>
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              title="Edit"
+                              disabled={isBusy}
+                              onClick={() => startEdit(vehicle)}
+                            >
+                              <Pencil size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              title={vehicle.is_active ? "Deactivate" : "Activate"}
+                              disabled={isBusy}
+                              onClick={() => toggleActive(vehicle)}
+                            >
+                              <Power size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              title="Delete"
+                              disabled={isBusy}
+                              onClick={() => removeVehicle(vehicle)}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan="5" className="text-center py-4">
-                    No vehicles found matching your criteria.
+                  <td colSpan="4" className="vehicle-table-empty">
+                    No vehicles found.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        <div className="vehicle-pagination">
+          <button
+            type="button"
+            disabled={page <= 1}
+            onClick={() => setPage((current) => current - 1)}
+          >
+            Previous
+          </button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <button
+            type="button"
+            disabled={page >= totalPages}
+            onClick={() => setPage((current) => current + 1)}
+          >
+            Next
+          </button>
+        </div>
       </section>
 
-      <AddVehicleModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSuccess={handleAddVehicle}
-      />
-    </div>
+      {modalOpen && (
+        <AddVehicleModal
+          onClose={() => setModalOpen(false)}
+          onCreated={handleAddVehicle}
+        />
+      )}
+    </>
   );
 }
 
