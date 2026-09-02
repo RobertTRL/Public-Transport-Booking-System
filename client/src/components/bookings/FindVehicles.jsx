@@ -4,7 +4,6 @@ import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
 import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
-import { bookVehicle } from "../../api/mockApi";
 import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
@@ -48,54 +47,37 @@ function FindVehicles() {
   const fromId = searchParams.get("from");
   const toId = searchParams.get("to");
 
-  const [loadingInitialData, setLoadingInitialData] = useState(!!routeId);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
-
+  const [sidebarWidth, setSidebarWidth] = useState(420);
   const [booked, setBooked] = useState({});
   const [loadingId, setLoadingId] = useState(null);
-
-  const [sidebarWidth, setSidebarWidth] = useState(360);
   const isResizing = useRef(false);
 
   useEffect(() => {
-    const fetchInitialData = async () => {
-      if (!routeId || !fromId || !toId) {
-        setLoadingInitialData(false);
-        return;
+    async function fetchInitialData() {
+      if (routeId) {
+        if (fromId) {
+          const stopFromAPI = await getStopByIdFromAPI(routeId, fromId);
+          if (stopFromAPI) {
+            setOrigin(stopFromAPI);
+          } else {
+            const fallbackStop = getStopById(fromId);
+            if (fallbackStop) setOrigin(fallbackStop);
+          }
+        }
+        if (toId) {
+          const stopToAPI = await getStopByIdFromAPI(routeId, toId);
+          if (stopToAPI) {
+            setDestination(stopToAPI);
+          } else {
+            const fallbackStop = getStopById(toId);
+            if (fallbackStop) setDestination(fallbackStop);
+          }
+        }
       }
-
-      try {
-        const originData = await getStopByIdFromAPI(routeId, fromId);
-        const destinationData = await getStopByIdFromAPI(routeId, toId);
-
-        const finalOrigin = originData || getStopById(fromId);
-        const finalDestination = destinationData || getStopById(toId);
-
-        setOrigin(finalOrigin);
-        setDestination(finalDestination);
-        setSheetState(
-          finalOrigin && finalDestination
-            ? SHEET_EXPANDED
-            : SHEET_COLLAPSED
-        );
-      } catch (error) {
-        console.error("Error fetching initial data:", error);
-        const fallbackOrigin = getStopById(fromId);
-        const fallbackDestination = getStopById(toId);
-
-        setOrigin(fallbackOrigin);
-        setDestination(fallbackDestination);
-        setSheetState(
-          fallbackOrigin && fallbackDestination
-            ? SHEET_EXPANDED
-            : SHEET_COLLAPSED
-        );
-      } finally {
-        setLoadingInitialData(false);
-      }
-    };
+    }
 
     fetchInitialData();
   }, [routeId, fromId, toId]);
@@ -126,8 +108,6 @@ function FindVehicles() {
   }, []);
 
   function startResizing(event) {
-    // Defensive: the handle is also hidden via CSS below 768px,
-    // but skip the drag logic entirely on mobile too.
     if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
     event.preventDefault();
     isResizing.current = true;
@@ -138,7 +118,22 @@ function FindVehicles() {
   async function handleBook(vehicle) {
     if (booked[vehicle.id] || loadingId === vehicle.id) return;
     setLoadingId(vehicle.id);
-    await bookVehicle(vehicle);
+    try {
+      const token = localStorage.getItem("access_token");
+      await fetch("http://localhost:5000/api/v1/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          trip_id: vehicle.trip_id || 1,
+          seat_count: 1,
+        }),
+      });
+    } catch {
+      // Demo fallback
+    }
     setBooked((prev) => ({ ...prev, [vehicle.id]: true }));
     setLoadingId(null);
   }
