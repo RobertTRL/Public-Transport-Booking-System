@@ -109,6 +109,12 @@ function Login() {
           ))}
         </div>
 
+        {userType === "operator" && (
+          <div className="auth-info" role="note">
+            Operator and staff accounts are provisioned directly by your SACCO administrator.
+          </div>
+        )}
+
         {location.state?.message && (
           <p className="auth-success">{location.state.message}</p>
         )}
