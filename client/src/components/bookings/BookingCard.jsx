@@ -1,13 +1,35 @@
+function formatDateTime(value) {
+  if (!value) return "Upcoming trip";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "Upcoming trip";
+
+  return date.toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
 function BookingCard({ booking }) {
+  const originName = booking.origin_routestop?.stop?.name ?? "Origin";
+  const destinationName =
+    booking.destination_routestop?.stop?.name ?? "Destination";
+
+  const vehicle = booking.trip?.vehicle;
+
+  const tripOrigin = booking.trip?.origin_routestop?.stop?.name;
+  const tripDestination = booking.trip?.destination_routestop?.stop?.name;
+
   return (
     <article className="booking-card">
       <div className="booking-card__header">
         <div>
           <h3 className="booking-card__title">
-            {booking.origin ?? "Origin"} → {booking.destination ?? "Destination"}
+            {originName} → {destinationName}
           </h3>
           <p className="booking-card__sub">
-            {booking.date ?? booking.start_time ?? "Upcoming trip"}
+            {formatDateTime(booking.trip?.start_time)}
           </p>
         </div>
         <span className="booking-card__badge">
@@ -19,19 +41,21 @@ function BookingCard({ booking }) {
         <div className="booking-card__detail">
           <span className="booking-card__label">Vehicle</span>
           <span className="booking-card__value">
-            {booking.vehicle ?? booking.number_plate ?? "—"}
+            {vehicle?.number_plate ?? "—"}
           </span>
         </div>
         <div className="booking-card__detail">
           <span className="booking-card__label">Route</span>
           <span className="booking-card__value">
-            {booking.route ?? "—"}
+            {tripOrigin && tripDestination
+              ? `${tripOrigin} → ${tripDestination}`
+              : "—"}
           </span>
         </div>
         <div className="booking-card__detail">
-          <span className="booking-card__label">Seats</span>
+          <span className="booking-card__label">Vehicle capacity</span>
           <span className="booking-card__value">
-            {booking.seats ?? booking.capacity ?? "—"}
+            {vehicle?.capacity ?? "—"}
           </span>
         </div>
       </div>
