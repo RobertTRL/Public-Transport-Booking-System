@@ -53,14 +53,17 @@ function FindVehicles() {
   const [sidebarWidth, setSidebarWidth] = useState(420);
   const [booked, setBooked] = useState({});
   const [loadingId, setLoadingId] = useState(null);
+  const [loadingInitialData, setLoadingInitialData] = useState(false);
   const isResizing = useRef(false);
 
   useEffect(() => {
     async function fetchInitialData() {
-      if (routeId) {
+      if (!routeId) return;
+      setLoadingInitialData(true);
+      try {
         if (fromId) {
           const stopFromAPI = await getStopByIdFromAPI(routeId, fromId);
-          if (stopFromAPI) {
+          if (stopFromAPI && stopFromAPI.position) {
             setOrigin(stopFromAPI);
           } else {
             const fallbackStop = getStopById(fromId);
@@ -69,13 +72,17 @@ function FindVehicles() {
         }
         if (toId) {
           const stopToAPI = await getStopByIdFromAPI(routeId, toId);
-          if (stopToAPI) {
+          if (stopToAPI && stopToAPI.position) {
             setDestination(stopToAPI);
           } else {
             const fallbackStop = getStopById(toId);
             if (fallbackStop) setDestination(fallbackStop);
           }
         }
+      } catch (err) {
+        console.error("Error loading initial route data:", err);
+      } finally {
+        setLoadingInitialData(false);
       }
     }
 
