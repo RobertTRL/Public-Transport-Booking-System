@@ -420,6 +420,24 @@ border-color: #2563eb;
 box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+.routes-filter-select {
+padding: 0.65rem 1rem;
+background: #ffffff;
+border: 1px solid #e2e8f0;
+border-radius: 10px;
+font-size: 0.875rem;
+color: #1e293b;
+min-width: 170px;
+cursor: pointer;
+transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.routes-filter-select:focus {
+outline: none;
+border-color: #2563eb;
+box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
 .route-card-image {
 display: flex;
 justify-content: center;

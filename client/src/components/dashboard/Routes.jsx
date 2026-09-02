@@ -104,12 +104,18 @@ function Routes() {
           />
         </div>
 
-        <input
-          type="text"
-          placeholder="Filter by color (exact)"
+        <select
+          className="routes-filter-select"
           value={colorFilter}
           onChange={(event) => setColorFilter(event.target.value)}
-        />
+        >
+          <option value="">All colors</option>
+          <option value="#2563eb">Blue</option>
+          <option value="#16a34a">Green</option>
+          <option value="#dc2626">Red</option>
+          <option value="#9333ea">Purple</option>
+          <option value="#f59e0b">Orange</option>
+        </select>
       </div>
 
       {error && <p className="vehicle-table-error">{error}</p>}
