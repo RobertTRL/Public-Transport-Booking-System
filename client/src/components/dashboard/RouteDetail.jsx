@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { apiGet, apiPost, apiPatch, apiDelete } from "../../api/client";
+import "../../styles/modal.css";
 
 const defaultApiClient = {
   get: (url) => apiGet(url).then((data) => ({ data })),
@@ -319,7 +320,7 @@ const RouteDetail = ({ apiClient }) => {
   const tripModal = showTripModal
     ? createPortal(
         <div
-          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60"
+          className="modal-overlay"
           onClick={() => {
             if (!isCreatingTrip) {
               setShowTripModal(false);
@@ -328,13 +329,12 @@ const RouteDetail = ({ apiClient }) => {
           }}
         >
           <div
-            className="relative z-[100000] bg-white rounded-lg p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="modal-card"
+            style={{ maxWidth: "480px" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold">
-                Create New Trip
-              </h2>
+            <div className="modal-header">
+              <h2>Create New Trip</h2>
 
               <button
                 type="button"
@@ -343,7 +343,7 @@ const RouteDetail = ({ apiClient }) => {
                   resetTripForm();
                 }}
                 disabled={isCreatingTrip}
-                className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer disabled:cursor-not-allowed"
+                className="modal-close"
               >
                 ×
               </button>
@@ -351,7 +351,8 @@ const RouteDetail = ({ apiClient }) => {
 
             <form
               onSubmit={handleCreateTrip}
-              className="space-y-4 text-sm"
+              className="modal-body"
+              style={{ padding: "1.25rem 1.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}
             >
               <div>
                 <label className="block text-gray-700 font-medium mb-1">
@@ -524,14 +525,14 @@ const RouteDetail = ({ apiClient }) => {
                 />
               </div>
 
-              <div className="flex justify-end space-x-2 pt-4 border-t">
+              <div className="modal-actions" style={{ marginTop: "1rem" }}>
                 <button
                   type="button"
                   onClick={() => {
                     setShowTripModal(false);
                     resetTripForm();
                   }}
-                  className="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100 cursor-pointer"
+                  className="modal-cancel"
                   disabled={isCreatingTrip}
                 >
                   Cancel
@@ -547,7 +548,7 @@ const RouteDetail = ({ apiClient }) => {
                     !newTrip.start_time ||
                     !newTrip.stop_time
                   }
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+                  className="modal-submit"
                 >
                   {isCreatingTrip
                     ? "Creating..."
@@ -907,19 +908,20 @@ const RouteDetail = ({ apiClient }) => {
       {selectedTripBookings &&
         createPortal(
           <div
-            className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60"
+            className="modal-overlay"
             onClick={() =>
               setSelectedTripBookings(null)
             }
           >
             <div
-              className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl"
+              className="modal-card"
+              style={{ maxWidth: "600px" }}
               onClick={(e) =>
                 e.stopPropagation()
               }
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold">
+              <div className="modal-header">
+                <h2>
                   Trip #{selectedTripBookings.tripId}{" "}
                   Bookings
                 </h2>
@@ -929,7 +931,7 @@ const RouteDetail = ({ apiClient }) => {
                   onClick={() =>
                     setSelectedTripBookings(null)
                   }
-                  className="text-gray-500 hover:text-gray-700 text-xl cursor-pointer"
+                  className="modal-close"
                 >
                   ×
                 </button>
