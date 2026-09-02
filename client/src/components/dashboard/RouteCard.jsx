@@ -1,112 +1,41 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Bus } from "lucide-react";
-import { routeImage } from "../../data/routesData";
+import { Link } from 'react-router-dom';
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+const RouteCard = ({ route }) => {
+  const { id, name, color_code, color, description, assigned_vehicles_count, total_vehicles } = route;
 
-function RouteCard({ route }) {
-const navigate = useNavigate();
-const [vehicleCount, setVehicleCount] = useState(null);
+  const badgeColor = color_code || color || '#3B82F6';
+  const vehicleCount = assigned_vehicles_count ?? total_vehicles ?? 0;
 
-useEffect(() => {
-let cancelled = false;
+  return (
+    <div className="bg-white rounded-lg border shadow-sm p-5 hover:shadow-md transition-shadow flex flex-col justify-between">
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-bold text-gray-800">{name}</h3>
+          <span
+            className="px-2.5 py-1 text-xs font-semibold rounded-full text-white"
+            style={{ backgroundColor: badgeColor }}
+          >
+            Route #{id}
+          </span>
+        </div>
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          {description || 'No description provided.'}
+        </p>
+      </div>
 
-
-const fetchVehicleCount = async () => {
-  try {
-    const token = localStorage.getItem("access_token");
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/v1/provider/vehicles?route_id=${route.id}&per_page=1`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token
-            ? { Authorization: `Bearer ${token}` }
-            : {}),
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch vehicles.");
-    }
-
-    const data = await response.json();
-
-    if (!cancelled) {
-      setVehicleCount(data.total ?? 0);
-    }
-  } catch {
-    if (!cancelled) {
-      setVehicleCount(0);
-    }
-  }
-};
-
-fetchVehicleCount();
-
-return () => {
-  cancelled = true;
-};
-
-
-}, [route.id]);
-
-const openRoute = () => {
-navigate(`/dashboard/routes/${route.id}`);
-};
-
-const handleKeyDown = (event) => {
-if (event.key === "Enter" || event.key === " ") {
-event.preventDefault();
-openRoute();
-}
-};
-
-return ( <article
-   className="route-card"
-   role="button"
-   tabIndex={0}
-   onClick={openRoute}
-   onKeyDown={handleKeyDown}
- > <div className="route-card-image"> <img
-       src={routeImage(route)}
-       alt={route.name}
-       width={400}
-       height={400}
-     /> </div>
-
-
-  <div className="route-card-body">
-    <div className="route-card-heading">
-      <span
-        className="route-color-dot"
-        style={{ background: route.color }}
-      />
-      <h3>{route.name}</h3>
+      <div className="pt-4 border-t flex items-center justify-between text-sm">
+        <span className="text-gray-500 font-medium">
+          🚍 {vehicleCount} {vehicleCount === 1 ? 'Vehicle' : 'Vehicles'}
+        </span>
+        <Link
+          to={`/dashboard/routes/${id}`}
+          className="text-blue-600 hover:text-blue-800 font-semibold text-xs uppercase tracking-wider"
+        >
+          View Details →
+        </Link>
+      </div>
     </div>
-
-    <p>
-      {route.total_stops}{" "}
-      {route.total_stops === 1 ? "stop" : "stops"}
-    </p>
-
-    <span className="route-vehicle-count">
-      <Bus size={14} />
-      {vehicleCount === null
-        ? "..."
-        : `${vehicleCount} ${
-            vehicleCount === 1 ? "vehicle" : "vehicles"
-          }`}
-    </span>
-  </div>
-</article>
-
-
-);
-}
+  );
+};
 
 export default RouteCard;
