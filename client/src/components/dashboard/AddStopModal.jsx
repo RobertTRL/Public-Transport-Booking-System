@@ -1,5 +1,7 @@
 import { useState } from "react";
+import Modal from "../Modal";
 import { API_BASE_URL } from "../../api/client";
+import { getAccessToken } from "../../utils/auth";
 
 function AddStopModal({ stop, onClose, onCreated }) {
   const isEditing = Boolean(stop);
@@ -40,7 +42,7 @@ function AddStopModal({ stop, onClose, onCreated }) {
       return;
     }
 
-    const token = localStorage.getItem("access_token");
+    const token = getAccessToken() || localStorage.getItem("access_token");
 
     if (!token) {
       setError("You are not authenticated. Please log in again.");
@@ -95,102 +97,83 @@ function AddStopModal({ stop, onClose, onCreated }) {
   };
 
   return (
-    <div
-      className="modal-overlay"
-      onClick={() => {
+    <Modal
+      title={isEditing ? "Edit Stop" : "Add New Stop"}
+      onClose={() => {
         if (!saving) onClose();
       }}
     >
-      <div
-        className="modal-content"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="modal-header">
-          <div>
-            <h2>{isEditing ? "Edit Stop" : "Add New Stop"}</h2>
-            <p>
-              {isEditing
-                ? "Update the stop details."
-                : "Add a new public transport stop."}
-            </p>
-          </div>
+      <form onSubmit={handleSubmit} className="modal-form">
+        {error && (
+          <p className="modal-error" role="alert">
+            {error}
+          </p>
+        )}
 
+        <div className="modal-field">
+          <label htmlFor="stop-name">Stop Name</label>
+          <input
+            id="stop-name"
+            type="text"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="e.g. CBD Stage"
+            required
+          />
+        </div>
+
+        <div className="modal-field">
+          <label htmlFor="stop-latitude">Latitude</label>
+          <input
+            id="stop-latitude"
+            type="number"
+            step="any"
+            value={latitude}
+            onChange={(event) => setLatitude(event.target.value)}
+            placeholder="e.g. -1.286389"
+            required
+          />
+          <span className="modal-field-hint">Valid range: -90 to 90</span>
+        </div>
+
+        <div className="modal-field">
+          <label htmlFor="stop-longitude">Longitude</label>
+          <input
+            id="stop-longitude"
+            type="number"
+            step="any"
+            value={longitude}
+            onChange={(event) => setLongitude(event.target.value)}
+            placeholder="e.g. 36.817223"
+            required
+          />
+          <span className="modal-field-hint">Valid range: -180 to 180</span>
+        </div>
+
+        <div className="modal-actions">
           <button
             type="button"
-            className="modal-close"
+            className="modal-cancel"
             onClick={onClose}
             disabled={saving}
           >
-            ×
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="modal-submit"
+            disabled={saving}
+          >
+            {saving
+              ? "Saving..."
+              : isEditing
+                ? "Save Changes"
+                : "Add Stop"}
           </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
-            <label htmlFor="stop-name">Stop Name</label>
-            <input
-              id="stop-name"
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="e.g. CBD Stage"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="stop-latitude">Latitude</label>
-            <input
-              id="stop-latitude"
-              type="number"
-              step="any"
-              value={latitude}
-              onChange={(event) => setLatitude(event.target.value)}
-              placeholder="e.g. -1.286389"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="stop-longitude">Longitude</label>
-            <input
-              id="stop-longitude"
-              type="number"
-              step="any"
-              value={longitude}
-              onChange={(event) => setLongitude(event.target.value)}
-              placeholder="e.g. 36.817223"
-              required
-            />
-          </div>
-
-          {error && <p className="modal-error">{error}</p>}
-
-          <div className="modal-actions">
-            <button
-              type="button"
-              className="modal-cancel-button"
-              onClick={onClose}
-              disabled={saving}
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="modal-submit-button"
-              disabled={saving}
-            >
-              {saving
-                ? "Saving..."
-                : isEditing
-                  ? "Save Changes"
-                  : "Add Stop"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 }
 

@@ -97,7 +97,11 @@ function AddRouteModal({ onClose, onCreated, onSuccess }) {
           </div>
         </div>
 
-        {error && <p className="route-table-error">{error}</p>}
+        {error && (
+          <p className="modal-error" role="alert">
+            {error}
+          </p>
+        )}
 
         <div className="modal-actions">
           <button
