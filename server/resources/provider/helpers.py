@@ -1,8 +1,6 @@
-"""Shared helper functions used across provider-side resources."""
-
 from datetime import datetime
 
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, get_jwt
 
 from config import db
 from models import User
@@ -14,7 +12,12 @@ def get_current_provider_user():
     Mirrors get_current_passenger() on the passenger side: casts the
     JWT identity to int and looks the row up with db.session.get, so a
     malformed identity fails closed (returns None) instead of raising.
+    Rejects tokens that explicitly declare a non-provider user_type.
     """
+    claims = get_jwt()
+    if claims.get("user_type") and claims.get("user_type") != "user":
+        return None
+
     identity = get_jwt_identity()
 
     try:
