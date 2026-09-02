@@ -4,6 +4,7 @@ import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
 import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
+import { API_BASE_URL } from "../../api/client";
 import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
@@ -19,7 +20,7 @@ const DUMMY_VEHICLES = [
 // Helper function to fetch stop data from API
 async function getStopByIdFromAPI(routeId, routeStopId) {
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/routes/${routeId}`);
+    const response = await fetch(`${API_BASE_URL}/api/v1/routes/${routeId}`);
     if (response.ok) {
       const route = await response.json();
       const routeStop = route.route_stops?.find(rs => rs.id === parseInt(routeStopId));
@@ -127,7 +128,7 @@ function FindVehicles() {
     setLoadingId(vehicle.id);
     try {
       const token = localStorage.getItem("access_token");
-      await fetch("http://localhost:5000/api/v1/bookings", {
+      await fetch(`${API_BASE_URL}/api/v1/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

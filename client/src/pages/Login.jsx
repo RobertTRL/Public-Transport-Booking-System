@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { setTokens } from "../utils/auth";
+import { API_BASE_URL } from "../api/client";
 import "../styles/auth.css";
 
 const USER_TYPES = [
@@ -13,8 +14,8 @@ const USER_TYPES = [
   {
     key: "operator",
     label: "Operator",
-    title: "Welcome back",
-    description: "Sign in to your Public Transport account",
+    title: "Operator Portal",
+    description: "Access your fleet management dashboard",
   },
 ];
 
@@ -38,7 +39,7 @@ function Login() {
     const password = form.password.value;
 
     try {
-      const response = await fetch("http://localhost:5000/api/v1/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ 

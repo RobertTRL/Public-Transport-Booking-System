@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-const API_BASE_URL = "http://localhost:5000";
+import { API_BASE_URL } from "../../api/client";
 
 function AddStopModal({ stop, onClose, onCreated }) {
   const isEditing = Boolean(stop);

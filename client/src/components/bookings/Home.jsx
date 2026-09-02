@@ -5,6 +5,7 @@ import { Search, MapPin, Clock, ShieldCheck, ArrowRight } from "lucide-react";
 import RouteSearch from "../RouteSearch";
 import homeData from "../../data/homeData.json";
 import "../../styles/home.css";
+import { API_BASE_URL } from "../../api/client";
 
 const iconMap = {
   Search,
@@ -32,7 +33,7 @@ function Home() {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/v1/routes/generalinfo"
+          `${API_BASE_URL}/api/v1/routes/generalinfo`
         );
 
         if (response.ok) {
@@ -62,7 +63,7 @@ function Home() {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/routes/${route.id}/stops?per_page=100`
+          `${API_BASE_URL}/api/v1/routes/${route.id}/stops?per_page=100`
         );
 
         if (response.ok) {

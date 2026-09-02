@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MapPin, Pencil, Trash2, Plus } from "lucide-react";
 import "../../styles/dashboard.css";
 import AddStopModal from "./AddStopModal";
-
-const API_BASE_URL = "http://localhost:5000";
+import { API_BASE_URL } from "../../api/client";
 
 function Stops() {
   const [stopList, setStopList] = useState([]);
