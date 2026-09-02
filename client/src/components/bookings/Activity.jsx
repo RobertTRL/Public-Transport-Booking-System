@@ -4,7 +4,7 @@ import { API_BASE_URL } from "../../api/client";
 
 const DEFAULT_PER_PAGE = 10;
 
-export function useBookings() {
+export default function useBookings() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
