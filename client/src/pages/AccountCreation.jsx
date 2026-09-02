@@ -27,9 +27,18 @@ function AccountCreation() {
       url.searchParams.set("email", email);
       url.searchParams.set("password", password);
 
-      const response = await fetch(url.toString(), {
-        method: "GET",
-        headers: { Accept: "application/json" },
+      const response = await fetch("/api/v1/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          user_type: "passenger",
+          name,
+          email,
+          password,
+        }),
       });
 
       if (!response.ok) {
