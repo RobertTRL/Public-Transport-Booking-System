@@ -250,9 +250,20 @@
   cursor: default;
 }
 
+.find-vehicles__book.is-failed {
+  background: #dc2626;
+  cursor: default;
+}
+
 .find-vehicles__book:disabled {
   cursor: default;
   opacity: 0.9;
+}
+
+.find-vehicles__results-loading {
+  margin: 1rem 0;
+  color: #737373;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {

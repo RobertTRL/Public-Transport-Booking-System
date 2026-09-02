@@ -4,43 +4,12 @@ import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
 import { getStopById } from "../../data/nairobiRoutes";
 import { getRouteSelection, getVisibleStops } from "../../utils/routeSelection";
-import { bookVehicle } from "../../api/mockApi";
+import { fetchWithAuth } from "../../utils/auth";
 import "../../styles/findvehicles.css";
 
 const SHEET_COLLAPSED = "collapsed";
 const SHEET_EXPANDED = "expanded";
 const DESKTOP_BREAKPOINT = 768;
-
-const DUMMY_VEHICLES = [
-  { id: "v1", plate: "KDA 214B", type: "Matatu · 14-seater", operator: "Super Metro", departsIn: "3 min", fare: "KSh 100" },
-  { id: "v2", plate: "KCX 771T", type: "Bus · 33-seater", operator: "Citi Hoppa", departsIn: "7 min", fare: "KSh 80" },
-  { id: "v3", plate: "KDB 552L", type: "Matatu · 14-seater", operator: "Metro Trans", departsIn: "12 min", fare: "KSh 100" },
-];
-
-// Helper function to fetch stop data from API
-async function getStopByIdFromAPI(routeId, routeStopId) {
-  try {
-    const response = await fetch(`http://localhost:5000/api/v1/routes/${routeId}`);
-    if (response.ok) {
-      const route = await response.json();
-      const routeStop = route.route_stops?.find(rs => rs.id === parseInt(routeStopId));
-      if (routeStop) {
-        return {
-          id: routeStop.id,
-          stop_id: routeStop.stop_id,
-          name: routeStop.stop?.name || routeStop.name,
-          position: routeStop.stop?.latitude && routeStop.stop?.longitude
-            ? [routeStop.stop.latitude, routeStop.stop.longitude]
-            : undefined,
-          routeId: routeId
-        };
-      }
-    }
-  } catch (error) {
-    console.error(`Error fetching stop ${routeStopId} from route ${routeId}:`, error);
-  }
-  return null;
-}
 
 function FindVehicles() {
   const [searchParams] = useSearchParams();
@@ -53,11 +22,129 @@ function FindVehicles() {
   const [destination, setDestination] = useState(null);
   const [sheetState, setSheetState] = useState(SHEET_COLLAPSED);
 
+  const [routes, setRoutes] = useState([]);
+  const [stops, setStops] = useState([]);
+  const [loadingRoutes, setLoadingRoutes] = useState(false);
+  const [loadingStops, setLoadingStops] = useState(false);
+
+  const [vehicles, setVehicles] = useState([]);
+  const [loadingTrips, setLoadingTrips] = useState(false);
+
   const [booked, setBooked] = useState({});
+  const [failed, setFailed] = useState({});
   const [loadingId, setLoadingId] = useState(null);
 
   const [sidebarWidth, setSidebarWidth] = useState(360);
   const isResizing = useRef(false);
+
+  const suppressClickRef = useRef(false);
+  const dragStartY = useRef(null);
+
+  useEffect(() => {
+    const fetchRoutes = async () => {
+      setLoadingRoutes(true);
+      try {
+        const response = await fetch("/api/v1/routes/generalinfo");
+        if (response.ok) {
+          const data = await response.json();
+          setRoutes(data.items || []);
+        }
+      } catch (error) {
+        console.error("Error fetching routes:", error);
+      } finally {
+        setLoadingRoutes(false);
+      }
+    };
+
+    fetchRoutes();
+  }, []);
+
+  useEffect(() => {
+    const activeRouteId = origin?.routeId || routeId;
+    if (!activeRouteId) {
+      setStops([]);
+      return;
+    }
+
+    const fetchStops = async () => {
+      setLoadingStops(true);
+      try {
+        const response = await fetch(
+          `/api/v1/routes/${activeRouteId}/stops?per_page=100`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const apiStops = (data.items || []).map((item) => ({
+            id: item.id,
+            stop_id: item.stop_id,
+            name: item.stop?.name || item.name,
+            position:
+              item.stop?.latitude && item.stop?.longitude
+                ? [item.stop.latitude, item.stop.longitude]
+                : undefined,
+            routeId: activeRouteId,
+          }));
+          setStops(apiStops);
+        } else {
+          setStops([]);
+        }
+      } catch (error) {
+        console.error("Error fetching stops:", error);
+        setStops([]);
+      } finally {
+        setLoadingStops(false);
+      }
+    };
+
+    fetchStops();
+  }, [origin?.routeId, routeId]);
+
+  useEffect(() => {
+    if (!origin || !destination) {
+      setVehicles([]);
+      return;
+    }
+
+    const fetchTrips = async () => {
+      setLoadingTrips(true);
+      setVehicles([]);
+      setBooked({});
+      setFailed({});
+      setLoadingId(null);
+
+      try {
+        const today = new Date().toISOString().split("T")[0];
+        const url = `/api/v1/trips?origin_routestop_id=${origin.id}&destination_routestop_id=${destination.id}&date=${today}`;
+
+        const response = await fetchWithAuth(url, {
+          headers: { Accept: "application/json" },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const items = Array.isArray(data) ? data : data.items || [];
+          const mapped = items.map((trip, index) => ({
+            id: trip.id ?? `trip-${index}`,
+            plate: trip.vehicle?.number_plate ?? trip.number_plate ?? "—",
+            type: trip.vehicle?.type ?? "Vehicle",
+            operator: trip.operator ?? "—",
+            departsIn: trip.departure_time ?? "—",
+            fare: trip.fare ? `KSh ${trip.fare}` : "—",
+          }));
+          setVehicles(mapped);
+        } else {
+          setVehicles([]);
+        }
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+        setVehicles([]);
+      } finally {
+        setLoadingTrips(false);
+      }
+    };
+
+    fetchTrips();
+  }, [origin, destination]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -67,8 +154,30 @@ function FindVehicles() {
       }
 
       try {
-        const originData = await getStopByIdFromAPI(routeId, fromId);
-        const destinationData = await getStopByIdFromAPI(routeId, toId);
+        const response = await fetch(
+          `/api/v1/routes/${routeId}/stops?per_page=100`
+        );
+        let originData = null;
+        let destinationData = null;
+
+        if (response.ok) {
+          const data = await response.json();
+          const apiStops = (data.items || []).map((item) => ({
+            id: item.id,
+            stop_id: item.stop_id,
+            name: item.stop?.name || item.name,
+            position:
+              item.stop?.latitude && item.stop?.longitude
+                ? [item.stop.latitude, item.stop.longitude]
+                : undefined,
+            routeId: routeId,
+          }));
+
+          originData = apiStops.find((s) => String(s.id) === String(fromId));
+          destinationData = apiStops.find(
+            (s) => String(s.id) === String(toId)
+          );
+        }
 
         const finalOrigin = originData || getStopById(fromId);
         const finalDestination = destinationData || getStopById(toId);
@@ -82,16 +191,8 @@ function FindVehicles() {
         );
       } catch (error) {
         console.error("Error fetching initial data:", error);
-        const fallbackOrigin = getStopById(fromId);
-        const fallbackDestination = getStopById(toId);
-
-        setOrigin(fallbackOrigin);
-        setDestination(fallbackDestination);
-        setSheetState(
-          fallbackOrigin && fallbackDestination
-            ? SHEET_EXPANDED
-            : SHEET_COLLAPSED
-        );
+        setOrigin(getStopById(fromId));
+        setDestination(getStopById(toId));
       } finally {
         setLoadingInitialData(false);
       }
@@ -99,9 +200,6 @@ function FindVehicles() {
 
     fetchInitialData();
   }, [routeId, fromId, toId]);
-
-  const suppressClickRef = useRef(false);
-  const dragStartY = useRef(null);
 
   useEffect(() => {
     function onMouseMove(event) {
@@ -126,8 +224,6 @@ function FindVehicles() {
   }, []);
 
   function startResizing(event) {
-    // Defensive: the handle is also hidden via CSS below 768px,
-    // but skip the drag logic entirely on mobile too.
     if (window.innerWidth <= DESKTOP_BREAKPOINT) return;
     event.preventDefault();
     isResizing.current = true;
@@ -136,11 +232,58 @@ function FindVehicles() {
   }
 
   async function handleBook(vehicle) {
-    if (booked[vehicle.id] || loadingId === vehicle.id) return;
+    if (booked[vehicle.id] || failed[vehicle.id] || loadingId === vehicle.id) {
+      return;
+    }
+
+    if (!origin || !destination) return;
+
     setLoadingId(vehicle.id);
-    await bookVehicle(vehicle);
-    setBooked((prev) => ({ ...prev, [vehicle.id]: true }));
-    setLoadingId(null);
+
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const url = `/api/v1/trips?origin_routestop_id=${origin.id}&destination_routestop_id=${destination.id}&date=${today}`;
+
+      const response = await fetchWithAuth(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          origin_routestop_id: origin.id,
+          destination_routestop_id: destination.id,
+          date: today,
+          vehicle_id: vehicle.id,
+        }),
+      });
+
+      if (response.ok) {
+        setBooked((prev) => ({ ...prev, [vehicle.id]: true }));
+        setFailed((prev) => {
+          const next = { ...prev };
+          delete next[vehicle.id];
+          return next;
+        });
+      } else {
+        setFailed((prev) => ({ ...prev, [vehicle.id]: true }));
+        setBooked((prev) => {
+          const next = { ...prev };
+          delete next[vehicle.id];
+          return next;
+        });
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      setFailed((prev) => ({ ...prev, [vehicle.id]: true }));
+      setBooked((prev) => {
+        const next = { ...prev };
+        delete next[vehicle.id];
+        return next;
+      });
+    } finally {
+      setLoadingId(null);
+    }
   }
 
   function handleSelectOrigin(stop) {
@@ -169,7 +312,9 @@ function FindVehicles() {
   const hasRoute = Boolean(selection);
   const visibleStops = useMemo(() => getVisibleStops(selection), [selection]);
 
-  const showResults = hasRoute && sheetState === SHEET_EXPANDED
+  const showResults = hasRoute && sheetState === SHEET_EXPANDED;
+
+  const selectedRoute = routes.find((r) => r.id === (origin?.routeId || routeId)) || null;
 
   function toggleSheet() {
     setSheetState((prev) => (prev === SHEET_EXPANDED ? SHEET_COLLAPSED : SHEET_EXPANDED));
@@ -254,43 +399,70 @@ function FindVehicles() {
 
         <div className="find-vehicles__search">
           <RouteSearch
+            route={selectedRoute}
             origin={origin}
             destination={destination}
+            routes={routes}
+            stops={stops}
+            onSelectRoute={(selected) => {
+              setOrigin(selected);
+              setDestination(null);
+            }}
             onSelectOrigin={handleSelectOrigin}
             onSelectDestination={handleSelectDestination}
+            loadingRoutes={loadingRoutes}
+            loadingStops={loadingStops}
           />
         </div>
 
         {showResults && (
           <div className="find-vehicles__results">
             <p className="find-vehicles__results-label">Available vehicles</p>
-            <ul className="find-vehicles__vehicle-list">
-              {DUMMY_VEHICLES.map((vehicle) => (
-                <li key={vehicle.id} className="find-vehicles__vehicle">
-                  <div className="find-vehicles__vehicle-main">
-                    <span className="find-vehicles__vehicle-plate">{vehicle.plate}</span>
-                    <span className="find-vehicles__vehicle-type">{vehicle.type}</span>
-                  </div>
-                  <div className="find-vehicles__vehicle-meta">
-                    <span>{vehicle.operator}</span>
-                    <span>{vehicle.departsIn}</span>
-                    <span className="find-vehicles__vehicle-fare">{vehicle.fare}</span>
-                  </div>
-                  <button
-                    type="button"
-                    className={`find-vehicles__book${booked[vehicle.id] ? " is-booked" : ""}`}
-                    disabled={booked[vehicle.id] || loadingId === vehicle.id}
-                    onClick={() => handleBook(vehicle)}
-                  >
-                    {booked[vehicle.id]
-                      ? "Arriving"
-                      : loadingId === vehicle.id
-                      ? "Booking..."
-                      : "Book"}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {loadingTrips ? (
+              <p className="find-vehicles__results-loading">Loading vehicles…</p>
+            ) : (
+              <ul className="find-vehicles__vehicle-list">
+                {vehicles.map((vehicle) => {
+                  const isBooked = booked[vehicle.id];
+                  const isFailed = failed[vehicle.id];
+                  const isLoading = loadingId === vehicle.id;
+
+                  return (
+                    <li key={vehicle.id} className="find-vehicles__vehicle">
+                      <div className="find-vehicles__vehicle-main">
+                        <span className="find-vehicles__vehicle-plate">{vehicle.plate}</span>
+                        <span className="find-vehicles__vehicle-type">{vehicle.type}</span>
+                      </div>
+                      <div className="find-vehicles__vehicle-meta">
+                        <span>{vehicle.operator}</span>
+                        <span>{vehicle.departsIn}</span>
+                        <span className="find-vehicles__vehicle-fare">{vehicle.fare}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className={[
+                          "find-vehicles__book",
+                          isBooked && "is-booked",
+                          isFailed && "is-failed",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        disabled={isBooked || isFailed || isLoading}
+                        onClick={() => handleBook(vehicle)}
+                      >
+                        {isBooked
+                          ? "Arriving"
+                          : isFailed
+                          ? "Failed"
+                          : isLoading
+                          ? "Booking..."
+                          : "Book"}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         )}
       </aside>
