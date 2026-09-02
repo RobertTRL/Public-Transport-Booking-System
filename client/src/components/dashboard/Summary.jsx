@@ -70,16 +70,6 @@ function DashboardSummary() {
     dashboard?.sacco_name ||
     "SACCO";
 
-  const recentTrips =
-    dashboard?.recent_trips ||
-    dashboard?.recentTrips ||
-    [];
-
-  const recentBookings =
-    dashboard?.recent_bookings ||
-    dashboard?.recentBookings ||
-    [];
-
   return (
     <>
       <div className="dashboard-header">
