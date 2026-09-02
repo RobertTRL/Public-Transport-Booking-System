@@ -17,11 +17,14 @@ app = Flask(__name__)
 
 # Application Configurations
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
-# app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-#     "DATABASE_URI",
-#     "postgresql://postgres:postgres@localhost:5432/transport_booking_db"
-# )
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///dev.db"
+
+# Database — Render sets DATABASE_URL automatically when you attach a PostgreSQL instance.
+# Render uses "postgres://..." but SQLAlchemy requires "postgresql://..."
+database_url = os.getenv("DATABASE_URL", "sqlite:///dev.db")
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-key")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
