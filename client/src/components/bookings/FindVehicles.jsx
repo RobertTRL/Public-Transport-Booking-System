@@ -91,6 +91,7 @@ function FindVehicles() {
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [stops, setStops] = useState([]);
+  const [allNetworkStops, setAllNetworkStops] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [loadingRoutes, setLoadingRoutes] = useState(false);
   const [loadingStops, setLoadingStops] = useState(false);
@@ -255,15 +256,54 @@ function FindVehicles() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchAllNetworkStops() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/stops?per_page=100`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const items = (data.items || [])
+          .map((s) => ({
+            ...s,
+            position: [Number(s.latitude), Number(s.longitude)],
+          }))
+          .filter((s) => isValidPosition(s.position));
+
+        if (!cancelled && items.length > 0) {
+          setAllNetworkStops(items);
+        }
+      } catch (err) {
+        console.error("Error fetching all network stops:", err);
+      }
+    }
+
+    fetchAllNetworkStops();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selection = useMemo(
     () => getRouteSelection(origin, destination, stops, route),
     [origin, destination, stops, route]
   );
   const hasRoute = Boolean(selection);
-  const visibleStops = useMemo(
-    () => (stops.length > 0 ? stops : getVisibleStops(selection)),
-    [selection, stops]
-  );
+
+  const visibleStops = useMemo(() => {
+    // 1. If both start and destination are selected, show only start, end, and stops between them
+    if (selection?.stops && selection.stops.length > 0) {
+      return selection.stops;
+    }
+    // 2. If a route has been chosen (but start and end not yet selected), show all stops for this route
+    if (route && stops.length > 0) {
+      return stops;
+    }
+    // 3. If no route has been chosen, show all stops across the network
+    return allNetworkStops.length > 0 ? allNetworkStops : allStops;
+  }, [selection, route, stops, allNetworkStops]);
   const mapWaypoints = useMemo(() => {
     if (!origin || !destination) return [];
     return selection?.waypoints?.length >= 2

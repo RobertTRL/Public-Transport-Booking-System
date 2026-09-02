@@ -81,8 +81,8 @@ function MapBounds({ stops }) {
 }
 
 function getStopLabel(stop, origin, destination) {
-  if (origin && stop.id === origin.id) return `${stop.name} (Start)`;
-  if (destination && stop.id === destination.id) return `${stop.name} (Destination)`;
+  if (origin && String(stop.id) === String(origin.id)) return `${stop.name} (Start)`;
+  if (destination && String(stop.id) === String(destination.id)) return `${stop.name} (Destination)`;
   return stop.name;
 }
 
@@ -93,9 +93,9 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
   );
 
   function getIcon(stop) {
-    if (origin && stop.id === origin.id) return originIcon;
-    if (destination && stop.id === destination.id) return destinationIcon;
-    if (highlightedStopIds.includes(stop.id)) return highlightedIcon;
+    if (origin && String(stop.id) === String(origin.id)) return originIcon;
+    if (destination && String(stop.id) === String(destination.id)) return destinationIcon;
+    if (highlightedStopIds.map(String).includes(String(stop.id))) return highlightedIcon;
     return defaultIcon;
   }
 
@@ -108,8 +108,8 @@ function Map({ stops, origin, destination, highlightedStopIds = [], waypoints, o
         className="map-container"
       >
         <TileLayer
-          attribution="&copy; OpenStreetMap contributors &copy; CARTO"
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
         <MapBounds stops={validStops} />
