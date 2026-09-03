@@ -35,7 +35,7 @@ function Login() {
     setLoading(true);
 
     const form = event.target;
-    const email = form.email.value.trim();
+    const email = form.email.value.trim().toLowerCase();
     const password = form.password.value;
 
     try {
@@ -49,12 +49,11 @@ function Login() {
         }),
       });
 
-      if (!response.ok) {
-        const text = await response.text().catch(() => "");
-        throw new Error(text || `Login failed (${response.status})`);
-      }
-
       const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data?.error || data?.message || `Login failed (${response.status})`);
+      }
 
       const token =
         data.access_token ||
