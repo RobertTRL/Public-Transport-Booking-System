@@ -11,6 +11,8 @@ Run with:
     python seed.py
 """
 
+import os
+import sys
 from datetime import datetime, timedelta
 
 from config import app, db
@@ -32,8 +34,12 @@ def clear_data():
     db.session.commit()
 
 
-def seed():
+def seed(force=False):
     db.create_all()
+    if not force and Sacco.query.first():
+        print("Database already contains data. Skipping seed (pass --force to override).")
+        return
+
     clear_data()
 
     # ---- SACCOs ----
@@ -80,6 +86,7 @@ def seed():
         Passenger(email="mary@example.com", phone_number="0722000111"),
         Passenger(email="james@example.com", phone_number="0722000222"),
         Passenger(email="susan@example.com", phone_number="0722000333"),
+        Passenger(email="johnkarani@gmail.com", phone_number="0723659321"),
     ]
     for passenger in passengers:
         passenger.set_password("password123")
@@ -172,5 +179,10 @@ def seed():
 
 
 if __name__ == "__main__":
+    force_seed = (
+        "--force" in sys.argv
+        or "-f" in sys.argv
+        or os.getenv("FORCE_SEED", "").lower() in ("true", "1")
+    )
     with app.app_context():
-        seed()
+        seed(force=force_seed)
