@@ -33,15 +33,16 @@ def resolve_user_type(data):
 
 class LoginResource(Resource):
     def post(self):
-        data = request.get_json()
+        data = request.get_json() or {}
 
         user_type, error = resolve_user_type(data)
         if error:
             return error
 
-        email, password = data.get('email'), data.get('password')
+        email = (data.get('email') or '').strip().lower()
+        password = data.get('password')
         model = USER_TYPE_MODELS[user_type]
-        account = model.query.filter_by(email=email).first()
+        account = model.query.filter(db.func.lower(model.email) == email).first()
 
         if account and account.authenticate(password):
             claims = {
@@ -57,16 +58,17 @@ class LoginResource(Resource):
 
 class RegisterResource(Resource):
     def post(self):
-        data = request.get_json()
+        data = request.get_json() or {}
 
         user_type, error = resolve_user_type(data)
         if error:
             return error
 
-        email, password = data.get('email'), data.get('password')
+        email = (data.get('email') or '').strip().lower()
+        password = data.get('password')
         model = USER_TYPE_MODELS[user_type]
 
-        if model.query.filter_by(email=email).first():
+        if model.query.filter(db.func.lower(model.email) == email).first():
             return {'error': 'Email already exists'}, 400
 
         if user_type == "passenger":

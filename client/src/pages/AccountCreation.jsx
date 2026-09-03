@@ -14,7 +14,7 @@ function AccountCreation() {
 
     const form = event.target;
     const name = form.name.value.trim();
-    const email = form.email.value.trim();
+    const email = form.email.value.trim().toLowerCase();
     const phone = form.phone.value.trim();
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
