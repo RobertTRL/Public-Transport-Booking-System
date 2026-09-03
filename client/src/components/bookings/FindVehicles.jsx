@@ -2,10 +2,14 @@ import { Component, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import RouteSearch from "../RouteSearch";
 import Map from "../maprelated/Map";
-import { allRoutes, getRouteById, getStopById } from "../../data/nairobiRoutes";
+import {
+  allRoutes,
+  allStops,
+  getRouteById,
+  getStopById,
+} from "../../data/nairobiRoutes";
 import {
   getRouteSelection,
-  getVisibleStops,
   isValidPosition,
 } from "../../utils/routeSelection";
 import { API_BASE_URL } from "../../api/client";
@@ -111,6 +115,7 @@ function FindVehicles() {
     let cancelled = false;
 
     async function fetchRoutes() {
+      setRoute(getRouteById(routeId));
       setLoadingRoutes(true);
       try {
         const response = await fetch(`${API_BASE_URL}/api/v1/routes/generalinfo`);
@@ -132,7 +137,6 @@ function FindVehicles() {
       }
     }
 
-    setRoute(getRouteById(routeId));
     fetchRoutes();
     return () => {
       cancelled = true;
