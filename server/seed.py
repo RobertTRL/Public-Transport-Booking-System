@@ -48,11 +48,20 @@ def seed(force=False):
     db.session.add_all([super_metro, citihoppa])
     db.session.commit()
 
-    # ---- Vehicles ----
+    # ---- Vehicles (Diverse active fleet per SACCO) ----
     vehicles = [
+        # Super Metro Fleet
         Vehicle(sacco_id=super_metro.id, number_plate="KDA 123A", capacity=33, is_active=True),
         Vehicle(sacco_id=super_metro.id, number_plate="KDB 456B", capacity=25, is_active=True),
+        Vehicle(sacco_id=super_metro.id, number_plate="KDE 111A", capacity=33, is_active=True),
+        Vehicle(sacco_id=super_metro.id, number_plate="KDE 222B", capacity=33, is_active=True),
+        Vehicle(sacco_id=super_metro.id, number_plate="KDF 333C", capacity=14, is_active=True),
+        Vehicle(sacco_id=super_metro.id, number_plate="KDG 444D", capacity=33, is_active=True),
+        # Citi Hoppa Fleet
         Vehicle(sacco_id=citihoppa.id, number_plate="KDC 789C", capacity=33, is_active=True),
+        Vehicle(sacco_id=citihoppa.id, number_plate="KDE 555E", capacity=45, is_active=True),
+        Vehicle(sacco_id=citihoppa.id, number_plate="KDF 666F", capacity=33, is_active=True),
+        Vehicle(sacco_id=citihoppa.id, number_plate="KDG 777G", capacity=25, is_active=True),
         Vehicle(sacco_id=citihoppa.id, number_plate="KDD 012D", capacity=14, is_active=False),
     ]
     db.session.add_all(vehicles)
