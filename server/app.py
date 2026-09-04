@@ -84,5 +84,17 @@ api.add_resource(MyBookingsResource, "/api/v1/me/bookings")
 api.add_resource(BookingDetailResource, "/api/v1/bookings/<int:booking_id>")
 api.add_resource(CancelBookingResource, "/api/v1/bookings/<int:booking_id>/cancel")
 
+# Development / maintenance endpoint to refresh today's trips
+@app.route('/api/v1/seed-today', methods=['GET', 'POST'])
+def trigger_seed_today():
+    """Refresh available vehicles and scheduled trips for today without shell access."""
+    from seed import refresh_today_trips
+    count = refresh_today_trips()
+    return {
+        "status": "success",
+        "message": f"Successfully refreshed vehicles and created {count} trips for today and tomorrow.",
+        "trips_created": count
+    }, 200
+
 if __name__ == '__main__':
     app.run(debug=True)
