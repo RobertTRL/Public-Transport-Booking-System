@@ -153,31 +153,56 @@ def seed(force=False):
         "Archives", "Globe Roundabout", "Pangani", "Allsops", "Kasarani", "Githurai", "Thika"
     ])
 
-    # ---- Trips ----
+    # ---- Trips (Scheduled throughout today and tomorrow so vehicles appear!) ----
     now = datetime.utcnow()
     trips = [
+        # Kikuyu Line Trips (Today)
         Trip(origin_routestop_id=kikuyu_stops[0].id, destination_routestop_id=kikuyu_stops[-1].id,
              start_time=now + timedelta(minutes=30), vehicle_id=vehicles[0].id, status="scheduled"),
+        Trip(origin_routestop_id=kikuyu_stops[0].id, destination_routestop_id=kikuyu_stops[-1].id,
+             start_time=now + timedelta(hours=1, minutes=30), vehicle_id=vehicles[2].id, status="scheduled"),
+        Trip(origin_routestop_id=kikuyu_stops[0].id, destination_routestop_id=kikuyu_stops[-1].id,
+             start_time=now + timedelta(hours=3), vehicle_id=vehicles[3].id, status="scheduled"),
+        Trip(origin_routestop_id=kikuyu_stops[0].id, destination_routestop_id=kikuyu_stops[-1].id,
+             start_time=now + timedelta(hours=5), vehicle_id=vehicles[4].id, status="scheduled"),
+
+        # Rongai Line Trips (Today)
         Trip(origin_routestop_id=rongai_stops[0].id, destination_routestop_id=rongai_stops[-1].id,
              start_time=now + timedelta(minutes=45), vehicle_id=vehicles[1].id, status="scheduled"),
+        Trip(origin_routestop_id=rongai_stops[0].id, destination_routestop_id=rongai_stops[-1].id,
+             start_time=now + timedelta(hours=2), vehicle_id=vehicles[5].id, status="scheduled"),
+        Trip(origin_routestop_id=rongai_stops[0].id, destination_routestop_id=rongai_stops[-1].id,
+             start_time=now + timedelta(hours=4), vehicle_id=vehicles[6].id, status="scheduled"),
+
+        # Thika Road Trips (Today & history)
         Trip(origin_routestop_id=thika_stops[0].id, destination_routestop_id=thika_stops[-1].id,
-             start_time=now - timedelta(hours=1), stop_time=now - timedelta(minutes=10),
-             vehicle_id=vehicles[2].id, status="completed"),
+             start_time=now + timedelta(hours=1), vehicle_id=vehicles[7].id, status="scheduled"),
+        Trip(origin_routestop_id=thika_stops[0].id, destination_routestop_id=thika_stops[-1].id,
+             start_time=now + timedelta(hours=3, minutes=30), vehicle_id=vehicles[8].id, status="scheduled"),
+        Trip(origin_routestop_id=thika_stops[0].id, destination_routestop_id=thika_stops[-1].id,
+             start_time=now - timedelta(hours=2), stop_time=now - timedelta(hours=1),
+             vehicle_id=vehicles[9].id, status="completed"),
+
+        # Tomorrow Trips
+        Trip(origin_routestop_id=kikuyu_stops[0].id, destination_routestop_id=kikuyu_stops[-1].id,
+             start_time=now + timedelta(days=1, hours=2), vehicle_id=vehicles[0].id, status="scheduled"),
+        Trip(origin_routestop_id=rongai_stops[0].id, destination_routestop_id=rongai_stops[-1].id,
+             start_time=now + timedelta(days=1, hours=4), vehicle_id=vehicles[1].id, status="scheduled"),
+        Trip(origin_routestop_id=thika_stops[0].id, destination_routestop_id=thika_stops[-1].id,
+             start_time=now + timedelta(days=1, hours=3), vehicle_id=vehicles[7].id, status="scheduled"),
     ]
     db.session.add_all(trips)
     db.session.commit()
 
     # ---- Bookings ----
-    # NOTE: per your ERD, Booking.user_id references Passengers.id, not Users.id —
-    # despite the column name, only passengers make bookings.
     bookings = [
         Booking(user_id=passengers[0].id, trip_id=trips[0].id,
                 origin_routestop_id=kikuyu_stops[0].id,
                 destination_routestop_id=kikuyu_stops[3].id, made_at=now),
-        Booking(user_id=passengers[1].id, trip_id=trips[1].id,
+        Booking(user_id=passengers[1].id, trip_id=trips[4].id,
                 origin_routestop_id=rongai_stops[0].id,
                 destination_routestop_id=rongai_stops[-1].id, made_at=now),
-        Booking(user_id=passengers[2].id, trip_id=trips[2].id,
+        Booking(user_id=passengers[2].id, trip_id=trips[7].id,
                 origin_routestop_id=thika_stops[0].id,
                 destination_routestop_id=thika_stops[2].id, made_at=now),
     ]
