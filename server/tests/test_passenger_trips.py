@@ -127,3 +127,11 @@ def test_trip_availability_invalid_segment(client):
     # Destination before origin is invalid
     res = client.get("/api/v1/trips/1/availability?origin_routestop_id=3&destination_routestop_id=1")
     assert res.status_code == 400
+
+
+def test_seed_today_endpoint(client):
+    res = client.get("/api/v1/seed-today")
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["status"] == "success"
+    assert "trips_created" in data
