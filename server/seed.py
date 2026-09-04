@@ -34,10 +34,111 @@ def clear_data():
     db.session.commit()
 
 
+def refresh_today_trips():
+    """
+    Ensures that active vehicles exist and creates fresh scheduled trips
+    for today and tomorrow across all routes without wiping existing database data.
+    """
+    now = datetime.utcnow()
+    today_start = datetime(now.year, now.month, now.day, 0, 0, 0)
+
+    sacco1 = Sacco.query.filter_by(name="Super Metro").first()
+    sacco2 = Sacco.query.filter_by(name="Citi Hoppa").first()
+    if not sacco1 or not sacco2:
+        return 0
+
+    extra_vehicles = [
+        {"plate": "KDA 123A", "sacco_id": sacco1.id, "capacity": 33, "active": True},
+        {"plate": "KDB 456B", "sacco_id": sacco1.id, "capacity": 25, "active": True},
+        {"plate": "KDE 111A", "sacco_id": sacco1.id, "capacity": 33, "active": True},
+        {"plate": "KDE 222B", "sacco_id": sacco1.id, "capacity": 33, "active": True},
+        {"plate": "KDF 333C", "sacco_id": sacco1.id, "capacity": 14, "active": True},
+        {"plate": "KDG 444D", "sacco_id": sacco1.id, "capacity": 33, "active": True},
+        {"plate": "KDC 789C", "sacco_id": sacco2.id, "capacity": 33, "active": True},
+        {"plate": "KDE 555E", "sacco_id": sacco2.id, "capacity": 45, "active": True},
+        {"plate": "KDF 666F", "sacco_id": sacco2.id, "capacity": 33, "active": True},
+        {"plate": "KDG 777G", "sacco_id": sacco2.id, "capacity": 25, "active": True},
+    ]
+
+    all_vehicles = []
+    for item in extra_vehicles:
+        v = Vehicle.query.filter_by(number_plate=item["plate"]).first()
+        if not v:
+            v = Vehicle(
+                sacco_id=item["sacco_id"],
+                number_plate=item["plate"],
+                capacity=item["capacity"],
+                is_active=item["active"]
+            )
+            db.session.add(v)
+            db.session.commit()
+        else:
+            v.is_active = item["active"]
+            db.session.commit()
+        all_vehicles.append(v)
+
+    routes = Route.query.all()
+    if not routes:
+        return 0
+
+    trips_created = 0
+    # Clean up old past scheduled trips that don't have bookings
+    old_scheduled = Trip.query.filter(
+        Trip.status == "scheduled",
+        Trip.start_time < today_start
+    ).all()
+    for ot in old_scheduled:
+        if not ot.bookings:
+            db.session.delete(ot)
+    db.session.commit()
+
+    # Time offsets for departures today & tomorrow
+    today_offsets_minutes = [30, 60, 120, 180, 240, 360, 480, 600, 720]
+    tomorrow_offsets_hours = [24 + 8, 24 + 11, 24 + 14, 24 + 17]
+
+    for route in routes:
+        stops = RouteStop.query.filter_by(route_id=route.id).order_by(RouteStop.sequence).all()
+        if len(stops) < 2:
+            continue
+        origin_id = stops[0].id
+        destination_id = stops[-1].id
+
+        for i, offset_min in enumerate(today_offsets_minutes):
+            start_dt = now + timedelta(minutes=offset_min)
+            v = all_vehicles[(route.id + i) % len(all_vehicles)]
+            trip = Trip(
+                origin_routestop_id=origin_id,
+                destination_routestop_id=destination_id,
+                start_time=start_dt,
+                vehicle_id=v.id,
+                status="scheduled"
+            )
+            db.session.add(trip)
+            trips_created += 1
+
+        for j, offset_hr in enumerate(tomorrow_offsets_hours):
+            start_dt = now + timedelta(hours=offset_hr)
+            v = all_vehicles[(route.id + j + 2) % len(all_vehicles)]
+            trip = Trip(
+                origin_routestop_id=origin_id,
+                destination_routestop_id=destination_id,
+                start_time=start_dt,
+                vehicle_id=v.id,
+                status="scheduled"
+            )
+            db.session.add(trip)
+            trips_created += 1
+
+    db.session.commit()
+    print(f"Refreshed trips: {trips_created} scheduled trips generated for today and tomorrow.")
+    return trips_created
+
+
 def seed(force=False):
     db.create_all()
     if not force and Sacco.query.first():
-        print("Database already contains data. Skipping seed (pass --force to override).")
+        print("Database already contains data. Refreshing vehicles & today's trips...")
+        refresh_today_trips()
         return
 
     clear_data()
